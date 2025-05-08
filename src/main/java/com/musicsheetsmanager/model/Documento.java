@@ -1,4 +1,4 @@
-package it.univr.musicsheetsmanager.model;
+package com.musicsheetsmanager.model;
 
 public class Documento {
     public enum Tipo {
