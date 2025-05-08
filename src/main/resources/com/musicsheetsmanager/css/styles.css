@@ -1,0 +1,105 @@
+/* Global Styles */
+.root {
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
+    -fx-font-size: 14px;
+    -fx-background-color: #f8f9fa;
+}
+
+/* Button Styles */
+.button {
+    -fx-background-color: #007bff;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 16px;
+    -fx-background-radius: 4px;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #0069d9;
+}
+
+.button-secondary {
+    -fx-background-color: #6c757d;
+}
+
+.button-secondary:hover {
+    -fx-background-color: #5a6268;
+}
+
+.button-success {
+    -fx-background-color: #28a745;
+}
+
+.button-success:hover {
+    -fx-background-color: #218838;
+}
+
+/* Form Styles */
+.form-control {
+    -fx-padding: 8px;
+    -fx-background-radius: 4px;
+    -fx-border-color: #ced4da;
+    -fx-border-radius: 4px;
+    -fx-background-color: white;
+    -fx-prompt-text-fill: #6c757d;
+}
+
+.form-control:focused {
+    -fx-border-color: #80bdff;
+    -fx-effect: dropshadow(gaussian, rgba(0, 123, 255, 0.25), 0, 0, 0, 0);
+}
+
+.form-label {
+    -fx-font-weight: bold;
+}
+
+/* Card Styles */
+.card {
+    -fx-background-color: white;
+    -fx-padding: 15px;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 3);
+}
+
+.card-header {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 0 10px 0;
+    -fx-border-color: transparent transparent #dee2e6 transparent;
+    -fx-border-width: 0 0 1px 0;
+}
+
+/* Navigation */
+.nav-container {
+    -fx-background-color: #007bff;
+    -fx-padding: 10px;
+}
+
+/* Alert Styles */
+.alert-success {
+    -fx-text-fill: #155724;
+    -fx-background-color: #d4edda;
+    -fx-padding: 10px;
+    -fx-background-radius: 4px;
+    -fx-border-color: #c3e6cb;
+    -fx-border-radius: 4px;
+}
+
+.alert-danger {
+    -fx-text-fill: #721c24;
+    -fx-background-color: #f8d7da;
+    -fx-padding: 10px;
+    -fx-background-radius: 4px;
+    -fx-border-color: #f5c6cb;
+    -fx-border-radius: 4px;
+}
+
+/* Container and Layout */
+.container {
+    -fx-padding: 20px;
+}
+
+.section {
+    -fx-padding: 10px 0;
+}

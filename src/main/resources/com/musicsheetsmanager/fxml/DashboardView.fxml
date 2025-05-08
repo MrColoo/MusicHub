@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox spacing="20.0" styleClass="container" xmlns="http://javafx.com/javafx/16"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.musicsheetsmanager.controller.DashboardController">
+    <children>
+        <Label text="Dashboard" textAlignment="CENTER">
+            <font>
+                <Font name="System Bold" size="24.0" />
+            </font>
+        </Label>
+        <Label fx:id="welcomeLabel" text="Welcome to your dashboard!" wrapText="true" />
+        <Label text="This is a protected dashboard page. Only logged-in users can see this."
+               wrapText="true" />
+        <HBox spacing="20.0">
+            <children>
+                <VBox styleClass="card" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label styleClass="card-header" text="Stats Overview" />
+                        <Label text="This card could contain stats or charts." wrapText="true">
+                            <VBox.margin>
+                                <Insets bottom="10.0" top="10.0" />
+                            </VBox.margin>
+                        </Label>
+                        <Button mnemonicParsing="false" text="Details" fx:id="statDetails" onAction="#handleStatDetails" />
+                    </children>
+                    <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                    </padding>
+                </VBox>
+                <VBox styleClass="card" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label styleClass="card-header" text="Recent Activity" />
+                        <Label text="This card could show recent user activity." wrapText="true">
+                            <VBox.margin>
+                                <Insets bottom="10.0" top="10.0" />
+                            </VBox.margin>
+                        </Label>
+                        <Button mnemonicParsing="false" text="View All" />
+                    </children>
+                    <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                    </padding>
+                </VBox>
+                <VBox styleClass="card" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label styleClass="card-header" text="Notifications" />
+                        <Label text="This card could list user notifications." wrapText="true">
+                            <VBox.margin>
+                                <Insets bottom="10.0" top="10.0" />
+                            </VBox.margin>
+                        </Label>
+                        <Button mnemonicParsing="false" text="Clear All" />
+                    </children>
+                    <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                    </padding>
+                </VBox>
+            </children>
+        </HBox>
+        <HBox spacing="10.0">
+            <children>
+                <Button mnemonicParsing="false" onAction="#handleViewProfile" text="View Profile" />
+                <Button mnemonicParsing="false" onAction="#handleLogout" styleClass="button-secondary"
+                        text="Logout" />
+            </children>
+            <VBox.margin>
+                <Insets top="10.0" />
+            </VBox.margin>
+        </HBox>
+    </children>
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+</VBox>

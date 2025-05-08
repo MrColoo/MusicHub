@@ -1,12 +1,12 @@
-package it.univr.musicsheetsmanager.model;
+package com.musicsheetsmanager.model;
 
 public class Utente {
     public enum Ruolo { ADMIN, NORMALE }
 
     private String username;
     private Ruolo ruolo;
-    private boolean èAutore;
-    private boolean èInterprete;
+    private boolean isAutore;
+    private boolean isInterprete;
 
     public Utente(String username, Ruolo ruolo) {
         this.username = username;

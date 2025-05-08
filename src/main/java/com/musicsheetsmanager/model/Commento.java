@@ -1,4 +1,4 @@
-package it.univr.musicsheetsmanager.model;
+package com.musicsheetsmanager.model;
 
 import java.util.ArrayList;
 import java.util.List;
