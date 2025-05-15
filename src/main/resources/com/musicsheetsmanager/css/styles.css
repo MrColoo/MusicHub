@@ -1,3 +1,29 @@
+/* === COLORS === */
+.root {
+    /* Main Colors */
+
+    /* UI */
+    -fx-primary-green: #1DB954;
+    -fx-secondary-black: #000000;
+    -fx-secondary-black-02: #00c853;
+    -fx-secondary-gray: #3A3A3A;
+    -fx-secondary-light-gray: #868686;
+    -fx-secondary-white: #FFFFFF;
+
+    /* Text */
+    -fx-text-light: -fx-secondary-white;
+    -fx-text-dark: -fx-secondary-black-02;
+    -fx-text-gray: -fx-secondary-light-gray;
+
+    /* Components */
+    -fx-bg-bar: -fx-secondary-black;
+}
+
+.topbar {
+    -fx-background-color: -fx-bg-bar;
+    -fx-padding: 10px;
+}
+
 /* Global Styles */
 .root {
     -fx-font-family: 'Segoe UI', Arial, sans-serif;

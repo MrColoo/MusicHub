@@ -23,12 +23,13 @@ public class Main extends Application {
         Parent root = loader.load();
 
         // Set up the scene
-        Scene scene = new Scene(root, 800, 600);
+        Scene scene = new Scene(root, 1280, 800);
         URL cssUrl = getClass().getResource("/com/musicsheetsmanager/css/styles.css");
         scene.getStylesheets().add(cssUrl.toExternalForm());
 
         // Configure and show the stage
-        primaryStage.setTitle("Dash App - JavaFX Version");
+        primaryStage.setResizable(false);
+        primaryStage.setTitle("MusicHub");
         primaryStage.setScene(scene);
         primaryStage.show();
     }

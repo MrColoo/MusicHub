@@ -4,11 +4,11 @@ import com.musicsheetsmanager.view.ViewNavigator;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 
-public class NavBar extends HBox {
+public class NavBar extends VBox {
     private boolean isAuthenticated;
     private String username;
 
@@ -36,7 +36,7 @@ public class NavBar extends HBox {
 
         // Spacer
         Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
+        VBox.setVgrow(spacer, Priority.ALWAYS);
         this.getChildren().add(spacer);
 
         // Create buttons based on authentication status
