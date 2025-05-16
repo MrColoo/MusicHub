@@ -1,5 +1,6 @@
 package com.musicsheetsmanager;
 
+import com.musicsheetsmanager.config.FontLoader;
 import com.musicsheetsmanager.model.UserRepository;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -26,6 +27,9 @@ public class Main extends Application {
         Scene scene = new Scene(root, 1280, 800);
         URL cssUrl = getClass().getResource("/com/musicsheetsmanager/css/styles.css");
         scene.getStylesheets().add(cssUrl.toExternalForm());
+
+        // Fonts import
+        FontLoader.loadCircularFonts();
 
         // Configure and show the stage
         primaryStage.setResizable(false);
