@@ -20,11 +20,6 @@ public class FontLoader {
 
         for (String fontFile : fontFiles) {
             Font font = Font.loadFont(FontLoader.class.getResource("/com/musicsheetsmanager/ui/fonts/" + fontFile).toExternalForm(), 10);
-            if (font != null) {
-                System.out.println("Loaded font: " + font.getName());
-            } else {
-                System.err.println("Failed to load: " + fontFile);
-            }
         }
     }
 }

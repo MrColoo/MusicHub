@@ -57,6 +57,8 @@
 .text-3xl { -fx-font-size: 30px; }
 
 
+/* TOPBAR */
+
 .topbar {
     -fx-background-color: -fx-bg-bar;
     -fx-padding: 20px 20px;
@@ -84,6 +86,37 @@
     -fx-background-radius: 200px;
 }
 
+/* NAVBAR */
+.navbar{
+    -fx-padding: 20px;
+}
+
+.navbar-btn{
+    -fx-background-color: none;
+    -fx-text-fill: -fx-secondary-white;
+}
+
+/* LOGIN */
+
+.form-container{
+    -fx-background-color: -fx-secondary-black-02;
+    -fx-background-radius: 18px;
+    -fx-text-fill -fx-secondary-white;
+}
+
+.form-text-field{
+    -fx-background-color: -fx-secondary-gray;
+    -fx-text-fill: -fx-secondary-white;
+    -fx-background-radius: 8px;
+    -fx-padding: 0px 20px;
+}
+
+.form-btn{
+    -fx-background-color: -fx-primary-green;
+    -fx-text-fill: -fx-secondary-black-02;
+    -fx-background-radius: 200px;
+}
+
 /* Global Styles */
 .root {
 
@@ -95,7 +128,7 @@
 }
 
 .button:hover {
-    -fx-background-color: #0069d9;
+    -fx-background-color: -fx-secondary-white;
 }
 
 .button-secondary {

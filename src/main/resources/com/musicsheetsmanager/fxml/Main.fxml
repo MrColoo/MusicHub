@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane fx:controller="com.musicsheetsmanager.controller.MainController" xmlns:fx="http://javafx.com/javafx">
+<top>
+    <StackPane fx:id="topBarContainer"/>
+</top>
+<left>
+    <StackPane fx:id="navBarContainer"/>
+</left>
+<center>
+    <StackPane fx:id="mainContentPane"/>
+</center>
+</BorderPane>
