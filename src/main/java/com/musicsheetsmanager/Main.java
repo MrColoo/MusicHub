@@ -18,13 +18,15 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         // Load the main application view
 
-        URL mainViewUrl = getClass().getResource("/com/musicsheetsmanager/fxml/MainView.fxml");
+        URL mainViewUrl = getClass().getResource("/com/musicsheetsmanager/fxml/Main.fxml");
         FXMLLoader loader = new FXMLLoader(mainViewUrl);
 
         Parent root = loader.load();
 
         // Set up the scene
         Scene scene = new Scene(root, 1280, 800);
+
+        // Load CSS File
         URL cssUrl = getClass().getResource("/com/musicsheetsmanager/css/styles.css");
         scene.getStylesheets().add(cssUrl.toExternalForm());
 

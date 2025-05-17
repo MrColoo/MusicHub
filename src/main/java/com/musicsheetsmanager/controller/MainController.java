@@ -1,45 +1,37 @@
 package com.musicsheetsmanager.controller;
 
-import com.musicsheetsmanager.view.ViewNavigator;
-import com.musicsheetsmanager.view.components.NavBar;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.StackPane;
+import java.io.IOException;
+
 
 public class MainController {
-    @FXML
-    private BorderPane mainContainer;
 
-    @FXML
-    private VBox navBarContainer;
+    @FXML private StackPane topBarContainer;
+    @FXML private StackPane navBarContainer;
 
-    private NavBar navBar;
-
-    @FXML
     public void initialize() {
-        // Set up the navigation bar
-        navBar = new NavBar();
-        navBarContainer.getChildren().add(navBar);
-
-        // Register this controller with the ViewNavigator
-        ViewNavigator.setMainController(this);
-
-        // Load the home view by default
-        ViewNavigator.navigateToHome();
+        loadTopBar();
+        loadNavBar();
     }
 
-    /**
-     * Set the content of the main area
-     */
-    public void setContent(Node content) {
-        mainContainer.setCenter(content);
+    private void loadTopBar() {
+        try {
+            Node topBar = FXMLLoader.load(getClass().getResource("/com/musicsheetsmanager/fxml/TopBar.fxml"));
+            topBarContainer.getChildren().add(topBar);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    /**
-     * Update the navigation bar based on authentication status
-     */
-    public void updateNavBar(boolean isAuthenticated) {
-        navBar.updateAuthStatus(isAuthenticated, ViewNavigator.getAuthenticatedUser());
+    private void loadNavBar() {
+        try {
+            Node navBar = FXMLLoader.load(getClass().getResource("/com/musicsheetsmanager/fxml/NavBar.fxml"));
+            navBarContainer.getChildren().add(navBar);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

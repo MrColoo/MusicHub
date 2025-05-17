@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="210.0" style="-fx-background-color: -fx-secondary-black;" styleClass="navbar" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox prefHeight="237.0" prefWidth="170.0">
+         <children>
+            <ToggleButton alignment="CENTER_LEFT" mnemonicParsing="false" prefHeight="61.0" prefWidth="169.0" text=" Esplora">
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../ui/icons/library.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <styleClass>
+                  <String fx:value="navbar-btn" />
+                  <String fx:value="text-lg" />
+                  <String fx:value="font-medium" />
+               </styleClass>
+               <toggleGroup>
+                  <ToggleGroup fx:id="Section" />
+               </toggleGroup>
+            </ToggleButton>
+            <ToggleButton alignment="CENTER_LEFT" mnemonicParsing="false" prefHeight="61.0" prefWidth="169.0" text=" Concerti" toggleGroup="$Section">
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../ui/icons/library.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <styleClass>
+                  <String fx:value="navbar-btn" />
+                  <String fx:value="text-lg" />
+                  <String fx:value="font-medium" />
+               </styleClass>
+            </ToggleButton>
+            <ToggleButton alignment="CENTER_LEFT" mnemonicParsing="false" prefHeight="61.0" prefWidth="169.0" text=" Cronologia" toggleGroup="$Section">
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../ui/icons/library.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <styleClass>
+                  <String fx:value="navbar-btn" />
+                  <String fx:value="text-lg" />
+                  <String fx:value="font-medium" />
+               </styleClass>
+            </ToggleButton>
+         </children>
+      </VBox>
+      <Region prefHeight="368.0" prefWidth="210.0" />
+      <VBox prefHeight="135.0" prefWidth="170.0">
+         <children>
+            <ToggleButton alignment="CENTER_LEFT" mnemonicParsing="false" prefHeight="61.0" prefWidth="169.0" text=" Admin" toggleGroup="$Section">
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../ui/icons/library.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <styleClass>
+                  <String fx:value="navbar-btn" />
+                  <String fx:value="text-lg" />
+                  <String fx:value="font-medium" />
+               </styleClass>
+            </ToggleButton>
+            <ToggleButton alignment="CENTER_LEFT" mnemonicParsing="false" prefHeight="61.0" prefWidth="169.0" text=" Logout">
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../ui/icons/library.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <styleClass>
+                  <String fx:value="navbar-btn" />
+                  <String fx:value="text-lg" />
+                  <String fx:value="font-medium" />
+               </styleClass>
+            </ToggleButton>
+         </children>
+      </VBox>
+   </children>
+</VBox>

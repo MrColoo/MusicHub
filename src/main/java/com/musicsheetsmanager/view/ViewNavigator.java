@@ -36,7 +36,7 @@ public class ViewNavigator {
             URL fxmlUrl = MainOld.class.getResource("/com/musicsheetsmanager/fxml/" + fxml);
             FXMLLoader loader = new FXMLLoader(fxmlUrl);
             Node view = loader.load();
-            mainController.setContent(view);
+            //mainController.setContent(view);
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Error loading view: " + fxml);
@@ -102,7 +102,7 @@ public class ViewNavigator {
      */
     public static void setAuthenticatedUser(String username) {
         authenticatedUser = username;
-        mainController.updateNavBar(isAuthenticated());
+        //mainController.updateNavBar(isAuthenticated());
     }
 
     /**
@@ -126,7 +126,7 @@ public class ViewNavigator {
      */
     public static void logout() {
         authenticatedUser = null;
-        mainController.updateNavBar(false);
+        //mainController.updateNavBar(false);
         navigateToHome();
     }
 }
