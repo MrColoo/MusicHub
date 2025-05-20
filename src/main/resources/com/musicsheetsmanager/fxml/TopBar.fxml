@@ -11,8 +11,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.text.Font?>
 
-
-<HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="1280.0" styleClass="topbar" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="1280.0" styleClass="topbar" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.musicsheetsmanager.controller.TopBarController">
    <children>
       <ImageView fitHeight="40.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -25,7 +24,7 @@
       <Region prefHeight="60.0" prefWidth="227.0" HBox.hgrow="ALWAYS" />
       <HBox alignment="CENTER" styleClass="search-bar">
          <children>
-            <TextField prefHeight="32.0" prefWidth="308.0" promptText="Search something...">
+            <TextField fx:id="campoRicerca" onAction="#onSearchBarEnter" prefHeight="32.0" prefWidth="308.0" promptText="Search something...">
                <font>
                   <Font name="CircularStd-Bold" size="12.0" />
                </font>

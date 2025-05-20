@@ -1,6 +1,7 @@
 module com.musicsheetsmanager {
     requires javafx.controls;
     requires javafx.fxml;
+    requires com.google.gson;
 
 
     opens com.musicsheetsmanager to javafx.fxml;
