@@ -102,6 +102,7 @@
     -fx-background-color: -fx-secondary-black-02;
     -fx-background-radius: 18px;
     -fx-text-fill -fx-secondary-white;
+    -fx-effect: dropshadow(gaussian, #5D5D5D, 250, 0.00005, 0, 0);
 }
 
 .form-text-field{
