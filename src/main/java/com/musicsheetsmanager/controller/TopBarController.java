@@ -1,5 +1,8 @@
 package com.musicsheetsmanager.controller;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Type;
 import com.musicsheetsmanager.model.Brano;
 import com.musicsheetsmanager.model.Utente;
 import javafx.fxml.FXML;
@@ -7,12 +10,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
-import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class TopBarController {
 
@@ -26,12 +26,15 @@ public class TopBarController {
 
     @FXML
     public void initialize(){
-        // carica json
         try {
-            ObjectMapper mapper = new ObjectMapper();
-            InputStream input = getClass().getClassLoader().getResourceAsStream("brani.json");
-            // mappa brani.json su una classe java
-            brani = mapper.readValue(input, new TypeReference<List<Brano>>() {});
+            Gson gson = new Gson();
+            InputStreamReader reader = new InputStreamReader(
+                    getClass().getClassLoader().getResourceAsStream("brani.json")
+            );
+            Type listType = new TypeToken<List<Brano>>() {}.getType();
+            brani = gson.fromJson(reader, listType);
+
+            reader.close();
         } catch (Exception e){
             e.printStackTrace();
         }
