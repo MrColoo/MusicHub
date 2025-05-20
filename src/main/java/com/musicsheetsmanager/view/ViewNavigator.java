@@ -47,7 +47,7 @@ public class ViewNavigator {
      * Navigate to the home view
      */
     public static void navigateToHome() {
-        loadView("HomeView.fxml");
+        loadView("Home.fxml");
     }
 
     /**
