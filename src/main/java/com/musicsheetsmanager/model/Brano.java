@@ -13,7 +13,7 @@ public class Brano {
     private List<Documento> documenti;
     private List<Commento> commenti;
 
-    public Brano(String titolo, List<String> autori, String genere, Integer annoComposizione) {
+    public Brano(String titolo, List<String> autori, String genere, Integer annoComposizione, List<String> esecutori) {
         this.titolo = titolo;
         this.autori = autori;
         this.genere = genere;
