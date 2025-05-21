@@ -17,7 +17,7 @@ public class LoginController {
     private TextField loginPasswordField;
 
     private final String USER_JSON_PATH =
-            "C:\\Documenti\\UNI\\Ingegneria Software\\Progetto_Spartiti_Musicali\\Codice\\src\\main\\resources\\com\\musicsheetsmanager\\data\\user.json";
+            "src/main/resources/com/musicsheetsmanager/data/user.json";
 
     @FXML
     private void onLoginClicked() {
