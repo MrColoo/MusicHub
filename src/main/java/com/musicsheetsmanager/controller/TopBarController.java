@@ -6,7 +6,6 @@ import java.lang.reflect.Type;
 
 import com.musicsheetsmanager.config.SessionManager;
 import com.musicsheetsmanager.model.Brano;
-import com.musicsheetsmanager.model.Utente;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
@@ -26,9 +25,11 @@ public class TopBarController {
 
     private List<Brano> brani;
 
+
     @FXML
     public void initialize(){
 
+        // attendo evento input ENTER
         campoRicerca.setOnAction(event -> onSearchBarEnter());
 
         changeTopBar();
@@ -46,6 +47,7 @@ public class TopBarController {
         }
     }
 
+    // ricerca del brano quando l'utente schiaccia il tasto ENTER
     @FXML
     public void onSearchBarEnter (){
         String chiave = campoRicerca.getText();
