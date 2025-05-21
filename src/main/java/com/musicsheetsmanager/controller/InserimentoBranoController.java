@@ -12,6 +12,8 @@ import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.reflect.TypeToken;
+import javafx.scene.text.Text;
+
 import java.lang.reflect.Type;
 
 public class InserimentoBranoController {
@@ -20,42 +22,51 @@ public class InserimentoBranoController {
     @FXML private TextField campoAutori;
     @FXML private TextField campoAnnoDiComposizione;
     @FXML private TextField campoGenere;
-    @FXML private TextField campoEsecutori;
+    @FXML private TextField campoStrumentiMusicali;
+    @FXML private TextField campoLinkYoutube;
+    @FXML private Text errore;
 
+    public void initialize(){
+        errore.setVisible(false);
+    }
     // form per l'aggiunta di un nuovo brano da parte dell'utente
     @FXML
     public void onAddBranoClick() {
 
-            String titolo = campoTitolo.getText();
-            List<String> autori = List.of(campoAutori.getText().split(",\\s*"));
+            String titolo = campoTitolo.getText().trim();
+            List<String> autori = List.of(campoAutori.getText().trim().split(",\\s*"));
 
             // controlla che l'anno di composizione sia un numero intero valido
             int anno;
             try {
-                anno = Integer.parseInt(campoAnnoDiComposizione.getText());
+                anno = Integer.parseInt(campoAnnoDiComposizione.getText().trim());
                 int annoCorrente = Year.now().getValue();
 
                 if(anno > annoCorrente) {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Errore input");
-                    alert.setHeaderText("Anno troppo grande");
-                    alert.setContentText("Non puoi viaggiare nel futuro");
-                    alert.showAndWait();
+                    errore.setText("Non puoi viaggiare nel futuro coglione");
+                    errore.setVisible(true);
                     return;
                 }
             } catch (NumberFormatException e) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Errore di input");
-                alert.setHeaderText("Anno non valido");
-                alert.setContentText("L'anno deve essere un numero intero");
-                alert.showAndWait();
+                errore.setText("Inserisci un numero intero");
+                errore.setVisible(true);
                 return;
             }
 
             String genere = campoGenere.getText();
-            List<String> esecutori = List.of(campoEsecutori.getText().split(",\\s*"));
 
-            Brano nuovoBrano = new Brano(titolo, autori, genere, anno, esecutori);
+            String strumentiText = campoStrumentiMusicali.getText().trim();
+            List<String> strumenti = strumentiText.isEmpty()
+                    ? new ArrayList<>()
+                    : List.of(strumentiText.split(",\\s*"));
+
+            String linkYoutube = campoLinkYoutube.getText().trim();
+            if(linkYoutube.isEmpty()) {
+                linkYoutube = "";
+            }
+
+
+            Brano nuovoBrano = new Brano(titolo, autori, genere, anno, linkYoutube, strumenti);
 
             List<Brano> listaBrani = caricaBrani();
 

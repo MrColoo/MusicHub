@@ -8,4 +8,5 @@ module com.musicsheetsmanager {
     exports com.musicsheetsmanager;
     exports com.musicsheetsmanager.controller;
     opens com.musicsheetsmanager.controller to javafx.fxml;
+    opens com.musicsheetsmanager.model to com.google.gson;
 }
