@@ -1,4 +1,4 @@
 package com.musicsheetsmanager.controller;
 
-public class Login {
+public class LoginController {
 }
