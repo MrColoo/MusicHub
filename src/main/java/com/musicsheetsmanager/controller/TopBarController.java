@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import com.musicsheetsmanager.model.Brano;
-import com.musicsheetsmanager.model.Utente;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
@@ -31,7 +30,7 @@ public class TopBarController {
             Gson gson = new Gson();
             // prendo file da json in read only
             InputStreamReader reader = new InputStreamReader(
-                    getClass().getClassLoader().getResourceAsStream("/com/musicsheetsmanager/data/brani.json")
+                    getClass().getClassLoader().getResourceAsStream("/src/resources/data/brani.json")
             );
             Type listType = new TypeToken<List<Brano>>() {}.getType();
             brani = gson.fromJson(reader, listType);

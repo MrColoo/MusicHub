@@ -57,16 +57,17 @@ public class InserimentoBranoController {
 
             Brano nuovoBrano = new Brano(titolo, autori, genere, anno, esecutori);
 
-            List<Brano> listaBrani = caricaBraniDaJson();
+            List<Brano> listaBrani = caricaBrani();
 
             listaBrani.add(nuovoBrano);
 
-            salvaBraniSuJson(listaBrani);
+            salvaBrani(listaBrani);
     }
 
+
     // carica i brani dal file json in una lista e aggiunge il nuovo brano
-    private List<Brano> caricaBraniDaJson() {
-        try (Reader reader = new FileReader("com/musicsheetsmanager/data/brani.json")) {
+    private List<Brano> caricaBrani() {
+        try (Reader reader = new FileReader("src/main/resources/com/musicsheetsmanager/data/brani.json")) {
             Gson gson = new Gson();
             Type listType = new TypeToken<List<Brano>>() {}.getType();
             List<Brano> brani = gson.fromJson(reader, listType);
@@ -82,8 +83,8 @@ public class InserimentoBranoController {
     }
 
     // salva la lista di brani aggiornata sul file json
-    private void salvaBraniSuJson(List<Brano> brani) {
-        try (Writer writer = new FileWriter("resources/data/brani.json")) {
+    private void salvaBrani(List<Brano> brani) {
+        try (Writer writer = new FileWriter("src/main/resources/com/musicsheetsmanager/data/brani.json")) {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             gson.toJson(brani, writer);
         } catch (IOException e) {
