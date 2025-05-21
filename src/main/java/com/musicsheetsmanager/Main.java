@@ -1,7 +1,6 @@
 package com.musicsheetsmanager;
 
 import com.musicsheetsmanager.config.FontLoader;
-import com.musicsheetsmanager.model.UserRepository;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,8 +10,6 @@ import javafx.stage.Stage;
 import java.net.URL;
 
 public class Main extends Application {
-
-    private static UserRepository userRepository = new UserRepository();
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -38,13 +35,6 @@ public class Main extends Application {
         primaryStage.setTitle("MusicHub");
         primaryStage.setScene(scene);
         primaryStage.show();
-    }
-
-    /**
-     * Get the application-wide user repository
-     */
-    public static UserRepository getUserRepository() {
-        return userRepository;
     }
 
     public static void main(String[] args) {
