@@ -12,7 +12,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="740.0" prefWidth="1070.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.musicsheetsmanager.controller.CaricaBranoController">
+<AnchorPane prefHeight="740.0" prefWidth="1070.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.musicsheetsmanager.controller.InserimentoBranoController">
+
     <children>
         <ImageView fitHeight="740.0" fitWidth="1091.0" pickOnBounds="true" preserveRatio="true">
             <image>
@@ -34,7 +35,7 @@
                       </Text>
                   <VBox>
                      <children>
-                            <TextField maxWidth="570.0" prefHeight="50.0" prefWidth="570.0" promptText="Titolo *">
+                            <TextField fx:id="campoTitolo" maxWidth="570.0" prefHeight="50.0" prefWidth="570.0" promptText="Titolo *">
                                 <VBox.margin>
                                     <Insets bottom="10.0" />
                                 </VBox.margin>
@@ -45,7 +46,7 @@
                             </TextField>
                         <HBox>
                            <children>
-                              <TextField maxWidth="570.0" prefHeight="50.0" prefWidth="380.0" promptText="Artista *">
+                              <TextField fx:id="campoAutori" maxWidth="570.0" prefHeight="50.0" prefWidth="380.0" promptText="Artista *">
                                  <styleClass>
                                     <String fx:value="form-text-field" />
                                     <String fx:value="text-base" />
@@ -54,7 +55,7 @@
                                     <Insets right="10.0" />
                                  </HBox.margin>
                               </TextField>
-                              <TextField prefHeight="50.0" prefWidth="190.0" promptText="Genere *">
+                              <TextField fx:id="campoGenere" prefHeight="50.0" prefWidth="190.0" promptText="Genere *">
                                  <styleClass>
                                     <String fx:value="form-text-field" />
                                     <String fx:value="text-base" />
@@ -70,7 +71,7 @@
                         </HBox>
                         <HBox>
                            <children>
-                              <TextField maxWidth="570.0" prefHeight="50.0" prefWidth="190.0" promptText="Anno di composizione *">
+                              <TextField fx:id="campoAnnoDiComposizione" maxWidth="570.0" prefHeight="50.0" prefWidth="190.0" promptText="Anno di composizione *">
                                  <styleClass>
                                     <String fx:value="form-text-field" />
                                     <String fx:value="text-base" />
@@ -79,7 +80,7 @@
                                     <Insets right="10.0" />
                                  </HBox.margin>
                               </TextField>
-                              <TextField prefHeight="50.0" prefWidth="380.0" promptText="Strumenti Musicali">
+                              <TextField fx:id="campoStrumentiMusicali" prefHeight="50.0" prefWidth="380.0" promptText="Strumenti Musicali">
                                  <styleClass>
                                     <String fx:value="form-text-field" />
                                     <String fx:value="text-base" />
@@ -93,7 +94,7 @@
                               <Insets bottom="10.0" />
                            </VBox.margin>
                         </HBox>
-                        <TextField maxWidth="570.0" prefHeight="50.0" prefWidth="570.0" promptText="Link Youtube">
+                        <TextField fx:id="campoLinkYoutube" maxWidth="570.0" prefHeight="50.0" prefWidth="570.0" promptText="Link Youtube">
                            <styleClass>
                               <String fx:value="form-text-field" />
                               <String fx:value="text-base" />
@@ -101,7 +102,7 @@
                         </TextField>
                             <HBox alignment="TOP_CENTER">
                                 <children>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: RED;" text="Errore">
+                                    <Text fx:id="errore" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: RED;" text="Errore">
                                         <styleClass>
                                             <String fx:value="font-book" />
                                             <String fx:value="text-sm" />
@@ -138,7 +139,7 @@
                               <Insets right="15.0" />
                            </HBox.margin>
                             </Button>
-                        <Button contentDisplay="RIGHT" mnemonicParsing="false" prefHeight="33.0" text="Carica">
+                        <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#onAddBranoClick" prefHeight="33.0" text="Carica">
                            <styleClass>
                               <String fx:value="form-btn" />
                               <String fx:value="font-book" />
