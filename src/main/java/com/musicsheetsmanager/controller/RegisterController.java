@@ -1,18 +1,27 @@
 package com.musicsheetsmanager.controller;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import com.musicsheetsmanager.model.Utente;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RegisterController {
 
@@ -26,6 +35,11 @@ public class RegisterController {
     private Button registerButton;
     @FXML
     private Text feedbackText;
+
+    private static final Path USER_JSON_PATH = Paths.get(
+            "src", "main", "resources",
+            "com", "musicsheetsmanager", "data", "user.json"
+    );
 
     @FXML
     private void onRegisterClicked() {
@@ -48,8 +62,8 @@ public class RegisterController {
             return;
         }
 
-        Utente user = new Utente(email, username, password);
-        salvaUtenteInJson(user);
+        Utente newUser = new Utente(email, username, password);
+        salvaUtenteInJson(newUser);
 
         feedbackText.setText("Registrazione avvenuta con successo!");
 
@@ -57,14 +71,32 @@ public class RegisterController {
         cambiaASchermataLogin();
     }
 
-    private void salvaUtenteInJson(Utente user) {
-        Gson gson = new Gson();
-        String json = gson.toJson(user);
+    private void salvaUtenteInJson(Utente newUser) {
+        // Crea un Gson con pretty printing
+        Gson gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .create();
 
-        try (FileWriter writer = new FileWriter(
-                "src/main/resources/com/musicsheetsmanager/data/user.json")) {
-            writer.write(json);
-            System.out.println("Utente salvato correttamente!");
+        // Deserializza la lista esistente di utenti
+        List<Utente> users;
+        Type listType = new TypeToken<List<Utente>>() {}.getType();
+        try (FileReader reader = new FileReader(USER_JSON_PATH.toFile())) {
+            users = gson.fromJson(reader, listType);
+            if (users == null) {
+                users = new ArrayList<>();
+            }
+        } catch (IOException | JsonSyntaxException e) {
+            // Se file mancante o JSON malformato, crea lista vuota
+            users = new ArrayList<>();
+        }
+
+        // Aggiunge il nuovo utente
+        users.add(newUser);
+
+        // Serializza e salva la lista aggiornata
+        try (FileWriter writer = new FileWriter(USER_JSON_PATH.toFile())) {
+            gson.toJson(users, writer);
+            System.out.println("Utenti salvati correttamente: totale = " + users.size());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -72,7 +104,8 @@ public class RegisterController {
 
     private void cambiaASchermataLogin() {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/com/musicsheetsmanager/view/LoginView.fxml"));
+            Parent root = FXMLLoader.load(getClass()
+                    .getResource("/com/musicsheetsmanager/view/LoginView.fxml"));
             Stage stage = (Stage) registerButton.getScene().getWindow();
             stage.setScene(new Scene(root));
         } catch (IOException e) {
