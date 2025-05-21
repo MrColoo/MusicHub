@@ -22,7 +22,7 @@
          </HBox.margin>
       </ImageView>
       <Region prefHeight="60.0" prefWidth="227.0" HBox.hgrow="ALWAYS" />
-      <HBox alignment="CENTER" styleClass="search-bar">
+      <HBox fx:id="searchBar" alignment="CENTER" styleClass="search-bar">
          <children>
             <TextField fx:id="campoRicerca" onAction="#onSearchBarEnter" prefHeight="32.0" prefWidth="308.0" promptText="Search something...">
                <font>
@@ -55,7 +55,7 @@
          </HBox.margin>
       </HBox>
       <Region prefHeight="60.0" prefWidth="227.0" HBox.hgrow="ALWAYS" />
-      <Button contentDisplay="RIGHT" mnemonicParsing="false" text="Crea Brano">
+      <Button fx:id="mainButton" contentDisplay="RIGHT" mnemonicParsing="false" text="Crea Brano">
          <HBox.margin>
             <Insets />
          </HBox.margin>

@@ -3,11 +3,14 @@ package com.musicsheetsmanager.controller;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
+
+import com.musicsheetsmanager.config.SessionManager;
 import com.musicsheetsmanager.model.Brano;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 
 import java.io.InputStreamReader;
 import java.util.List;
@@ -15,9 +18,8 @@ import java.util.stream.Collectors;
 
 public class TopBarController {
 
-    @FXML
-    private Button mainButton; // "Accedi" o "Carica Brano"
-
+    @FXML private Button mainButton; // "Accedi" o "Carica Brano"
+    @FXML private HBox searchBar; // Box campo di ricerca
     @FXML private TextField campoRicerca;
     @FXML private ListView<String> listaRisultati;  // brani trovati
 
@@ -26,32 +28,24 @@ public class TopBarController {
 
     @FXML
     public void initialize(){
-        try {
-            Gson gson = new Gson();
-            // prendo file da json in read only
-            InputStreamReader reader = new InputStreamReader(
-                    getClass().getClassLoader().getResourceAsStream("/src/resources/data/brani.json")
-            );
-            Type listType = new TypeToken<List<Brano>>() {}.getType();
-            brani = gson.fromJson(reader, listType);
-
-            reader.close();
-        } catch (Exception e){
-            e.printStackTrace();
-        }
 
         // attendo evento input ENTER
         campoRicerca.setOnAction(event -> onSearchBarEnter());
+
+        changeTopBar();
     }
 
-
-    /*public void setUser(User user) {
-        if (user == null) {
+    private void changeTopBar() {
+        if (!SessionManager.isLoggedIn()) {
+            searchBar.setVisible(false);
+            searchBar.setManaged(false);
             mainButton.setText("Accedi");
-        } else {
+        }else{
+            searchBar.setVisible(true);
+            searchBar.setManaged(true);
             mainButton.setText("Carica Brano");
         }
-    }*/
+    }
 
     // ricerca del brano quando l'utente schiaccia il tasto ENTER
     @FXML
