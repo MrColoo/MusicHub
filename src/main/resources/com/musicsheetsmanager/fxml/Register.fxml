@@ -34,7 +34,7 @@
                         <Insets bottom="20.0" />
                     </VBox.margin>
                 </Text>
-            <TextField maxWidth="423.0" prefHeight="50.0" promptText="Email">
+            <TextField fx:id="registerEmailField" maxWidth="423.0" prefHeight="50.0" promptText="Email">
                <styleClass>
                   <String fx:value="form-text-field" />
                   <String fx:value="text-base" />
@@ -43,7 +43,7 @@
                   <Insets bottom="10.0" />
                </VBox.margin>
             </TextField>
-                <TextField maxWidth="423.0" prefHeight="50.0" promptText="Username">
+                <TextField fx:id="registerUsernameField" maxWidth="423.0" prefHeight="50.0" promptText="Username">
                     <VBox.margin>
                         <Insets bottom="10.0" />
                     </VBox.margin>
@@ -52,7 +52,7 @@
                         <String fx:value="text-base" />
                     </styleClass>
                 </TextField>
-                <TextField maxWidth="423.0" prefHeight="50.0" promptText="Password">
+                <TextField fx:id="registerPasswordField" maxWidth="423.0" prefHeight="50.0" promptText="Password">
                     <styleClass>
                         <String fx:value="form-text-field" />
                         <String fx:value="text-base" />
@@ -61,7 +61,7 @@
                         <Insets bottom="10.0" />
                     </VBox.margin>
                 </TextField>
-                <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="423.0" text="Registrati">
+                <Button fx:id="registerButton" mnemonicParsing="false" onAction="#handleClick" prefHeight="50.0" prefWidth="423.0" text="Registrati">
                     <VBox.margin>
                         <Insets top="30.0" />
                     </VBox.margin>
