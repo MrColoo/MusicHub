@@ -6,7 +6,6 @@ import java.lang.reflect.Type;
 
 import com.musicsheetsmanager.config.SessionManager;
 import com.musicsheetsmanager.model.Brano;
-import com.musicsheetsmanager.model.Utente;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
@@ -17,7 +16,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TopBarController {
+public class TopBarController implements Controller{
 
     @FXML private Button mainButton; // "Accedi" o "Carica Brano"
     @FXML private HBox searchBar; // Box campo di ricerca
@@ -26,12 +25,20 @@ public class TopBarController {
 
     private List<Brano> brani;
 
+    private MainController mainController;
+
+    @Override
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
+    }
+
     @FXML
     public void initialize(){
 
+        // attendo evento input ENTER
         campoRicerca.setOnAction(event -> onSearchBarEnter());
 
-        changeTopBar();
+        changeTopBar(); // cambia aspetto topbar nel caso l'utente sia loggato o meno
     }
 
     private void changeTopBar() {
@@ -46,6 +53,7 @@ public class TopBarController {
         }
     }
 
+    // ricerca del brano quando l'utente schiaccia il tasto ENTER
     @FXML
     public void onSearchBarEnter (){
         String chiave = campoRicerca.getText();
@@ -77,5 +85,7 @@ public class TopBarController {
                 )
                 .collect(Collectors.toList());
     }
+
+
 }
 
