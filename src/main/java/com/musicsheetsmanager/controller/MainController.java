@@ -20,53 +20,41 @@ public class MainController {
 
     public void initialize() {
         if (!SessionManager.isLoggedIn()) {
-            showLoginPage();
+            showLogin();
             loadTopBar();
             return;
         }
 
         loadNavBar();
-        loadDefaultPage();
+    }
+
+    public void loadContent(String fxmlPath, StackPane pane) {
+        try {
+            Node content = FXMLLoader.load(getClass().getResource(fxmlPath));
+            pane.getChildren().setAll(content);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadMainContent(String fxmlPath){
+        loadContent(fxmlPath, mainContentPane);
     }
 
     private void loadTopBar() {
-        try {
-            Node topBar = FXMLLoader.load(getClass().getResource("/com/musicsheetsmanager/fxml/TopBar.fxml"));
-            topBarContainer.getChildren().add(topBar);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        loadContent("/com/musicsheetsmanager/fxml/TopBar.fxml", topBarContainer);
     }
 
     private void loadNavBar() {
-        try {
-            Node navBar = FXMLLoader.load(getClass().getResource("/com/musicsheetsmanager/fxml/NavBar.fxml"));
-            navBarContainer.getChildren().add(navBar);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        loadContent("/com/musicsheetsmanager/fxml/NavBar.fxml", navBarContainer);
     }
 
-    public void changeContent(String fxmlPath) {
-        try {
-            Node content = FXMLLoader.load(getClass().getResource(fxmlPath));
-            mainContentPane.getChildren().setAll(content);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void showCaricaBrano() {
+        loadMainContent("/com/musicsheetsmanager/fxml/CaricaBrano.fxml");
     }
 
-    private void loadDefaultPage() {
-        changeContent("/com/musicsheetsmanager/fxml/CaricaBrano.fxml"); // Es. pagina iniziale
+    public void showLogin() {
+        loadMainContent("/com/musicsheetsmanager/fxml/Login.fxml");
     }
 
-    private void showLoginPage() {
-        try {
-            Node login = FXMLLoader.load(getClass().getResource("/com/musicsheetsmanager/fxml/Login.fxml"));
-            navBarContainer.getChildren().clear();
-            mainContentPane.getChildren().setAll(login);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }
