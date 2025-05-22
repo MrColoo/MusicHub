@@ -31,7 +31,14 @@ public class MainController {
     // Funzione generale per caricare una pagina FXML
     private void loadContent(String nomePagina, StackPane pane) {
         try {
-            Node content = FXMLLoader.load(getClass().getResource("/com/musicsheetsmanager/fxml/" + nomePagina + ".fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/musicsheetsmanager/fxml/" + nomePagina + ".fxml"));
+            Node content = loader.load();
+            Object controller = loader.getController();
+
+            if (controller instanceof Controller) {
+                ((Controller) controller).setMainController(this);
+            }
+
             pane.getChildren().setAll(content);
         } catch (IOException e) {
             e.printStackTrace();
@@ -49,8 +56,13 @@ public class MainController {
     }
 
     // Carica NavBar
-    private void showNavBar() {
+    public void showNavBar() {
         loadContent("NavBar", navBarContainer);
+    }
+
+    // Nasconde NavBar
+    public void hideNavBar() {
+        navBarContainer.getChildren().clear();
     }
 
 }
