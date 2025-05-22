@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TopBarController {
+public class TopBarController implements Controller{
 
     @FXML
     private Button mainButton; // "Accedi" o "Carica Brano"
@@ -23,12 +23,22 @@ public class TopBarController {
     @FXML private TextField campoRicerca;
     @FXML private ListView<String> listaRisultati;  // brani trovati
 
-    public List<Brano> brani;
+    private List<Brano> brani;
+
+    private MainController mainController;
+
+    @Override
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
+    }
+
 
     public void initialize(){
         caricaBrani();
 
         campoRicerca.setOnAction(event -> onSearchBarEnter());
+
+        changeTopBar(); // cambia aspetto topbar nel caso l'utente sia loggato o meno
     }
 
 
@@ -88,5 +98,7 @@ public class TopBarController {
                 )
                 .collect(Collectors.toList());
     }
+
+
 }
 
