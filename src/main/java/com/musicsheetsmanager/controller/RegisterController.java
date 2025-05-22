@@ -20,7 +20,7 @@ import java.util.List;
 
 
 // Controller per la registrazione di nuovi utenti
-public class RegisterController {
+public class RegisterController implements Controller{
 
     @FXML
     private TextField registerEmailField; // input per EMAIL
@@ -37,6 +37,16 @@ public class RegisterController {
             "src", "main", "resources",
             "com", "musicsheetsmanager", "data", "user.json"
     );
+
+    private MainController mainController;
+
+    @Override
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
+    }
+
+
+
 
     @FXML
     private void onRegisterClicked() { // prendi i valori dei campi, rimuove tramite trim() spazi iniziali e finali
@@ -145,7 +155,7 @@ public class RegisterController {
         boolean success = salvaUtenteInJson(newUser);
         if (success) {
             feedbackText.setText("Registrazione avvenuta con successo!");
-            show("Login");
+            mainController.show("Main");
         }
     }
 }
