@@ -20,7 +20,7 @@ public class MainController {
 
     public void initialize() {
         if (!SessionManager.isLoggedIn()) {
-            showLogin();
+            show("Register");
             loadTopBar();
             return;
         }
@@ -28,6 +28,7 @@ public class MainController {
         loadNavBar();
     }
 
+    // Funzione generale per caricare una pagina FXML
     private void loadContent(String fxmlPath, StackPane pane) {
         try {
             Node content = FXMLLoader.load(getClass().getResource(fxmlPath));
@@ -37,24 +38,19 @@ public class MainController {
         }
     }
 
-    private void loadMainContent(String fxmlPath){
-        loadContent(fxmlPath, mainContentPane);
+    // Funzione per caricare pagine FXML nella sezione MAIN
+    private void show(String NomePagina){
+        loadContent("/com/musicsheetsmanager/fxml/" + NomePagina + ".fxml", mainContentPane);
     }
 
+    // Carica TopBar
     private void loadTopBar() {
         loadContent("/com/musicsheetsmanager/fxml/TopBar.fxml", topBarContainer);
     }
 
+    // Carica NavBar
     private void loadNavBar() {
         loadContent("/com/musicsheetsmanager/fxml/NavBar.fxml", navBarContainer);
-    }
-
-    public void showCaricaBrano() {
-        loadMainContent("/com/musicsheetsmanager/fxml/CaricaBrano.fxml");
-    }
-
-    public void showLogin() {
-        loadMainContent("/com/musicsheetsmanager/fxml/Login.fxml");
     }
 
 }
