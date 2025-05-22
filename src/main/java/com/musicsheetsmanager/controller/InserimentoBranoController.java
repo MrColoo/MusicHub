@@ -76,7 +76,7 @@ public class InserimentoBranoController {
     }
 
 
-    // carica i brani dal file json in una lista e aggiunge il nuovo brano
+    // carica i brani dal file json in una lista
     private List<Brano> caricaBrani() {
         try (Reader reader = new FileReader("src/main/resources/com/musicsheetsmanager/data/brani.json")) {
             Gson gson = new Gson();

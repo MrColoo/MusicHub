@@ -16,6 +16,8 @@ public class Brano {
     private List<Documento> documenti;
     private List<Commento> commenti;
 
+    public Brano(){};
+
     public Brano(String titolo, List<String> autori, String genere, Integer annoComposizione, String linkYoutube, List<String> strumentiMusicali) {
         this.titolo = titolo;
         this.autori = autori;
@@ -63,8 +65,7 @@ public class Brano {
                 " - " +
                 String.join(", ", autori) +
                 " (" +
-                genere +
-                "), eseguito da: " +
-                String.join(", ", esecutori);
+                annoComposizione +
+                ")";
     }
 }
