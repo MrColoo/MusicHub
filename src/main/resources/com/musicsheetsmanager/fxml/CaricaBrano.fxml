@@ -1,14 +1,215 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.musicsheetsmanager.fxml.CaricaBrano"
-            prefHeight="400.0" prefWidth="600.0">
+<AnchorPane prefHeight="740.0" prefWidth="1070.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.musicsheetsmanager.controller.InserimentoBranoController">
 
+    <children>
+        <ImageView fitHeight="740.0" fitWidth="1091.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@../ui/Sfondo_carica_brano.png" />
+            </image>
+        </ImageView>
+      <HBox alignment="CENTER" prefHeight="740.0" prefWidth="1070.0">
+         <children>
+              <VBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="480.0" prefWidth="645.0" styleClass="form-container">
+                  <children>
+                      <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Carica un Brano">
+                          <styleClass>
+                              <String fx:value="text-3xl" />
+                              <String fx:value="font-bold" />
+                          </styleClass>
+                          <VBox.margin>
+                              <Insets bottom="40.0" left="40.0" top="40.0" />
+                          </VBox.margin>
+                      </Text>
+                  <VBox>
+                     <children>
+                            <TextField fx:id="campoTitolo" maxWidth="570.0" prefHeight="50.0" prefWidth="570.0" promptText="Titolo *">
+                                <VBox.margin>
+                                    <Insets bottom="10.0" />
+                                </VBox.margin>
+                                <styleClass>
+                                    <String fx:value="form-text-field" />
+                                    <String fx:value="text-base" />
+                                </styleClass>
+                            </TextField>
+                        <HBox>
+                           <children>
+                              <TextField fx:id="campoAutori" maxWidth="570.0" prefHeight="50.0" prefWidth="380.0" promptText="Artista *">
+                                 <styleClass>
+                                    <String fx:value="form-text-field" />
+                                    <String fx:value="text-base" />
+                                 </styleClass>
+                                 <HBox.margin>
+                                    <Insets right="10.0" />
+                                 </HBox.margin>
+                              </TextField>
+                              <TextField fx:id="campoGenere" prefHeight="50.0" prefWidth="190.0" promptText="Genere *">
+                                 <styleClass>
+                                    <String fx:value="form-text-field" />
+                                    <String fx:value="text-base" />
+                                 </styleClass>
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                              </TextField>
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="10.0" />
+                           </VBox.margin>
+                        </HBox>
+                        <HBox>
+                           <children>
+                              <TextField fx:id="campoAnnoDiComposizione" maxWidth="570.0" prefHeight="50.0" prefWidth="190.0" promptText="Anno di composizione *">
+                                 <styleClass>
+                                    <String fx:value="form-text-field" />
+                                    <String fx:value="text-base" />
+                                 </styleClass>
+                                 <HBox.margin>
+                                    <Insets right="10.0" />
+                                 </HBox.margin>
+                              </TextField>
+                              <TextField fx:id="campoStrumentiMusicali" prefHeight="50.0" prefWidth="380.0" promptText="Strumenti Musicali">
+                                 <styleClass>
+                                    <String fx:value="form-text-field" />
+                                    <String fx:value="text-base" />
+                                 </styleClass>
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                              </TextField>
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="10.0" />
+                           </VBox.margin>
+                        </HBox>
+                        <TextField fx:id="campoLinkYoutube" maxWidth="570.0" prefHeight="50.0" prefWidth="570.0" promptText="Link Youtube">
+                           <styleClass>
+                              <String fx:value="form-text-field" />
+                              <String fx:value="text-base" />
+                           </styleClass>
+                        </TextField>
+                            <HBox alignment="TOP_CENTER">
+                                <children>
+                                    <Text fx:id="errore" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: RED;" text="Errore">
+                                        <styleClass>
+                                            <String fx:value="font-book" />
+                                            <String fx:value="text-sm" />
+                                        </styleClass>
+                                    </Text>
+                                </children>
+                                <VBox.margin>
+                                    <Insets top="20.0" />
+                                </VBox.margin>
+                            </HBox>
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="20.0" left="40.0" right="40.0" />
+                     </VBox.margin>
+                  </VBox>
+                  <HBox alignment="CENTER_RIGHT">
+                     <children>
+                            <Button contentDisplay="RIGHT" mnemonicParsing="false" prefHeight="33.0" style="-fx-background-color: -fx-secondary-white;" text="Allega File">
+                                <styleClass>
+                                    <String fx:value="form-btn" />
+                                    <String fx:value="font-book" />
+                                </styleClass>
+                           <graphic>
+                              <ImageView fitHeight="17.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../ui/icons/right-arrow-black.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <padding>
+                              <Insets left="20.0" right="20.0" />
+                           </padding>
+                           <HBox.margin>
+                              <Insets right="15.0" />
+                           </HBox.margin>
+                            </Button>
+                        <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#onAddBranoClick" prefHeight="33.0" text="Carica">
+                           <styleClass>
+                              <String fx:value="form-btn" />
+                              <String fx:value="font-book" />
+                           </styleClass>
+                           <graphic>
+                              <ImageView fitHeight="17.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../ui/icons/right-arrow-black.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <padding>
+                              <Insets left="20.0" right="20.0" />
+                           </padding>
+                        </Button>
+                     </children>
+                     <padding>
+                        <Insets left="40.0" right="40.0" />
+                     </padding>
+                     <VBox.margin>
+                        <Insets bottom="40.0" />
+                     </VBox.margin>
+                  </HBox>
+                  </children>
+              </VBox>
+            <Region prefWidth="55.0" />
+            <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefWidth="250.0" styleClass="preview-container">
+               <children>
+                  <VBox>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                     <children>
+                        <ImageView fitWidth="170.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../ui/Cover.jpg" />
+                           </image>
+                        </ImageView>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: -fx-secondary-white;" text="a me mi piace (feat. Manu Chao)" wrappingWidth="170.0">
+                           <VBox.margin>
+                              <Insets top="10.0" />
+                           </VBox.margin>
+                           <styleClass>
+                              <String fx:value="text-xl" />
+                              <String fx:value="font-bold" />
+                           </styleClass>
+                        </Text>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: -fx-secondary-white;" text="Alfa - Manu Chao">
+                           <VBox.margin>
+                              <Insets top="10.0" />
+                           </VBox.margin>
+                           <styleClass>
+                              <String fx:value="font-bold" />
+                              <String fx:value="text-lg" />
+                           </styleClass>
+                        </Text>
+                     </children>
+                  </VBox>
+               </children>
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+               <padding>
+                  <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+               </padding>
+            </VBox>
+         </children>
+         <padding>
+            <Insets left="56.0" right="56.0" />
+         </padding>
+      </HBox>
+    </children>
 </AnchorPane>

@@ -9,16 +9,20 @@ public class Brano {
     private String genere;
     private Integer annoComposizione;
     private List<String> esecutori;
+    private List<String> strumentiMusicali;
+    private String linkYoutube;
+
 
     private List<Documento> documenti;
     private List<Commento> commenti;
 
-    public Brano(String titolo, List<String> autori, String genere, Integer annoComposizione) {
+    public Brano(String titolo, List<String> autori, String genere, Integer annoComposizione, String linkYoutube, List<String> strumentiMusicali) {
         this.titolo = titolo;
         this.autori = autori;
         this.genere = genere;
         this.annoComposizione = annoComposizione;
-        this.esecutori = esecutori;
+        this.linkYoutube = linkYoutube;
+        this.strumentiMusicali = new ArrayList<>();
 
         this.documenti = new ArrayList<>();
         this.commenti = new ArrayList<>();

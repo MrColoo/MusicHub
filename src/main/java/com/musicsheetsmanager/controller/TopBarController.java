@@ -26,8 +26,19 @@ public class TopBarController {
 
     @FXML
     public void initialize(){
+        try {
+            Gson gson = new Gson();
+            InputStreamReader reader = new InputStreamReader(
+                    getClass().getClassLoader().getResourceAsStream("brani.json")
+            );
+            Type listType = new TypeToken<List<Brano>>() {}.getType();
+            brani = gson.fromJson(reader, listType);
 
-        caricaBrani();
+            reader.close();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
         campoRicerca.setOnAction(event -> onSearchBarEnter());
     }
 
@@ -39,21 +50,6 @@ public class TopBarController {
             mainButton.setText("Carica Brano");
         }
     }*/
-
-    public void caricaBrani () {
-        try {
-            Gson gson = new Gson();
-            InputStreamReader reader = new InputStreamReader(
-                    getClass().getClassLoader().getResourceAsStream("src/main/resources/com/musicsheetsmanager/data/brani.json")
-            );
-            Type listType = new TypeToken<List<Brano>>() {}.getType();
-            brani = gson.fromJson(reader, listType);
-
-            reader.close();
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-    }
 
     @FXML
     public void onSearchBarEnter (){
