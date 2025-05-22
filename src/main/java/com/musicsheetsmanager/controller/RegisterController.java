@@ -73,13 +73,11 @@ public class RegisterController {
         //show("Login");
     }
 
-    private void salvaUtenteInJson(Utente newUser) {
-        // Crea un Gson con la funzione di pretty printing (formattandolo in maniera leggibile e con nuove linee)
+    private boolean salvaUtenteInJson(Utente newUser) {
         Gson gson = new GsonBuilder()
                 .setPrettyPrinting()
                 .create();
 
-        // Deserializza la lista esistente di utenti
         List<Utente> users;
         Type listType = new TypeToken<List<Utente>>() {}.getType();
         try (FileReader reader = new FileReader(USER_JSON_PATH.toFile())) {
@@ -88,19 +86,66 @@ public class RegisterController {
                 users = new ArrayList<>();
             }
         } catch (IOException | JsonSyntaxException e) {
-            // Se file mancante o JSON malformato, crea lista vuota
             users = new ArrayList<>();
+        }
+
+        // Controlla se email o username esistono già
+        for (Utente user : users) {
+            if (user.getEmail().equalsIgnoreCase(newUser.getEmail())) {
+                feedbackText.setText("Questa email è già registrata!");
+                return false;
+            }
+            if (user.getUsername().equalsIgnoreCase(newUser.getUsername())) {
+                feedbackText.setText("Questo username è già in uso!");
+                return false;
+            }
         }
 
         // Aggiunge il nuovo utente
         users.add(newUser);
 
-        // Serializza e salva la lista aggiornata
+        // Salva la lista aggiornata
         try (FileWriter writer = new FileWriter(USER_JSON_PATH.toFile())) {
             gson.toJson(users, writer);
             System.out.println("Utenti salvati correttamente: totale = " + users.size());
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
+            feedbackText.setText("Errore durante il salvataggio dell'utente.");
+            return false;
+        }
+    }
+
+
+
+    @FXML
+    private void handleClick() {
+        String email = registerEmailField.getText().trim();
+        String username = registerUsernameField.getText().trim();
+        String password = registerPasswordField.getText().trim();
+
+        if (email.isEmpty()) {
+            feedbackText.setText("Inserisci la tua mail!");
+            return;
+        }
+
+        if (username.isEmpty()) {
+            feedbackText.setText("Inserisci il tuo username!");
+            return;
+        }
+
+        if (password.isEmpty()) {
+            feedbackText.setText("Inserisci la tua password!");
+            return;
+        }
+
+        Utente newUser = new Utente(email, username, password, false);
+        newUser.setApproved(false);
+
+        boolean success = salvaUtenteInJson(newUser);
+        if (success) {
+            feedbackText.setText("Registrazione avvenuta con successo!");
+            show("Login");
         }
     }
 }
