@@ -34,7 +34,7 @@ public class LoginController implements Controller {
     }
 
     @FXML
-    private void handleLogin(ActionEvent event) {
+    private void handleLogin(ActionEvent event) { // gestione del bottone per il login
         String username = loginUsernameField.getText().trim();
         String password = loginPasswordField.getText().trim();
 
@@ -69,12 +69,18 @@ public class LoginController implements Controller {
 
     // Carica la lista di utenti dal file JSON
     private List<Utente> caricaListaUtenti() {
+        // apro il file reader
         try (FileReader r = new FileReader(USER_JSON_PATH)) {
+            // tipo di Java per una lista di Utente
             Type listType = new TypeToken<List<Utente>>() {}.getType();
+
+            // Deserializza il contenuto del file JSON in una List<Utente>
+            // Se il file è vuoto o contiene "null", restituisce null
             return new Gson().fromJson(r, listType);
-        } catch (IOException e) {
+
+        } catch (IOException e) { // in caso di errore stampo lo stack per il debugging
             e.printStackTrace();
-            return null;
+            return null; // ritorno un null per indicare il fallimento dell'operazione
         }
     }
 
