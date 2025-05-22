@@ -145,7 +145,7 @@
     -fx-background-color: -fx-secondary-black-02;
 }
 
-.scroll-bar:horizontal, .scroll-bar:vertical{
+.scroll-bar:vertical{
     -fx-background-color:transparent;
 }
 
@@ -169,6 +169,16 @@
 
 .brano-banner .image-view {
         -fx-effect: dropshadow(gaussian, #5e421e, 60, .1, 0, 10);
+}
+
+.brano-allegati-container{
+    -fx-background-color: -fx-secondary-gray;
+    -fx-background-radius: 11;
+}
+
+.brano-nota-text-area .content{
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-secondary-white;
 }
 
 /* Global Styles */
