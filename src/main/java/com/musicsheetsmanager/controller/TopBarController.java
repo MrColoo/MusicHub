@@ -16,7 +16,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TopBarController {
+public class TopBarController implements Controller{
 
     @FXML private Button mainButton; // "Accedi" o "Carica Brano"
     @FXML private HBox searchBar; // Box campo di ricerca
@@ -25,6 +25,12 @@ public class TopBarController {
 
     private List<Brano> brani;
 
+    private MainController mainController;
+
+    @Override
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
+    }
 
     @FXML
     public void initialize(){
@@ -32,7 +38,7 @@ public class TopBarController {
         // attendo evento input ENTER
         campoRicerca.setOnAction(event -> onSearchBarEnter());
 
-        changeTopBar();
+        changeTopBar(); // cambia aspetto topbar nel caso l'utente sia loggato o meno
     }
 
     private void changeTopBar() {
@@ -79,5 +85,7 @@ public class TopBarController {
                 )
                 .collect(Collectors.toList());
     }
+
+
 }
 

@@ -94,6 +94,13 @@
 .navbar-btn{
     -fx-background-color: none;
     -fx-text-fill: -fx-secondary-white;
+    -fx-padding: 10px;
+    -fx-margin: 30px;
+}
+
+.navbar-btn:selected {
+    -fx-background-color: -fx-secondary-light-gray;
+    -fx-text-fill: -fx-secondary-black;
 }
 
 /* LOGIN */
