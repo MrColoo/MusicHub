@@ -8,6 +8,7 @@ import com.musicsheetsmanager.model.Utente;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -17,6 +18,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 
 // Controller per la registrazione di nuovi utenti
@@ -32,6 +34,8 @@ public class RegisterController implements Controller{
     private Button registerButton; // bottone per la registrazione
     @FXML
     private Text feedbackText; // testo di feedback(comunicare verso l'utente se manca qualcosa)
+    @FXML
+    private Text registerToLogin; // testo che se cliccato porta al login
 
     private static final Path USER_JSON_PATH = Paths.get( // percorso verso il file JSON
             "src", "main", "resources",
@@ -45,7 +49,11 @@ public class RegisterController implements Controller{
         this.mainController = mainController;
     }
 
-
+    // campi per controllo mail
+    private static final String EMAIL_REGEX =
+            "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
+    private static final Pattern EMAIL_PATTERN =
+            Pattern.compile(EMAIL_REGEX);
 
 
     @FXML
@@ -54,6 +62,12 @@ public class RegisterController implements Controller{
         String username = registerUsernameField.getText().trim();
         String password = registerPasswordField.getText().trim();
 
+
+        // richiamo la funzione per controllare se la mail è valida
+        if (!isValidEmail(email)) {
+            feedbackText.setText("Formato email non valido!");
+            return;
+        }
 
         // se un campo è vuoto mostra il messaggio di errore tramite il feedbackText
         if (email.isEmpty()) {
@@ -79,23 +93,27 @@ public class RegisterController implements Controller{
         // Mostro la conferma di registrazione
         feedbackText.setText("Registrazione avvenuta con successo!");
 
-        // Vai alla schermata di login
-        //show("Login");
     }
 
+    // funzione per salvare l'utente nel file JSON
     private boolean salvaUtenteInJson(Utente newUser) {
         Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
+                .setPrettyPrinting() // per sciverlo in maniera facilmente leggibile nel JSON
                 .create();
 
         List<Utente> users;
+        // Definisce il tipo List<Utente> per la deserializzazione
         Type listType = new TypeToken<List<Utente>>() {}.getType();
+        // apre in lettura il file JSON dove sono salvati gli utenti
         try (FileReader reader = new FileReader(USER_JSON_PATH.toFile())) {
+            // Deserializza il contenuto del file in una List<Utente>
             users = gson.fromJson(reader, listType);
             if (users == null) {
+                // Se il file esiste ma è vuoto o contiene “null”, inizializza una lista vuota
                 users = new ArrayList<>();
             }
         } catch (IOException | JsonSyntaxException e) {
+            // Se il file non esiste o il JSON è malformato, crea comunque una lista vuota
             users = new ArrayList<>();
         }
 
@@ -129,7 +147,7 @@ public class RegisterController implements Controller{
 
 
     @FXML
-    private void handleClick() {
+    private void handleClick() { // gestione del bottone per la registrazione
         String email = registerEmailField.getText().trim();
         String username = registerUsernameField.getText().trim();
         String password = registerPasswordField.getText().trim();
@@ -155,7 +173,18 @@ public class RegisterController implements Controller{
         boolean success = salvaUtenteInJson(newUser);
         if (success) {
             feedbackText.setText("Registrazione avvenuta con successo!");
-            mainController.show("Main");
+            mainController.show("Login");
         }
+    }
+
+    @FXML // quando premo il testo Register mi cambia schermata a quella di register
+    private void goToLogin(MouseEvent event) {
+        mainController.show("Login");
+    }
+
+
+    // Restituisce true se la stringa passata è nel formato di una mail valida.
+    private boolean isValidEmail(String email) {
+        return EMAIL_PATTERN.matcher(email).matches();
     }
 }
