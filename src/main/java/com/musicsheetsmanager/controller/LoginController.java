@@ -1,18 +1,20 @@
 package com.musicsheetsmanager.controller;
 
+import javafx.scene.text.Text;
+import javafx.scene.input.MouseEvent;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.Node;
+import javafx.stage.Stage;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.musicsheetsmanager.model.Utente;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -24,6 +26,7 @@ public class LoginController {
     @FXML private TextField loginUsernameField; // campo testo per l'USERNAME
     @FXML private TextField loginPasswordField; // campo testo per la PASSWORD
     @FXML private Button    loginButton; // bottone per il login
+    @FXML private Text loginToRegisterButton; // testo che se cliccato porta alla registrazione
 
     private final String USER_JSON_PATH =
             "src/main/resources/com/musicsheetsmanager/data/user.json"; // percorso del file JSON
@@ -51,7 +54,7 @@ public class LoginController {
         for (Utente u : utenti) { // confronto le credenziali con ciascuna credenziale della lista
             if (username.equals(u.getUsername()) && password.equals(u.getPassword())) {
                 showAlert("Login riuscito!"); // se trova conferma, scrive sulla FeedbackBox il messaggio
-                show(Main); // passo alla schermata principale
+                // show(Main); // passo alla schermata principale
                 return;
             }
         }
@@ -76,5 +79,10 @@ public class LoginController {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @FXML // quando premo il testo Register mi cambia schermata a quella di register
+    private void goToRegister(MouseEvent event) {
+        show("Register");
     }
 }
