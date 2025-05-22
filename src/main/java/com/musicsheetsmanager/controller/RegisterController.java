@@ -8,6 +8,7 @@ import com.musicsheetsmanager.model.Utente;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -32,6 +33,8 @@ public class RegisterController implements Controller{
     private Button registerButton; // bottone per la registrazione
     @FXML
     private Text feedbackText; // testo di feedback(comunicare verso l'utente se manca qualcosa)
+    @FXML
+    private Text registerToLogin; // testo che se cliccato porta al login
 
     private static final Path USER_JSON_PATH = Paths.get( // percorso verso il file JSON
             "src", "main", "resources",
@@ -155,7 +158,12 @@ public class RegisterController implements Controller{
         boolean success = salvaUtenteInJson(newUser);
         if (success) {
             feedbackText.setText("Registrazione avvenuta con successo!");
-            mainController.show("Main");
+            mainController.show("Esplora");
         }
+    }
+
+    @FXML // quando premo il testo Register mi cambia schermata a quella di register
+    private void goToLogin(MouseEvent event) {
+        mainController.show("Login");
     }
 }
