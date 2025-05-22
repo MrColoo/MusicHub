@@ -5,15 +5,17 @@ public class Utente {
     private String email;
     private String username;
     private String password;
+    private boolean approved;
 
     // Costruttore di default (richiesto da Gson)
     public Utente() { }
 
     // Costruttore con username
-    public Utente(String email, String username, String password) {
+    public Utente(String email, String username, String password, boolean approved) {
         this.email = email;
         this.username = username;
         this.password = password;
+        this.approved = approved;
     }
 
     // Getter e Setter
@@ -40,5 +42,13 @@ public class Utente {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean isApproved(){
+        return approved;
+    }
+
+    public void setApproved(boolean approved){
+        this.approved = approved;
     }
 }

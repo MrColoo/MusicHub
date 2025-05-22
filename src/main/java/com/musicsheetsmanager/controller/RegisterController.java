@@ -62,14 +62,15 @@ public class RegisterController {
         }
 
         // crea un nuovo utente con i dati inseriti
-        Utente newUser = new Utente(email, username, password); // nuovo utente che si registra
+        Utente newUser = new Utente(email, username, password, false); // nuovo utente che si registra
+        newUser.setApproved(false);
         salvaUtenteInJson(newUser);
 
         // Mostro la conferma di registrazione
         feedbackText.setText("Registrazione avvenuta con successo!");
 
         // Vai alla schermata di login
-        show("Login");
+        //show("Login");
     }
 
     private void salvaUtenteInJson(Utente newUser) {
