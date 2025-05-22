@@ -13,45 +13,45 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
 
+// Controller per il login degli utenti
 public class LoginController {
 
-    @FXML private TextField loginUsernameField;
-    @FXML private TextField loginPasswordField;
-    @FXML private Button    loginButton;
+    @FXML private TextField loginUsernameField; // campo testo per l'USERNAME
+    @FXML private TextField loginPasswordField; // campo testo per la PASSWORD
+    @FXML private Button    loginButton; // bottone per il login
 
     private final String USER_JSON_PATH =
-            "src/main/resources/com/musicsheetsmanager/data/user.json";
+            "src/main/resources/com/musicsheetsmanager/data/user.json"; // percorso del file JSON
 
     @FXML
-    private void handleLogin(ActionEvent event) {
+    private void handleLogin(ActionEvent event) { // prende il testo e gli rimuove li spazi tramite trim()
         String username = loginUsernameField.getText().trim();
         String password = loginPasswordField.getText().trim();
 
-        if (username.isEmpty()) {
+        if (username.isEmpty()) { // controlla che l'USERNAME non sia vuoto
             showAlert("Inserisci il tuo username!");
             return;
         }
-        if (password.isEmpty()) {
+        if (password.isEmpty()) { // controlla che la PASSWORD non sia vuota
             showAlert("Inserisci la tua password!");
             return;
         }
 
-        List<Utente> utenti = caricaListaUtenti();
+        List<Utente> utenti = caricaListaUtenti(); // carica la lista degli utente dal JSON
         if (utenti == null) {
-            showAlert("Errore: impossibile leggere il file utenti.");
+            showAlert("Errore: impossibile leggere il file utenti."); // scrive sul Feedback Text l'errore
             return;
         }
 
-        for (Utente u : utenti) {
+        for (Utente u : utenti) { // confronto le credenziali con ciascuna credenziale della lista
             if (username.equals(u.getUsername()) && password.equals(u.getPassword())) {
-                showAlert("Login riuscito!");
-                cambiaSchermataAMain(event);
+                showAlert("Login riuscito!"); // se trova conferma, scrive sulla FeedbackBox il messaggio
+                show(Main); // passo alla schermata principale
                 return;
             }
         }
@@ -59,7 +59,7 @@ public class LoginController {
         showAlert("Credenziali errate.");
     }
 
-    private void showAlert(String msg) {
+    private void showAlert(String msg) { // manda un ALERT, DA RIMUOVERE
         Alert a = new Alert(Alert.AlertType.INFORMATION);
         a.setTitle("Login");
         a.setHeaderText(null);
@@ -69,35 +69,12 @@ public class LoginController {
 
     private List<Utente> caricaListaUtenti() {
         try (FileReader r = new FileReader(USER_JSON_PATH)) {
-            Type listType = new TypeToken<List<Utente>>(){}.getType();
-            return new Gson().fromJson(r, listType);
+            Type listType = new TypeToken<List<Utente>>(){}.getType(); // definisce il file generico List<Utente>
+            return new Gson().fromJson(r, listType); // deserializza il file JSON in una List<Utente>
         } catch (IOException e) {
+            // in caso di errore stampo lo stack trace e ritorno NULL
             e.printStackTrace();
             return null;
-        }
-    }
-
-    private void cambiaSchermataAMain(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/com/musicsheetsmanager/fxml/Main.fxml")
-            );
-            Parent root = loader.load();
-
-            // Prendi il controller e invoca showEsplora()
-            MainController mainCtrl = loader.getController();
-            mainCtrl.showEsplora();
-
-            // Cambia la scena
-            Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            window.setScene(new Scene(root));
-            window.show();
-
-        } catch (IOException e) {
-            new Alert(Alert.AlertType.ERROR,
-                    "Impossibile caricare la schermata principale:\n" + e.getMessage()
-            ).showAndWait();
-            e.printStackTrace();
         }
     }
 }
