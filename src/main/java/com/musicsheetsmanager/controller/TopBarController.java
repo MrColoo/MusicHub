@@ -5,11 +5,14 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.*;
 import java.lang.reflect.Type;
+
+import com.musicsheetsmanager.config.SessionManager;
 import com.musicsheetsmanager.model.Brano;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +22,7 @@ public class TopBarController implements Controller{
 
     @FXML
     private Button mainButton; // "Accedi" o "Carica Brano"
-
+    @FXML private HBox searchBar; // Box campo di ricerca
     @FXML private TextField campoRicerca;
     @FXML private ListView<String> listaRisultati;  // brani trovati
 
@@ -41,14 +44,17 @@ public class TopBarController implements Controller{
         changeTopBar(); // cambia aspetto topbar nel caso l'utente sia loggato o meno
     }
 
-
-    /*public void setUser(User user) {
-        if (user == null) {
+    private void changeTopBar() {
+        if (!SessionManager.isLoggedIn()) {
+            searchBar.setVisible(false);
+            searchBar.setManaged(false);
             mainButton.setText("Accedi");
-        } else {
+        }else{
+            searchBar.setVisible(true);
+            searchBar.setManaged(true);
             mainButton.setText("Carica Brano");
         }
-    }*/
+    }
 
     // carica i brani dal file json in una lista
     private List<Brano> caricaBrani() {
