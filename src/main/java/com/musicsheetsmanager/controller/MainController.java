@@ -28,7 +28,7 @@ public class MainController {
         loadNavBar();
     }
 
-    public void loadContent(String fxmlPath, StackPane pane) {
+    private void loadContent(String fxmlPath, StackPane pane) {
         try {
             Node content = FXMLLoader.load(getClass().getResource(fxmlPath));
             pane.getChildren().setAll(content);
@@ -37,7 +37,7 @@ public class MainController {
         }
     }
 
-    public void loadMainContent(String fxmlPath){
+    private void loadMainContent(String fxmlPath){
         loadContent(fxmlPath, mainContentPane);
     }
 
