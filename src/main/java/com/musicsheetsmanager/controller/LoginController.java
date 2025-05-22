@@ -21,7 +21,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 // Controller per il login degli utenti
-public class LoginController {
+public class LoginController implements Controller{
 
     @FXML private TextField loginUsernameField; // campo testo per l'USERNAME
     @FXML private TextField loginPasswordField; // campo testo per la PASSWORD
@@ -30,6 +30,15 @@ public class LoginController {
 
     private final String USER_JSON_PATH =
             "src/main/resources/com/musicsheetsmanager/data/user.json"; // percorso del file JSON
+
+    private MainController mainController;
+
+    @Override
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
+    }
+
+
 
     @FXML
     private void handleLogin(ActionEvent event) { // prende il testo e gli rimuove li spazi tramite trim()
@@ -83,6 +92,6 @@ public class LoginController {
 
     @FXML // quando premo il testo Register mi cambia schermata a quella di register
     private void goToRegister(MouseEvent event) {
-        show("Register");
+        mainController.show("Register");
     }
 }
