@@ -2,15 +2,16 @@ package com.musicsheetsmanager.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import java.io.*;
 import java.lang.reflect.Type;
 import com.musicsheetsmanager.model.Brano;
-import com.musicsheetsmanager.model.Utente;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
-import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,22 +23,10 @@ public class TopBarController {
     @FXML private TextField campoRicerca;
     @FXML private ListView<String> listaRisultati;  // brani trovati
 
-    private List<Brano> brani;
+    public List<Brano> brani;
 
-    @FXML
     public void initialize(){
-        try {
-            Gson gson = new Gson();
-            InputStreamReader reader = new InputStreamReader(
-                    getClass().getClassLoader().getResourceAsStream("brani.json")
-            );
-            Type listType = new TypeToken<List<Brano>>() {}.getType();
-            brani = gson.fromJson(reader, listType);
-
-            reader.close();
-        } catch (Exception e){
-            e.printStackTrace();
-        }
+        caricaBrani();
 
         campoRicerca.setOnAction(event -> onSearchBarEnter());
     }
@@ -50,6 +39,24 @@ public class TopBarController {
             mainButton.setText("Carica Brano");
         }
     }*/
+
+    // carica i brani dal file json in una lista
+    private List<Brano> caricaBrani() {
+        try (Reader reader = new FileReader("src/main/resources/com/musicsheetsmanager/data/brani.json")) {
+            Gson gson = new Gson();
+            Type listType = new TypeToken<List<Brano>>() {}.getType();
+            brani = gson.fromJson(reader, listType);
+            if(brani == null){
+                return new ArrayList<>();
+            }
+            return brani;
+        } catch (FileNotFoundException e){
+            return new ArrayList<>();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     @FXML
     public void onSearchBarEnter (){
@@ -71,7 +78,6 @@ public class TopBarController {
         if(chiave == null || chiave.isBlank()) return brani;
 
         String key = chiave.toLowerCase();
-
         return brani.stream()
                 .filter(b ->
                         (b.getTitolo() != null && b.getTitolo().toLowerCase().contains(key)) ||
