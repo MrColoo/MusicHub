@@ -1,23 +1,23 @@
-// src/main/java/com/musicsheetsmanager/model/Utente.java
 package com.musicsheetsmanager.model;
 
 public class Utente {
     private String email;
     private String username;
     private String password;
+    private boolean approvazione;
 
     // Costruttore di default (richiesto da Gson)
-    public Utente() { }
+    public Utente() {}
 
-    // Costruttore con username
-    public Utente(String email, String username, String password) {
+    // Costruttore completo
+    public Utente(String email, String username, String password, boolean approvazione) {
         this.email = email;
         this.username = username;
         this.password = password;
+        this.approvazione = approvazione;
     }
 
     // Getter e Setter
-
     public String getEmail() {
         return email;
     }
@@ -40,5 +40,13 @@ public class Utente {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean getApprovazione() {
+        return approvazione;
+    }
+
+    public void setApprovazione(boolean approvazione) {
+        this.approvazione = approvazione;
     }
 }

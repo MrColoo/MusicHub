@@ -6,14 +6,9 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.musicsheetsmanager.model.Utente;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
-
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -23,26 +18,118 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RegisterController {
+
+// Controller per la registrazione di nuovi utenti
+public class RegisterController implements Controller{
 
     @FXML
-    private TextField registerEmailField;
+    private TextField registerEmailField; // input per EMAIL
     @FXML
-    private TextField registerUsernameField;
+    private TextField registerUsernameField; // input per USERNAME
     @FXML
-    private TextField registerPasswordField;
+    private TextField registerPasswordField; // input per PASSWORD
     @FXML
-    private Button registerButton;
+    private Button registerButton; // bottone per la registrazione
     @FXML
-    private Text feedbackText;
+    private Text feedbackText; // testo di feedback(comunicare verso l'utente se manca qualcosa)
 
-    private static final Path USER_JSON_PATH = Paths.get(
+    private static final Path USER_JSON_PATH = Paths.get( // percorso verso il file JSON
             "src", "main", "resources",
             "com", "musicsheetsmanager", "data", "user.json"
     );
 
+    private MainController mainController;
+
+    @Override
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
+    }
+
+
+
+
     @FXML
-    private void onRegisterClicked() {
+    private void onRegisterClicked() { // prendi i valori dei campi, rimuove tramite trim() spazi iniziali e finali
+        String email = registerEmailField.getText().trim();
+        String username = registerUsernameField.getText().trim();
+        String password = registerPasswordField.getText().trim();
+
+
+        // se un campo è vuoto mostra il messaggio di errore tramite il feedbackText
+        if (email.isEmpty()) {
+            feedbackText.setText("Inserisci la tua mail!");
+            return;
+        }
+
+        if (username.isEmpty()) {
+            feedbackText.setText("Inserisci il tuo username!");
+            return;
+        }
+
+        if (password.isEmpty()) {
+            feedbackText.setText("Inserisci la tua password!");
+            return;
+        }
+
+        // crea un nuovo utente con i dati inseriti
+        Utente newUser = new Utente(email, username, password, false); // nuovo utente che si registra
+        newUser.setApproved(false);
+        salvaUtenteInJson(newUser);
+
+        // Mostro la conferma di registrazione
+        feedbackText.setText("Registrazione avvenuta con successo!");
+
+        // Vai alla schermata di login
+        //show("Login");
+    }
+
+    private boolean salvaUtenteInJson(Utente newUser) {
+        Gson gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .create();
+
+        List<Utente> users;
+        Type listType = new TypeToken<List<Utente>>() {}.getType();
+        try (FileReader reader = new FileReader(USER_JSON_PATH.toFile())) {
+            users = gson.fromJson(reader, listType);
+            if (users == null) {
+                users = new ArrayList<>();
+            }
+        } catch (IOException | JsonSyntaxException e) {
+            users = new ArrayList<>();
+        }
+
+        // Controlla se email o username esistono già
+        for (Utente user : users) {
+            if (user.getEmail().equalsIgnoreCase(newUser.getEmail())) {
+                feedbackText.setText("Questa email è già registrata!");
+                return false;
+            }
+            if (user.getUsername().equalsIgnoreCase(newUser.getUsername())) {
+                feedbackText.setText("Questo username è già in uso!");
+                return false;
+            }
+        }
+
+        // Aggiunge il nuovo utente
+        users.add(newUser);
+
+        // Salva la lista aggiornata
+        try (FileWriter writer = new FileWriter(USER_JSON_PATH.toFile())) {
+            gson.toJson(users, writer);
+            System.out.println("Utenti salvati correttamente: totale = " + users.size());
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            feedbackText.setText("Errore durante il salvataggio dell'utente.");
+            return false;
+        }
+    }
+
+
+
+    @FXML
+    private void handleClick() {
         String email = registerEmailField.getText().trim();
         String username = registerUsernameField.getText().trim();
         String password = registerPasswordField.getText().trim();
@@ -62,55 +149,13 @@ public class RegisterController {
             return;
         }
 
-        Utente newUser = new Utente(email, username, password);
-        salvaUtenteInJson(newUser);
+        Utente newUser = new Utente(email, username, password, false);
+        newUser.setApproved(false);
 
-        feedbackText.setText("Registrazione avvenuta con successo!");
-
-        // Vai alla schermata di login
-        cambiaASchermataLogin();
-    }
-
-    private void salvaUtenteInJson(Utente newUser) {
-        // Crea un Gson con pretty printing
-        Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .create();
-
-        // Deserializza la lista esistente di utenti
-        List<Utente> users;
-        Type listType = new TypeToken<List<Utente>>() {}.getType();
-        try (FileReader reader = new FileReader(USER_JSON_PATH.toFile())) {
-            users = gson.fromJson(reader, listType);
-            if (users == null) {
-                users = new ArrayList<>();
-            }
-        } catch (IOException | JsonSyntaxException e) {
-            // Se file mancante o JSON malformato, crea lista vuota
-            users = new ArrayList<>();
-        }
-
-        // Aggiunge il nuovo utente
-        users.add(newUser);
-
-        // Serializza e salva la lista aggiornata
-        try (FileWriter writer = new FileWriter(USER_JSON_PATH.toFile())) {
-            gson.toJson(users, writer);
-            System.out.println("Utenti salvati correttamente: totale = " + users.size());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void cambiaASchermataLogin() {
-        try {
-            Parent root = FXMLLoader.load(getClass()
-                    .getResource("/com/musicsheetsmanager/view/LoginView.fxml"));
-            Stage stage = (Stage) registerButton.getScene().getWindow();
-            stage.setScene(new Scene(root));
-        } catch (IOException e) {
-            System.err.println("Errore nel caricamento della schermata di login:");
-            e.printStackTrace();
+        boolean success = salvaUtenteInJson(newUser);
+        if (success) {
+            feedbackText.setText("Registrazione avvenuta con successo!");
+            mainController.show("Main");
         }
     }
 }
