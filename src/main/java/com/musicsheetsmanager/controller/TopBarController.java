@@ -2,24 +2,24 @@ package com.musicsheetsmanager.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import java.lang.reflect.Type;
 
-import com.musicsheetsmanager.config.SessionManager;
+import java.io.*;
+import java.lang.reflect.Type;
 import com.musicsheetsmanager.model.Brano;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
 
-import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class TopBarController implements Controller{
 
-    @FXML private Button mainButton; // "Accedi" o "Carica Brano"
-    @FXML private HBox searchBar; // Box campo di ricerca
+    @FXML
+    private Button mainButton; // "Accedi" o "Carica Brano"
+
     @FXML private TextField campoRicerca;
     @FXML private ListView<String> listaRisultati;  // brani trovati
 
@@ -32,28 +32,42 @@ public class TopBarController implements Controller{
         this.mainController = mainController;
     }
 
-    @FXML
-    public void initialize(){
 
-        // attendo evento input ENTER
+    public void initialize(){
+        caricaBrani();
+
         campoRicerca.setOnAction(event -> onSearchBarEnter());
 
         changeTopBar(); // cambia aspetto topbar nel caso l'utente sia loggato o meno
     }
 
-    private void changeTopBar() {
-        if (!SessionManager.isLoggedIn()) {
-            searchBar.setVisible(false);
-            searchBar.setManaged(false);
+
+    /*public void setUser(User user) {
+        if (user == null) {
             mainButton.setText("Accedi");
-        }else{
-            searchBar.setVisible(true);
-            searchBar.setManaged(true);
+        } else {
             mainButton.setText("Carica Brano");
+        }
+    }*/
+
+    // carica i brani dal file json in una lista
+    private List<Brano> caricaBrani() {
+        try (Reader reader = new FileReader("src/main/resources/com/musicsheetsmanager/data/brani.json")) {
+            Gson gson = new Gson();
+            Type listType = new TypeToken<List<Brano>>() {}.getType();
+            brani = gson.fromJson(reader, listType);
+            if(brani == null){
+                return new ArrayList<>();
+            }
+            return brani;
+        } catch (FileNotFoundException e){
+            return new ArrayList<>();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    // ricerca del brano quando l'utente schiaccia il tasto ENTER
+
     @FXML
     public void onSearchBarEnter (){
         String chiave = campoRicerca.getText();
@@ -74,7 +88,6 @@ public class TopBarController implements Controller{
         if(chiave == null || chiave.isBlank()) return brani;
 
         String key = chiave.toLowerCase();
-
         return brani.stream()
                 .filter(b ->
                         (b.getTitolo() != null && b.getTitolo().toLowerCase().contains(key)) ||
