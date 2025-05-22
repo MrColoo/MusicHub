@@ -20,18 +20,18 @@ public class MainController {
 
     public void initialize() {
         if (!SessionManager.isLoggedIn()) {
-            show("Register");
-            loadTopBar();
+            show("Login");
+            showTopBar();
             return;
         }
 
-        loadNavBar();
+        showNavBar();
     }
 
     // Funzione generale per caricare una pagina FXML
-    private void loadContent(String fxmlPath, StackPane pane) {
+    private void loadContent(String nomePagina, StackPane pane) {
         try {
-            Node content = FXMLLoader.load(getClass().getResource(fxmlPath));
+            Node content = FXMLLoader.load(getClass().getResource("/com/musicsheetsmanager/fxml/" + nomePagina + ".fxml"));
             pane.getChildren().setAll(content);
         } catch (IOException e) {
             e.printStackTrace();
@@ -39,18 +39,18 @@ public class MainController {
     }
 
     // Funzione per caricare pagine FXML nella sezione MAIN
-    private void show(String NomePagina){
-        loadContent("/com/musicsheetsmanager/fxml/" + NomePagina + ".fxml", mainContentPane);
+    public void show(String nomePagina){
+        loadContent(nomePagina, mainContentPane);
     }
 
     // Carica TopBar
-    private void loadTopBar() {
-        loadContent("/com/musicsheetsmanager/fxml/TopBar.fxml", topBarContainer);
+    private void showTopBar() {
+        loadContent("TopBar", topBarContainer);
     }
 
     // Carica NavBar
-    private void loadNavBar() {
-        loadContent("/com/musicsheetsmanager/fxml/NavBar.fxml", navBarContainer);
+    private void showNavBar() {
+        loadContent("NavBar", navBarContainer);
     }
 
 }
