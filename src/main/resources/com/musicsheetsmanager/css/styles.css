@@ -55,7 +55,9 @@
 .text-xl { -fx-font-size: 20px; }
 .text-2xl { -fx-font-size: 24px; }
 .text-3xl { -fx-font-size: 30px; }
+.text-4xl { -fx-font-size: 40px; }
 
+.text-white { -fx-fill: -fx-secondary-white }
 
 /* TOPBAR */
 
@@ -132,6 +134,41 @@
     -fx-background-radius: 18px;
     -fx-text-fill: -fx-secondary-white;
     -fx-effect: dropshadow(gaussian, #5D5D5D, 250, 0.00005, 0, 0);
+}
+
+/* BRANO */
+.scroll-pane{
+    -fx-background-color: -fx-secondary-black-02;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: -fx-secondary-black-02;
+}
+
+.scroll-bar:horizontal, .scroll-bar:vertical{
+    -fx-background-color:transparent;
+}
+
+.scroll-pane > .corner {
+    -fx-background-color: transparent;
+}
+
+.increment-button, .decrement-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: -fx-secondary-gray;
+    -fx-background-radius: 20px;
+}
+
+.brano-banner {
+    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #d4a31c, #5e421e);
+}
+
+.brano-banner .image-view {
+        -fx-effect: dropshadow(gaussian, #5e421e, 60, .1, 0, 10);
 }
 
 /* Global Styles */

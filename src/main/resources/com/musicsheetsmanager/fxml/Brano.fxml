@@ -1,14 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.musicsheetsmanager.fxml.Brano"
-            prefHeight="400.0" prefWidth="600.0">
-
-</AnchorPane>
+<ScrollPane hbarPolicy="NEVER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="1070.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1">
+   <content>
+      <VBox prefWidth="1070.0" styleClass="bra">
+         <children>
+            <HBox alignment="CENTER_LEFT" prefWidth="1070.0" styleClass="brano-banner">
+               <children>
+                  <ImageView fitWidth="170.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../ui/Cover.jpg" />
+                     </image>
+                  </ImageView>
+                  <VBox alignment="BOTTOM_LEFT">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Singolo">
+                           <styleClass>
+                              <String fx:value="text-white" />
+                              <String fx:value="font-medium" />
+                              <String fx:value="text-base" />
+                           </styleClass>
+                           <VBox.margin>
+                              <Insets bottom="10.0" />
+                           </VBox.margin>
+                        </Text>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="a me mi piace (feat. Manu Chao)" wrappingWidth="740.0">
+                           <styleClass>
+                              <String fx:value="text-white" />
+                              <String fx:value="font-black" />
+                              <String fx:value="text-4xl" />
+                           </styleClass>
+                           <VBox.margin>
+                              <Insets bottom="5.0" />
+                           </VBox.margin>
+                        </Text>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Alfa - Manu Chao">
+                           <styleClass>
+                              <String fx:value="text-white" />
+                              <String fx:value="font-bold" />
+                              <String fx:value="text-base" />
+                           </styleClass>
+                        </Text>
+                     </children>
+                     <HBox.margin>
+                        <Insets left="65.0" />
+                     </HBox.margin>
+                  </VBox>
+               </children>
+               <padding>
+                  <Insets bottom="50.0" left="55.0" top="50.0" />
+               </padding>
+            </HBox>
+         </children>
+      </VBox>
+   </content>
+   <opaqueInsets>
+      <Insets />
+   </opaqueInsets>
+</ScrollPane>
