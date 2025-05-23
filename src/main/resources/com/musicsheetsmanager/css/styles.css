@@ -176,9 +176,15 @@
     -fx-background-radius: 11;
 }
 
-.brano-nota-text-area .content{
+.brano-nota-text-field{
     -fx-background-color: transparent;
     -fx-text-fill: -fx-secondary-white;
+}
+
+.brano-nota-btn {
+    -fx-background-color: -fx-secondary-white;
+    -fx-background-radius: 127;
+    -fx-text-fill: -fx-secondary-black;
 }
 
 /* Global Styles */
