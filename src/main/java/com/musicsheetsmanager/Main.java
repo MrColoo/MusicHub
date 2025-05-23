@@ -15,7 +15,8 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         // Load the main application view
 
-        URL mainViewUrl = getClass().getResource("/com/musicsheetsmanager/fxml/Login.fxml");
+        URL mainViewUrl = getClass().getResource("/com/musicsheetsmanager/fxml/Main.fxml");
+
         FXMLLoader loader = new FXMLLoader(mainViewUrl);
 
         Parent root = loader.load();
