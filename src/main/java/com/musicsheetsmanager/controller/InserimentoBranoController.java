@@ -29,50 +29,47 @@ public class InserimentoBranoController {
     public void initialize(){
         errore.setVisible(false);
     }
+
     // form per l'aggiunta di un nuovo brano da parte dell'utente
     @FXML
     public void onAddBranoClick() {
+        String titolo = campoTitolo.getText().trim();
 
-            String titolo = campoTitolo.getText().trim();
-            List<String> autori = List.of(campoAutori.getText().trim().split(",\\s*"));
+        List<String> autori = List.of(campoAutori.getText().trim().split(",\\s*"));
 
-            // controlla che l'anno di composizione sia un numero intero valido
-            int anno;
-            try {
-                anno = Integer.parseInt(campoAnnoDiComposizione.getText().trim());
-                int annoCorrente = Year.now().getValue();
-
-                if(anno > annoCorrente) {
-                    errore.setText("Non puoi viaggiare nel futuro coglione");
-                    errore.setVisible(true);
-                    return;
-                }
-            } catch (NumberFormatException e) {
-                errore.setText("Inserisci un numero intero");
+        // controlla che l'anno di composizione sia un numero intero valido
+        int anno;
+        try {
+            anno = Integer.parseInt(campoAnnoDiComposizione.getText().trim());
+            int annoCorrente = Year.now().getValue();
+            if(anno > annoCorrente) {
+                errore.setText("Non puoi viaggiare nel futuro coglione");
                 errore.setVisible(true);
                 return;
             }
+        } catch (NumberFormatException e) {
+            errore.setText("Inserisci un numero intero");
+            errore.setVisible(true);
+            return;
+        }
 
-            String genere = campoGenere.getText();
+        String genere = campoGenere.getText();
 
-            String strumentiText = campoStrumentiMusicali.getText().trim();
-            List<String> strumenti = strumentiText.isEmpty()
-                    ? new ArrayList<>()
-                    : List.of(strumentiText.split(",\\s*"));
+        String strumentiText = campoStrumentiMusicali.getText().trim();
+        List<String> strumenti = strumentiText.isEmpty()
+                ? new ArrayList<>()
+                : List.of(strumentiText.split(",\\s*"));
 
-            String linkYoutube = campoLinkYoutube.getText().trim();
-            if(linkYoutube.isEmpty()) {
-                linkYoutube = "";
-            }
+        String linkYoutube = campoLinkYoutube.getText().trim();
+        if(linkYoutube.isEmpty()) {
+            linkYoutube = "";
+        }
 
+        Brano nuovoBrano = new Brano(titolo, autori, genere, anno, linkYoutube, strumenti);
 
-            Brano nuovoBrano = new Brano(titolo, autori, genere, anno, linkYoutube, strumenti);
-
-            List<Brano> listaBrani = caricaBrani();
-
-            listaBrani.add(nuovoBrano);
-
-            salvaBrani(listaBrani);
+        List<Brano> listaBrani = caricaBrani();
+        listaBrani.add(nuovoBrano);
+        salvaBrani(listaBrani);
     }
 
 
