@@ -1,17 +1,17 @@
 package com.musicsheetsmanager.controller;
 
+import com.musicsheetsmanager.config.JsonUtils;
 import javafx.scene.text.Text;
 import javafx.scene.input.MouseEvent;
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.musicsheetsmanager.model.Utente;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import java.io.FileReader;
-import java.io.IOException;
 import java.lang.reflect.Type;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 // Controller per il login degli utenti
@@ -23,8 +23,10 @@ public class LoginController implements Controller {
     @FXML private Text loginToRegisterButton; // testo che se cliccato porta alla registrazione
     @FXML private Text feedbackText; // testo di Feedback
 
-    private static final String USER_JSON_PATH =
-            "src/main/resources/com/musicsheetsmanager/data/user.json"; // percorso del file JSON
+    private static final Path USER_JSON_PATH = Paths.get( // percorso verso il file JSON
+            "src", "main", "resources",
+            "com", "musicsheetsmanager", "data", "user.json"
+    );
 
     private MainController mainController;
 
@@ -49,8 +51,9 @@ public class LoginController implements Controller {
             feedbackText.setText("Inserisci la tua password!");
             return;
         }
+        Type userType = new TypeToken<List<Utente>>() {}.getType();
+        List<Utente> utenti = JsonUtils.leggiDaJson(USER_JSON_PATH, userType);
 
-        List<Utente> utenti = caricaListaUtenti();
         if (utenti == null) {
             feedbackText.setText("Errore: impossibile leggere il file utenti.");
             return;
@@ -60,6 +63,7 @@ public class LoginController implements Controller {
             if (username.equals(u.getUsername()) && password.equals(u.getPassword())) {
                 // Login riuscito: cambia scena
                 mainController.show("Esplora");
+                mainController.showNavBar();
                 return;
             }
         }
@@ -67,22 +71,6 @@ public class LoginController implements Controller {
         feedbackText.setText("Credenziali errate.");
     }
 
-    // Carica la lista di utenti dal file JSON
-    private List<Utente> caricaListaUtenti() {
-        // apro il file reader
-        try (FileReader r = new FileReader(USER_JSON_PATH)) {
-            // tipo di Java per una lista di Utente
-            Type listType = new TypeToken<List<Utente>>() {}.getType();
-
-            // Deserializza il contenuto del file JSON in una List<Utente>
-            // Se il file è vuoto o contiene "null", restituisce null
-            return new Gson().fromJson(r, listType);
-
-        } catch (IOException e) { // in caso di errore stampo lo stack per il debugging
-            e.printStackTrace();
-            return null; // ritorno un null per indicare il fallimento dell'operazione
-        }
-    }
 
     @FXML
     private void goToRegister(MouseEvent event) {

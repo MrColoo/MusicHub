@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import com.musicsheetsmanager.config.JsonUtils;
 import com.musicsheetsmanager.model.Utente;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -97,27 +98,9 @@ public class RegisterController implements Controller{
 
     // funzione per salvare l'utente nel file JSON
     private boolean salvaUtenteInJson(Utente newUser) {
-        Gson gson = new GsonBuilder()
-                .setPrettyPrinting() // per sciverlo in maniera facilmente leggibile nel JSON
-                .create();
-
-        List<Utente> users;
-        // Definisce il tipo List<Utente> per la deserializzazione
         Type listType = new TypeToken<List<Utente>>() {}.getType();
-        // apre in lettura il file JSON dove sono salvati gli utenti
-        try (FileReader reader = new FileReader(USER_JSON_PATH.toFile())) {
-            // Deserializza il contenuto del file in una List<Utente>
-            users = gson.fromJson(reader, listType);
-            if (users == null) {
-                // Se il file esiste ma è vuoto o contiene “null”, inizializza una lista vuota
-                users = new ArrayList<>();
-            }
-        } catch (IOException | JsonSyntaxException e) {
-            // Se il file non esiste o il JSON è malformato, crea comunque una lista vuota
-            users = new ArrayList<>();
-        }
+        List<Utente> users = JsonUtils.leggiDaJson(USER_JSON_PATH, listType);
 
-        // Controlla se email o username esistono già
         for (Utente user : users) {
             if (user.getEmail().equalsIgnoreCase(newUser.getEmail())) {
                 feedbackText.setText("Questa email è già registrata!");
@@ -129,20 +112,12 @@ public class RegisterController implements Controller{
             }
         }
 
-        // Aggiunge il nuovo utente
         users.add(newUser);
-
-        // Salva la lista aggiornata
-        try (FileWriter writer = new FileWriter(USER_JSON_PATH.toFile())) {
-            gson.toJson(users, writer);
-            System.out.println("Utenti salvati correttamente: totale = " + users.size());
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            feedbackText.setText("Errore durante il salvataggio dell'utente.");
-            return false;
-        }
+        JsonUtils.scriviSuJson(users, USER_JSON_PATH);
+        System.out.println("Utenti salvati correttamente: totale = " + users.size());
+        return true;
     }
+
 
 
 
@@ -179,6 +154,7 @@ public class RegisterController implements Controller{
 
     @FXML // quando premo il testo Register mi cambia schermata a quella di register
     private void goToLogin(MouseEvent event) {
+        System.out.println("ARRIVO FINA A QUA PORCO DIO");
         mainController.show("Login");
     }
 
