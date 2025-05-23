@@ -1,13 +1,10 @@
 package com.musicsheetsmanager.controller;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.musicsheetsmanager.config.JsonUtils;
 import com.musicsheetsmanager.model.Brano;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 
-import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Year;
@@ -28,7 +25,7 @@ public class InserimentoBranoController {
     @FXML private TextField campoLinkYoutube;
     @FXML private Text errore;
 
-    private static final Path USER_JSON_PATH = Paths.get( // percorso verso il file JSON
+    private static final Path BRANI_JSON_PATH = Paths.get( // percorso verso il file JSON
             "src", "main", "resources",
             "com", "musicsheetsmanager", "data", "brani.json"
     );
@@ -76,10 +73,10 @@ public class InserimentoBranoController {
 
         Type branoType = new TypeToken<List<Brano>>() {}.getType();
 
-        List<Brano> listaBrani = JsonUtils.leggiDaJson(USER_JSON_PATH, branoType);
+        List<Brano> listaBrani = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType);
 
         listaBrani.add(nuovoBrano);
 
-        JsonUtils.scriviSuJson(listaBrani, USER_JSON_PATH);
+        JsonUtils.scriviSuJson(listaBrani, BRANI_JSON_PATH);
     }
 }
