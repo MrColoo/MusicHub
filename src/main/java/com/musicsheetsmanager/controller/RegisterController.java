@@ -45,7 +45,7 @@ public class RegisterController implements Controller{
     }
 
     // campi per controllo mail
-    private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
+    private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"; // pattern per il controllo della mail
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
 
@@ -69,19 +69,19 @@ public class RegisterController implements Controller{
             return;
         }
 
-        if (username.isEmpty()) {
+        if (username.isEmpty()) { // controllo se l'username è vuoto
             feedbackText.setText("Inserisci il tuo username!");
             return;
         }
 
-        if (password.isEmpty()) {
+        if (password.isEmpty()) { // controllo se la password è vuota
             feedbackText.setText("Inserisci la tua password!");
             return;
         }
 
         // crea un nuovo utente con i dati inseriti
         Utente newUser = new Utente(email, username, password, false); // nuovo utente che si registra
-        newUser.setApproved(false);
+        newUser.setApproved(false); // setto l'approvazione direttamente a FALSE
         salvaUtenteInJson(newUser);
 
         // Mostro la conferma di registrazione
@@ -96,25 +96,24 @@ public class RegisterController implements Controller{
 
         for (Utente user : users) {
             if (user.getEmail().equalsIgnoreCase(newUser.getEmail())) {
-                feedbackText.setText("Questa email è già registrata!");
+                feedbackText.setText("Questa email è già registrata!"); // controlli su la mail inserita e il file JSON
                 return false;
             }
             if (user.getUsername().equalsIgnoreCase(newUser.getUsername())) {
-                feedbackText.setText("Questo username è già in uso!");
+                feedbackText.setText("Questo username è già in uso!"); // controlli su la mail inserita e il file JSON
                 return false;
             }
         }
 
         users.add(newUser);
         JsonUtils.scriviSuJson(users, USER_JSON_PATH);
-        System.out.println("Utenti salvati correttamente: totale = " + users.size());
+        System.out.println("Utenti salvati correttamente: totale = " + users.size()); // linee per facilitare il debug da terminale
         return true;
     }
 
 
     @FXML // quando premo il testo Register mi cambia schermata a quella di register
     private void goToLogin(MouseEvent event) {
-        System.out.println("ARRIVO FINA A QUA PORCO DIO");
         mainController.show("Login");
     }
 
