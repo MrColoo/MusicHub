@@ -71,7 +71,7 @@
                         </Text>
                     </children>
                 </HBox>
-                <Button fx:id="registerButton" mnemonicParsing="false" onAction="#handleClick" prefHeight="50.0" prefWidth="423.0" text="Registrati">
+                <Button fx:id="registerButton" mnemonicParsing="false" onAction="#onRegisterClicked" prefHeight="50.0" prefWidth="423.0" text="Registrati">
                     <VBox.margin>
                         <Insets top="20.0" />
                     </VBox.margin>
