@@ -47,7 +47,7 @@ public class InserimentoBranoController {
             anno = Integer.parseInt(campoAnnoDiComposizione.getText().trim());
             int annoCorrente = Year.now().getValue();
             if(anno > annoCorrente) {
-                errore.setText("Non puoi viaggiare nel futuro coglione");
+                errore.setText("Siamo ancora nel " + annoCorrente);
                 errore.setVisible(true);
                 return;
             }
