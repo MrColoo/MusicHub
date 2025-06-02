@@ -39,18 +39,16 @@ public class InserimentoCommentoController {
         errore.setVisible(false);
     }
 
-    @FXML
-    public void OnAddCommentoClick(){
-        String testoCommento = campoCommento.getText().trim();
-
+    // funzione per salvare un commento generico
+    private void aggiungiCommento(String testo, boolean isNota) {
         // controllo se commento è vuoto
-        if(testoCommento.isBlank()) {
-            errore.setText("Non puoi aggiungere un commento vuoto");
+        if(testo.isBlank()) {
+            errore.setText("Il testo non può essere vuoto");
             errore.setVisible(true);
             return;
         }
 
-        Commento nuovoCommento = new Commento(testoCommento, getLoggedUser() );
+        Commento nuovoCommento = new Commento(testo, getLoggedUser(), isNota);
 
         Type commentoType = new TypeToken<List<Commento>>() {}.getType();
         List<Commento> listaCommenti = JsonUtils.leggiDaJson(COMMENTI_JSON_PATH, commentoType);
@@ -62,4 +60,15 @@ public class InserimentoCommentoController {
         Commento.linkIdcommentoBrano(idBrano.toString(), nuovoCommento.getIdCommento(), BRANI_JSON_PATH);
     }
 
+    @FXML
+    public void OnAddCommentoClick(){
+        String testoCommento = campoCommento.getText().trim();
+        aggiungiCommento(testoCommento, false);
+    }
+
+    @FXML
+    public void OnAddNotaClick(){
+        String testoNota = campoCommento.getText().trim();
+        aggiungiCommento(testoNota, true);
+    }
 }

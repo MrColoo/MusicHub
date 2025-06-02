@@ -5,7 +5,6 @@ import com.musicsheetsmanager.config.JsonUtils;
 
 import java.lang.reflect.Type;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -15,14 +14,16 @@ public class Commento {
     private String testo;
     private Utente autore;
     private List<Commento> risposte;
+    private boolean isNota;
 
     public Commento() {};
 
-    public Commento(String testo, Utente autore) {
+    public Commento(String testo, Utente autore, boolean isNota) {
         this.idCommento = UUID.randomUUID().toString();     // genera id alfanumerico casuale
         this.testo = testo;
         this.autore = autore;
         this.risposte = new ArrayList<>();
+        this.isNota = isNota;
     }
 
     public void aggiungiRisposta(Commento risposta) {
