@@ -34,25 +34,7 @@
                         <Insets bottom="20.0" />
                     </VBox.margin>
                 </Text>
-            <TextField maxWidth="423.0" prefHeight="50.0" promptText="Email">
-               <styleClass>
-                  <String fx:value="form-text-field" />
-                  <String fx:value="text-base" />
-               </styleClass>
-               <VBox.margin>
-                  <Insets bottom="10.0" />
-               </VBox.margin>
-            </TextField>
-                <TextField maxWidth="423.0" prefHeight="50.0" promptText="Username">
-                    <VBox.margin>
-                        <Insets bottom="10.0" />
-                    </VBox.margin>
-                    <styleClass>
-                        <String fx:value="form-text-field" />
-                        <String fx:value="text-base" />
-                    </styleClass>
-                </TextField>
-                <TextField maxWidth="423.0" prefHeight="50.0" promptText="Password">
+                <TextField fx:id="registerEmailField" maxWidth="423.0" prefHeight="50.0" promptText="Email">
                     <styleClass>
                         <String fx:value="form-text-field" />
                         <String fx:value="text-base" />
@@ -61,24 +43,42 @@
                         <Insets bottom="10.0" />
                     </VBox.margin>
                 </TextField>
-            <HBox alignment="TOP_CENTER">
-               <children>
-                  <Text fx:id="errore" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: RED;">
-                     <styleClass>
-                        <String fx:value="font-book" />
-                        <String fx:value="text-sm" />
-                     </styleClass>
-                  </Text>
-               </children>
-            </HBox>
-                <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="423.0" text="Registrati">
+                <TextField fx:id="registerUsernameField" maxWidth="423.0" prefHeight="50.0" promptText="Username">
+                    <VBox.margin>
+                        <Insets bottom="10.0" />
+                    </VBox.margin>
+                    <styleClass>
+                        <String fx:value="form-text-field" />
+                        <String fx:value="text-base" />
+                    </styleClass>
+                </TextField>
+                <TextField fx:id="registerPasswordField" maxWidth="423.0" prefHeight="50.0" promptText="Password">
+                    <styleClass>
+                        <String fx:value="form-text-field" />
+                        <String fx:value="text-base" />
+                    </styleClass>
+                    <VBox.margin>
+                        <Insets bottom="10.0" />
+                    </VBox.margin>
+                </TextField>
+                <HBox alignment="TOP_CENTER">
+                    <children>
+                        <Text fx:id="feedbackText" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: RED;">
+                            <styleClass>
+                                <String fx:value="font-book" />
+                                <String fx:value="text-sm" />
+                            </styleClass>
+                        </Text>
+                    </children>
+                </HBox>
+                <Button fx:id="registerButton" mnemonicParsing="false" onAction="#onRegisterClicked" prefHeight="50.0" prefWidth="423.0" text="Registrati">
                     <VBox.margin>
                         <Insets top="20.0" />
                     </VBox.margin>
-               <styleClass>
-                  <String fx:value="form-btn" />
-                  <String fx:value="font-book" />
-               </styleClass>
+                    <styleClass>
+                        <String fx:value="form-btn" />
+                        <String fx:value="font-book" />
+                    </styleClass>
                 </Button>
                 <HBox alignment="TOP_CENTER">
                     <children>
@@ -88,7 +88,7 @@
                                 <String fx:value="text-sm" />
                             </styleClass>
                         </Text>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: -fx-primary-green;" text="Login">
+                        <Text fx:id="registerToLogin" onMouseClicked="#goToLogin" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: -fx-primary-green;" text="Login">
                             <styleClass>
                                 <String fx:value="font-book" />
                                 <String fx:value="text-sm" />
