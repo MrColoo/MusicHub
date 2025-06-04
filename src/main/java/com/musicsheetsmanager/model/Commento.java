@@ -4,11 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Commento {
+    private String idCommento;
     private String testo;
     private Utente autore;
     private List<Commento> risposte;
 
-    public Commento(String testo, Utente autore) {
+    public Commento() {};
+
+    public Commento(String idCommento, String testo, Utente autore) {
+        this.idCommento = idCommento;
         this.testo = testo;
         this.autore = autore;
         this.risposte = new ArrayList<>();
@@ -19,4 +23,20 @@ public class Commento {
     }
 
     // Getter e Setter
+
+    public String getTesto() {
+        return testo;
+    }
+
+    public Utente getAutore() {
+        return autore;
+    }
+
+    public List<Commento> getRisposte() {
+        return risposte;
+    }
+
+    public String toString(){
+        return testo;
+    }
 }
