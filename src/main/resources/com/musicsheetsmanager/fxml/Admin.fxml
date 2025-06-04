@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.musicsheetsmanager.fxml.Admin">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.musicsheetsmanager.controller.AdminController">
    <children>
-      <ListView layoutX="54.0" layoutY="94.0" prefHeight="200.0" prefWidth="493.0" />
+      <ListView fx:id="userList" layoutX="54.0" layoutY="94.0" prefHeight="200.0" prefWidth="493.0" />
       <Text layoutX="54.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Interfaccia Admin" />
+      <Button fx:id="approveButton" layoutX="495.0" layoutY="346.0" mnemonicParsing="false" onAction="#onApproveClicked" text="APPROVA" />
+      <Button fx:id="rejectButton" layoutX="417.0" layoutY="346.0" mnemonicParsing="false" onAction="#onRejectClicked" text="RIFIUTA" />
    </children>
 </AnchorPane>
