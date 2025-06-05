@@ -83,7 +83,7 @@ public class LoginController implements Controller {
             return;
         }
 
-        for (Utente u : utenti) {
+        for (Utente u : utenti) { // controllo sull'approvazione dell'utente
             if (username.equals(u.getUsername()) && password.equals(u.getPassword())) {
                 if (!u.isApproved()) {
                     feedbackText.setText("Il tuo account non è ancora approvato.");
