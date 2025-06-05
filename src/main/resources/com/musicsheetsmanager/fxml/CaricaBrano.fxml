@@ -55,7 +55,7 @@
                                     <Insets right="10.0" />
                                  </HBox.margin>
                               </TextField>
-                              <TextField fx:id="campoGenere" prefHeight="50.0" prefWidth="190.0" promptText="Genere *">
+                              <TextField fx:id="campoGeneri" prefHeight="50.0" prefWidth="190.0" promptText="Genere *">
                                  <styleClass>
                                     <String fx:value="form-text-field" />
                                     <String fx:value="text-base" />
@@ -118,7 +118,7 @@
                         <Insets bottom="20.0" left="40.0" right="40.0" />
                      </VBox.margin>
                   </VBox>
-                  <HBox fx:id="listaFileBox" alignment="CENTER_RIGHT">
+                  <HBox alignment="CENTER_RIGHT">
                      <children>
                             <Button fx:id="allegaFileBtn" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#onAllegaFileClick" prefHeight="33.0" style="-fx-background-color: -fx-secondary-white;" text="Allega File">
                                 <styleClass>

@@ -12,11 +12,13 @@ public class Documento {
         SPARTITO, TESTO, ACCORDI, MP3, MP4, MIDI, YOUTUBE, ALTRO
     }
 
+    private String username;
     private String nomeFile;
     private Tipo tipo;
     private String percorso; // può essere un path locale o un link
 
-    public Documento(String nomeFile, String percorso) {
+    public Documento(String username, String nomeFile, String percorso) {
+        this.username = username;
         this.nomeFile = nomeFile;
         this.tipo = tipo;
         this.percorso = percorso;

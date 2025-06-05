@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 public class Brano {
     private String titolo;
     private List<String> autori;
-    private String genere;
+    private List<String> generi;
     private Integer annoComposizione;
     private List<String> esecutori;
     private List<String> strumentiMusicali;
@@ -21,11 +21,11 @@ public class Brano {
 
     public Brano(){};
 
-    public Brano(String idBrano, String titolo, List<String> autori, String genere, Integer annoComposizione, String linkYoutube, List<String> strumentiMusicali, List<String> documenti) {
+    public Brano(String idBrano, String titolo, List<String> autori, List<String> generi, Integer annoComposizione, String linkYoutube, List<String> strumentiMusicali, List<String> documenti) {
         this.idBrano = idBrano;     // genera id alfanumerico casuale
         this.titolo = titolo;
         this.autori = autori;
-        this.genere = genere;
+        this.generi = generi;
         this.annoComposizione = annoComposizione;
         this.linkYoutube = linkYoutube;
         this.strumentiMusicali = strumentiMusicali;
@@ -44,8 +44,8 @@ public class Brano {
         return autori;
     }
 
-    public String getGenere() {
-        return genere;
+    public List<String> getGeneri() {
+        return generi;
     }
 
     public List<String> getEsecutori() {
