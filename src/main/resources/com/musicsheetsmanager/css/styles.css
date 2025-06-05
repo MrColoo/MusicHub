@@ -137,11 +137,11 @@
 }
 
 /* BRANO */
-.scroll-pane{
+.brano-scroll-pane{
     -fx-background-color: -fx-secondary-black-02;
 }
 
-.scroll-pane > .viewport {
+.brano-scroll-pane > .viewport {
     -fx-background-color: -fx-secondary-black-02;
 }
 
@@ -188,6 +188,33 @@
     -fx-background-color: -fx-secondary-white;
     -fx-background-radius: 127;
     -fx-text-fill: -fx-secondary-black;
+}
+
+/* ESPLORA */
+
+.explore-background {
+    -fx-background-color:
+        linear-gradient(
+            from 0% 0% to 0% 50%,
+            -fx-primary-green, /* verde scuro in alto */
+            #000000  /* nero in basso */
+        );
+}
+
+.explore-scroll-pane{
+    -fx-background-color: transparent;
+}
+
+.explore-scroll-pane .viewport{
+    -fx-background-color: transparent;
+}
+
+.explore-card{
+    -fx-background-radius: 7px;
+}
+
+.explore-card:hover{
+    -fx-background-color: rgba(255, 255, 255, 0.2);
 }
 
 /* Global Styles */
