@@ -85,12 +85,17 @@ public class LoginController implements Controller {
 
         for (Utente u : utenti) {
             if (username.equals(u.getUsername()) && password.equals(u.getPassword())) {
+                if (!u.isApproved()) {
+                    feedbackText.setText("Il tuo account non è ancora approvato.");
+                    return;
+                }
                 // Login riuscito: cambia scena
                 mainController.show("Esplora");
                 mainController.showNavBar();
                 return;
             }
         }
+
 
         feedbackText.setText("Credenziali errate.");
     }
