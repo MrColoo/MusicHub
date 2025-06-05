@@ -4,7 +4,7 @@ import com.google.gson.reflect.TypeToken;
 import com.musicsheetsmanager.config.JsonUtils;
 import com.musicsheetsmanager.model.Commento;
 import javafx.fxml.FXML;
-import javafx.scene.control.TextField;
+import javafx.scene.control.TextArea;
 import javafx.scene.text.Text;
 
 import java.lang.reflect.Type;
@@ -14,13 +14,13 @@ import java.util.List;
 
 import static com.musicsheetsmanager.config.SessionManager.getLoggedUser;
 
-public class InserimentoCommentoController {
+public class CaricaCommentoController {
 
-    @FXML
-    private Text idBrano;
+    //@FXML
+    //private Text idBrano;
 
-    @FXML
-    private Text errore;
+    //@FXML
+    //private Text errore;
 
     private static final Path COMMENTI_JSON_PATH = Paths.get( // percorso verso il file JSON
             "src", "main", "resources",
@@ -33,22 +33,25 @@ public class InserimentoCommentoController {
     );
 
     @FXML
-    private TextField campoCommento;
+    private TextArea campoCommento;
+    @FXML
+    private TextArea campoNota;
 
-    public void initialize(){
-        errore.setVisible(false);
-    }
+    //public void initialize(){
+    //    errore.setVisible(false);
+    //}
 
     // funzione per salvare un commento generico
     private void aggiungiCommento(String testo, boolean isNota) {
         // controllo se commento è vuoto
         if(testo.isBlank()) {
-            errore.setText("Il testo non può essere vuoto");
-            errore.setVisible(true);
+            //errore.setText("Il testo non può essere vuoto");
+            //errore.setVisible(true);
             return;
         }
 
-        Commento nuovoCommento = new Commento(testo, getLoggedUser(), isNota);
+        // TODO sostituire Pippo con SessionManger.getLoggedUser().getUsername()
+        Commento nuovoCommento = new Commento(testo, "Pippo", isNota);
 
         Type commentoType = new TypeToken<List<Commento>>() {}.getType();
         List<Commento> listaCommenti = JsonUtils.leggiDaJson(COMMENTI_JSON_PATH, commentoType);
@@ -57,18 +60,21 @@ public class InserimentoCommentoController {
 
         JsonUtils.scriviSuJson(listaCommenti, COMMENTI_JSON_PATH);
 
-        Commento.linkIdcommentoBrano(idBrano.toString(), nuovoCommento.getIdCommento(), BRANI_JSON_PATH);
+        // TODO mettere l'id nascosto nella UI
+        Commento.linkIdcommentoBrano("PLACEHOLDER_ID", nuovoCommento.getIdCommento(), BRANI_JSON_PATH);
     }
 
     @FXML
     public void OnAddCommentoClick(){
         String testoCommento = campoCommento.getText().trim();
         aggiungiCommento(testoCommento, false);
+        campoCommento.clear();
     }
 
     @FXML
     public void OnAddNotaClick(){
-        String testoNota = campoCommento.getText().trim();
+        String testoNota = campoNota.getText().trim();
         aggiungiCommento(testoNota, true);
+        campoNota.clear();
     }
 }
