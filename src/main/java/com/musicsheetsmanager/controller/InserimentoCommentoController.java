@@ -1,60 +1,74 @@
 package com.musicsheetsmanager.controller;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.musicsheetsmanager.config.JsonUtils;
 import com.musicsheetsmanager.model.Commento;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 
-import java.io.*;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
-import java.util.UUID;
 
 import static com.musicsheetsmanager.config.SessionManager.getLoggedUser;
 
 public class InserimentoCommentoController {
 
     @FXML
+    private Text idBrano;
+
+    @FXML
+    private Text errore;
+
+    private static final Path COMMENTI_JSON_PATH = Paths.get( // percorso verso il file JSON
+            "src", "main", "resources",
+            "com", "musicsheetsmanager", "data", "commenti.json"
+    );
+
+     private static final Path BRANI_JSON_PATH = Paths.get( // percorso verso il file JSON
+            "src", "main", "resources",
+            "com", "musicsheetsmanager", "data", "brani.json"
+    );
+
+    @FXML
     private TextField campoCommento;
+
+    public void initialize(){
+        errore.setVisible(false);
+    }
+
+    // funzione per salvare un commento generico
+    private void aggiungiCommento(String testo, boolean isNota) {
+        // controllo se commento è vuoto
+        if(testo.isBlank()) {
+            errore.setText("Il testo non può essere vuoto");
+            errore.setVisible(true);
+            return;
+        }
+
+        Commento nuovoCommento = new Commento(testo, getLoggedUser(), isNota);
+
+        Type commentoType = new TypeToken<List<Commento>>() {}.getType();
+        List<Commento> listaCommenti = JsonUtils.leggiDaJson(COMMENTI_JSON_PATH, commentoType);
+
+        listaCommenti.add(nuovoCommento);
+
+        JsonUtils.scriviSuJson(listaCommenti, COMMENTI_JSON_PATH);
+
+        Commento.linkIdcommentoBrano(idBrano.toString(), nuovoCommento.getIdCommento(), BRANI_JSON_PATH);
+    }
 
     @FXML
     public void OnAddCommentoClick(){
         String testoCommento = campoCommento.getText().trim();
-
-        String idNuovoCommento = UUID.randomUUID().toString();  // genera id alfanumerico casuale
-
-        Commento nuovoCommento = new Commento(idNuovoCommento, testoCommento, getLoggedUser() );
-
-        List<Commento> listaCommenti = caricaCommenti();
-        listaCommenti.add(nuovoCommento);
-        salvaCommenti(listaCommenti);
+        aggiungiCommento(testoCommento, false);
     }
 
-    private List<Commento> caricaCommenti() {
-        try (Reader reader = new FileReader("src/main/resources/com/musicsheetsmanager/data/commenti.json")) {
-            Gson gson = new Gson();
-            Type listType = new TypeToken<List<Commento>>() {}.getType();
-            List<Commento> commenti = gson.fromJson(reader, listType);
-            if(commenti == null){
-                return new ArrayList<>();
-            }
-            return commenti;
-        } catch (FileNotFoundException e){
-            return new ArrayList<>();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void salvaCommenti(List<Commento> commenti) {
-        try (Writer writer = new FileWriter("src/main/resources/com/musicsheetsmanager/data/commenti.json")) {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            gson.toJson(commenti, writer);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    @FXML
+    public void OnAddNotaClick(){
+        String testoNota = campoCommento.getText().trim();
+        aggiungiCommento(testoNota, true);
     }
 }

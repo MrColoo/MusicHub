@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="740.0" prefWidth="1070.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.musicsheetsmanager.controller.InserimentoBranoController">
+<AnchorPane prefHeight="740.0" prefWidth="1070.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.musicsheetsmanager.controller.CaricaBranoController">
 
     <children>
         <ImageView fitHeight="740.0" fitWidth="1091.0" pickOnBounds="true" preserveRatio="true">
@@ -55,7 +55,7 @@
                                     <Insets right="10.0" />
                                  </HBox.margin>
                               </TextField>
-                              <TextField fx:id="campoGenere" prefHeight="50.0" prefWidth="190.0" promptText="Genere *">
+                              <TextField fx:id="campoGeneri" prefHeight="50.0" prefWidth="190.0" promptText="Genere *">
                                  <styleClass>
                                     <String fx:value="form-text-field" />
                                     <String fx:value="text-base" />
@@ -120,7 +120,7 @@
                   </VBox>
                   <HBox alignment="CENTER_RIGHT">
                      <children>
-                            <Button contentDisplay="RIGHT" mnemonicParsing="false" prefHeight="33.0" style="-fx-background-color: -fx-secondary-white;" text="Allega File">
+                            <Button fx:id="allegaFileBtn" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#onAllegaFileClick" prefHeight="33.0" style="-fx-background-color: -fx-secondary-white;" text="Allega File">
                                 <styleClass>
                                     <String fx:value="form-btn" />
                                     <String fx:value="font-book" />
