@@ -16,21 +16,21 @@ public class Brano {
     private String idBrano;
 
 
-    private List<Documento> documenti;
+    private List<String> documenti; // path dei documenti
     private List<String> idCommenti;
 
     public Brano(){};
 
-    public Brano(String titolo, List<String> autori, String genere, Integer annoComposizione, String linkYoutube, List<String> strumentiMusicali) {
-        this.idBrano = UUID.randomUUID().toString();     // genera id alfanumerico casuale
+    public Brano(String idBrano, String titolo, List<String> autori, String genere, Integer annoComposizione, String linkYoutube, List<String> strumentiMusicali, List<String> documenti) {
+        this.idBrano = idBrano;     // genera id alfanumerico casuale
         this.titolo = titolo;
         this.autori = autori;
         this.genere = genere;
         this.annoComposizione = annoComposizione;
         this.linkYoutube = linkYoutube;
-        this.strumentiMusicali = new ArrayList<>();
+        this.strumentiMusicali = strumentiMusicali;
 
-        this.documenti = new ArrayList<>();
+        this.documenti = documenti;
         this.idCommenti = new ArrayList<>();
     }
 
@@ -56,7 +56,7 @@ public class Brano {
         return annoComposizione;
     }
 
-    public List<Documento> getDocumenti() {
+    public List<String> getDocumenti() {
         return documenti;
     }
 
