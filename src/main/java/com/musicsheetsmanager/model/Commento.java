@@ -12,16 +12,16 @@ import java.util.UUID;
 public class Commento {
     private String idCommento;
     private String testo;
-    private Utente autore;
+    private String username;
     private List<Commento> risposte;
     private boolean isNota;
 
     public Commento() {};
 
-    public Commento(String testo, Utente autore, boolean isNota) {
+    public Commento(String testo, String username, boolean isNota) {
         this.idCommento = UUID.randomUUID().toString();     // genera id alfanumerico casuale
         this.testo = testo;
-        this.autore = autore;
+        this.username = username;
         this.risposte = new ArrayList<>();
         this.isNota = isNota;
     }
@@ -40,8 +40,8 @@ public class Commento {
         return testo;
     }
 
-    public Utente getAutore() {
-        return autore;
+    public String getUsername() {
+        return username;
     }
 
     public List<Commento> getRisposte() {
