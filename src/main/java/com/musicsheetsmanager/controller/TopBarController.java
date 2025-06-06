@@ -54,10 +54,12 @@ public class TopBarController implements Controller{
             searchBar.setVisible(false);
             searchBar.setManaged(false);
             mainButton.setText("Accedi");
+            mainButton.setOnAction(event -> mainController.show("Accedi"));
         }else{
             searchBar.setVisible(true);
             searchBar.setManaged(true);
             mainButton.setText("Carica Brano");
+            mainButton.setOnAction(event -> mainController.show("CaricaBrano"));
         }
     }
 
