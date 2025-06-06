@@ -27,12 +27,12 @@
 
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-controls</artifactId>
-      <version>17.0.6</version>
+      <version>23.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-fxml</artifactId>
-      <version>17.0.6</version>
+      <version>23.0.1</version>
     </dependency>
 
 <dependency>
@@ -75,6 +75,9 @@
               <noManPages>true</noManPages>
               <stripDebug>true</stripDebug>
               <noHeaderFiles>true</noHeaderFiles>
+              <options>
+                <option>--enable-native-access=javafx.graphics</option>
+              </options>
             </configuration>
           </execution>
         </executions>
