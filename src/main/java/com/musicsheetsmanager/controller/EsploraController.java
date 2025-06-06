@@ -14,6 +14,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 
 import javafx.scene.input.MouseEvent;
+
+import java.io.File;
 import java.lang.reflect.Type;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -36,6 +38,10 @@ public class EsploraController implements  Controller{
             "com", "musicsheetsmanager", "data", "brani.json"
     );
     public void initialize() {
+        if (mainController != null) {
+            mainController.setEsploraController(this);
+        }
+
         Type branoType = new TypeToken<List<Brano>>() {}.getType();
         listaBraniPota = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType);
         mostraBraniPota(listaBraniPota);
@@ -67,7 +73,12 @@ public class EsploraController implements  Controller{
         vbox.setPadding(new Insets(15));
         vbox.setCursor(Cursor.HAND);
 
-        ImageView cover = new ImageView(new Image(getClass().getResourceAsStream("/com/musicsheetsmanager/ui/covers/" + idBrano + ".jpg")));
+        File imageFile = new File("src/main/resources/com/musicsheetsmanager/ui/covers/" + idBrano + ".jpg");
+        if (!imageFile.exists()) {
+            imageFile = new File("src/main/resources/com/musicsheetsmanager/ui/Cover.jpg");
+        }
+        ImageView cover = new ImageView(new Image(imageFile.toURI().toString()));
+
         cover.setFitWidth(154);
         cover.setPreserveRatio(true);
         cover.setPickOnBounds(true);

@@ -34,6 +34,13 @@ public class MainController {
         showNavBar();
     }
 
+    public void setEsploraController(EsploraController esploraController) {
+        this.esploraController = esploraController;
+        if (topBarController != null) {
+            topBarController.setEsploraController(esploraController);
+        }
+    }
+
     // Funzione generale per caricare una pagina FXML
     private void loadContent(String nomePagina, StackPane pane) {
         try {
@@ -43,6 +50,20 @@ public class MainController {
 
             if (controller instanceof Controller) {
                 ((Controller) controller).setMainController(this);
+            }
+
+            // 👇 Solo qui aggiorniamo i riferimenti ai controller importanti
+            if (controller instanceof EsploraController) {
+                this.esploraController = (EsploraController) controller;
+                if (topBarController != null) {
+                    topBarController.setEsploraController(esploraController);
+                }
+            } else if (controller instanceof TopBarController) {
+                this.topBarController = (TopBarController) controller;
+                this.topBarController.setMainController(this);
+                if (esploraController != null) {
+                    this.topBarController.setEsploraController(esploraController);
+                }
             }
 
             pane.getChildren().setAll(content);

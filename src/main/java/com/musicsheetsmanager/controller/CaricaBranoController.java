@@ -154,7 +154,7 @@ public class CaricaBranoController {
                 System.out.println(coverURL);
 
                 // Carica l'immagine nel componente ImageView
-                Image fxImage = new Image(new URL(coverURL).toString());
+                Image fxImage = new Image(coverURL);
                 cover.setImage(fxImage);
 
             } catch (IOException e) {
@@ -180,54 +180,73 @@ public class CaricaBranoController {
     // form per l'aggiunta di un nuovo brano da parte dell'utente
     @FXML
     public void onAddBranoClick() throws IOException {
+        if(!creaBrano(idBrano)) {
+            return;
+        }
+
         salvaCover();
         salvaFileAllegati(idBrano);
-
-        Brano nuovoBrano = creaBrano(idBrano);
 
         // aggiorna file json contenente i documenti
         Type documentoType = new TypeToken<List<Documento>>() {}.getType();     // documenti letti dal json
         List<Documento> listaDocumenti = JsonUtils.leggiDaJson(DOCUMENTI_JSON_PATH, documentoType);
         listaDocumenti.addAll(fileAllegati);
         JsonUtils.scriviSuJson(listaDocumenti, DOCUMENTI_JSON_PATH);
-
-        // aggiorna file json contenente tutti i brani
-        Type branoType = new TypeToken<List<Brano>>() {}.getType();
-        List<Brano> listaBrani = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType); // brani letti dal json
-        listaBrani.add(nuovoBrano);
-        JsonUtils.scriviSuJson(listaBrani, BRANI_JSON_PATH);
     }
 
     // crea il brano e aggiorna i vari dizionari (autori, generi, titoli, strumentiMusicali)
-    private Brano creaBrano(String idBrano){
+    private boolean creaBrano(String idBrano){
         String titolo = campoTitolo.getText().trim();
-        aggiornaDizionario(Collections.singletonList(titolo), "titoli");
+        if(titolo.isEmpty()) {
+            errore.setText("Campo titolo obbligatorio");
+            errore.setVisible(true);
+            return false;
+        }
 
-        List<String> autori = List.of(campoAutori.getText().trim().split(",\\s*"));
-        aggiornaDizionario(autori, "autori");
+        String autoriText = campoAutori.getText().trim();
+        if(autoriText.isEmpty()) {
+            errore.setText("Campo autori obbligatorio");
+            errore.setVisible(true);
+            return false;
+        }
+
+        String generiText = campoGeneri.getText().trim().toLowerCase();
+        if(generiText.isEmpty()) {
+            errore.setText("Campo generi obbligatorio");
+            errore.setVisible(true);
+            return false;
+        }
 
         // controlla che l'anno di composizione sia un numero intero valido
-        int anno = 0;
+        int anno;
         try {
+            String annoText = campoAnnoDiComposizione.getText().trim();
+            if(annoText.isEmpty()) {
+                errore.setText("Campo anno di composizione obbligatorio");
+                errore.setVisible(true);
+                return false;
+            }
             anno = Integer.parseInt(campoAnnoDiComposizione.getText().trim());
             int annoCorrente = Year.now().getValue();
             if(anno > annoCorrente) {
                 errore.setText("Siamo ancora nel " + annoCorrente);
                 errore.setVisible(true);
+                return false;
             }
         } catch (NumberFormatException e) {
             errore.setText("Inserisci un numero intero");
             errore.setVisible(true);
+            return false;
         }
 
+        List<String> autori = List.of(campoAutori.getText().trim().split(",\\s*"));
         List<String> generi = List.of(campoGeneri.getText().toLowerCase().trim().split(",\\s*"));
-        aggiornaDizionario(generi, "generi");
 
         String strumentiText = campoStrumentiMusicali.getText().toLowerCase().trim();
         List<String> strumentiMusicali = strumentiText.isEmpty()
                 ? new ArrayList<>()
                 : List.of(strumentiText.split(",\\s*"));
-        aggiornaDizionario(strumentiMusicali, "strumentiMusicali");
+
 
         String linkYoutube = campoLinkYoutube.getText().trim();
         if(linkYoutube.isEmpty()) {
@@ -238,7 +257,21 @@ public class CaricaBranoController {
                 .map(Documento::getPercorso)
                 .collect(Collectors.toList());
 
-        return new Brano(idBrano, titolo, autori, generi, anno, linkYoutube, strumentiMusicali, pathAllegati);
+        Brano nuovoBrano = new Brano(idBrano, titolo, autori, generi, anno, linkYoutube, strumentiMusicali, pathAllegati);
+
+        // aggiorna dizionari
+        aggiornaDizionario(Collections.singletonList(titolo), "titoli");
+        aggiornaDizionario(autori, "autori");
+        aggiornaDizionario(generi, "generi");
+        aggiornaDizionario(strumentiMusicali, "strumentiMusicali");
+
+        // aggiorna file json contenente tutti i brani
+        Type branoType = new TypeToken<List<Brano>>() {}.getType();
+        List<Brano> listaBrani = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType); // brani letti dal json
+        listaBrani.add(nuovoBrano);
+        JsonUtils.scriviSuJson(listaBrani, BRANI_JSON_PATH);
+
+        return true;
     }
 
     // permette all'utente di caricare documenti inerenti al brano(es. spartiti, testi...)
