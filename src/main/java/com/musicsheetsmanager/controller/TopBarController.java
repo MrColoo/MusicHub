@@ -16,7 +16,6 @@ import javafx.scene.layout.HBox;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class TopBarController implements Controller{
 
@@ -65,7 +64,7 @@ public class TopBarController implements Controller{
         Type branoType = new TypeToken<List<Brano>>() {}.getType();
         List<Brano> listaBrani = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType);
 
-        List<Brano> risultati = cerca(listaBrani, chiave);
+        List<Brano> risultati = Brano.cerca(listaBrani, chiave);
         listaRisultati.getItems().clear();
 
         if(risultati.isEmpty()){
@@ -77,20 +76,5 @@ public class TopBarController implements Controller{
         }
     }
 
-    // ricerca per titolo-autori-esecutori
-    public static List<Brano> cerca (List<Brano> brani, String chiave){
-        if(chiave == null || chiave.isBlank()) return brani;
-
-        String key = chiave.toLowerCase();
-        return brani.stream()
-                .filter(b ->
-                        (b.getTitolo() != null && b.getTitolo().toLowerCase().contains(key)) ||
-                                (b.getAutori() != null && b.getAutori().stream()
-                                        .anyMatch(e -> e.toLowerCase().contains(key))) ||
-                                (b.getEsecutori() != null && b.getEsecutori().stream()
-                                        .anyMatch(e -> e.toLowerCase().contains(key)))
-                )
-                .collect(Collectors.toList());
-    }
 }
 
