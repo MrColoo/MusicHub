@@ -1,5 +1,8 @@
 package com.musicsheetsmanager.controller;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.musicsheetsmanager.config.JsonUtils;
 import com.musicsheetsmanager.config.SessionManager;
 import com.musicsheetsmanager.model.Brano;
@@ -9,8 +12,17 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import javafx.scene.image.Image;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -20,10 +32,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import com.google.gson.reflect.TypeToken;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 
+import javax.imageio.ImageIO;
 import java.lang.reflect.Type;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -38,7 +52,11 @@ public class CaricaBranoController {
     @FXML private TextField campoLinkYoutube;
     @FXML private Text errore;
     @FXML private Button allegaFileBtn;
+    @FXML private Text cardTitolo;
+    @FXML private Text cardAutore;
+    @FXML private ImageView cover;
     //@FXML private HBox listaFileBox;
+    private String idBrano = "";
 
 
     private final List<Documento> fileAllegati = new ArrayList<>();     // salva temporaneamente i file
@@ -56,14 +74,96 @@ public class CaricaBranoController {
     );
 
     public void initialize(){
+        // genero stringa alfanumerica casuale per ogni brano
+        idBrano = UUID.randomUUID().toString();
+
+        campoTitolo.textProperty().addListener((obs, oldValue, newValue) -> {
+            if (newValue == null || newValue.trim().isEmpty()) {
+                cardTitolo.setText("Titolo");
+            } else {
+                cardTitolo.setText(newValue);
+            }
+        });
+
+        campoAutori.textProperty().addListener((obs, oldValue, newValue) -> {
+            if (newValue == null || newValue.trim().isEmpty()) {
+                cardAutore.setText("Autore");
+            } else {
+                cardAutore.setText(newValue);
+            }
+        });
+
+        campoAutori.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (!newVal) {
+                // La TextField ha perso il focus → l'utente ha finito di scrivere
+                downloadCover();
+            }
+        });
+
         errore.setVisible(false);
+    }
+
+    @FXML
+    public void downloadCover(){
+        String titolo = campoTitolo.getText().trim();
+        String autore = campoAutori.getText().trim();
+        String query = URLEncoder.encode(titolo + " " + autore, StandardCharsets.UTF_8);
+        String apiUrl = "https://itunes.apple.com/search?term=" + query + "&media=music&limit=1";
+        try {
+            HttpURLConnection conn = (HttpURLConnection) new URL(apiUrl).openConnection();
+            conn.setRequestMethod("GET");
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
+            StringBuilder responseBuilder = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null)
+                responseBuilder.append(line);
+            reader.close();
+
+            // Usa Gson per parse
+            JsonObject jsonObject = JsonParser.parseString(responseBuilder.toString()).getAsJsonObject();
+            JsonArray results = jsonObject.getAsJsonArray("results");
+
+            if (results.size() == 0) {
+                System.out.println("Nessuna copertina trovata per: " + titolo + " - " + autore);
+                return;
+            }
+
+            JsonObject firstResult = results.get(0).getAsJsonObject();
+            String artworkUrl = firstResult.get("artworkUrl100").getAsString();
+            String highResUrl = artworkUrl.replace("100x100", "170x170");
+
+            System.out.println(highResUrl);
+
+            BufferedImage image = ImageIO.read(new URL(highResUrl));
+
+            Graphics2D g2d = image.createGraphics();
+            g2d.drawImage(image, 0, 0, null);
+            g2d.dispose();
+
+            // Percorso salvataggio
+            Path coverDir = Paths.get("src", "main", "resources", "com", "musicsheetsmanager", "ui", "covers");
+            Files.createDirectories(coverDir);
+
+            File outputFile = coverDir.resolve(idBrano + ".jpg").toFile();
+            ImageIO.write(image, "jpg", outputFile);
+
+            System.out.println("Copertina salvata come: " + outputFile.getAbsolutePath());
+
+            // Carica l'immagine nel componente ImageView
+            Image fxImage = new Image(outputFile.toURI().toString());
+            cover.setImage(fxImage);
+
+        } catch (IOException e) {
+            System.err.println("Errore nel download della copertina: " + e.getMessage());
+        }
+
+
     }
 
     // form per l'aggiunta di un nuovo brano da parte dell'utente
     @FXML
     public void onAddBranoClick() {
-        // genero stringa alfanumerica casuale per ogni brano
-        String idBrano = UUID.randomUUID().toString();
 
         salvaFileAllegati(idBrano);
 
