@@ -15,6 +15,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import static com.musicsheetsmanager.config.SessionManager.login;
+
 // Controller per il login degli utenti
 public class LoginController implements Controller {
 
@@ -91,8 +93,11 @@ public class LoginController implements Controller {
                     return;
                 }
 
+                // Imposta l'utente attuale come loggato in SessionManager
+                login(u);
                 // Login riuscito: cambia scena
                 mainController.show("Esplora");
+                mainController.reloadTopBar();
                 mainController.showNavBar();
                 return;
             }

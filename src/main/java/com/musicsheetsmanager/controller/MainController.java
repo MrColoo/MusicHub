@@ -65,4 +65,10 @@ public class MainController {
         navBarContainer.getChildren().clear();
     }
 
+    // Ricarica TopBar
+    public void reloadTopBar() {
+        navBarContainer.getChildren().clear();
+        loadContent("TopBar", topBarContainer);
+    }
+
 }
