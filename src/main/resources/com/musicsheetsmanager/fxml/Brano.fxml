@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<ScrollPane hbarPolicy="NEVER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="1070.0" styleClass="brano-scroll-pane" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<ScrollPane hbarPolicy="NEVER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="1070.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.musicsheetsmanager.controller.CaricaCommentoController">
     <content>
         <VBox prefWidth="1070.0" styleClass="bra">
             <children>
@@ -113,7 +113,7 @@
                               <String fx:value="text-xl" />
                            </styleClass>
                         </Text>
-                        <ScrollPane hbarPolicy="NEVER" maxHeight="340.0" prefWidth="455.0" styleClass="brano-scroll-pane">
+                        <ScrollPane hbarPolicy="NEVER" maxHeight="340.0" prefWidth="455.0">
                            <content>
                               <VBox maxWidth="455.0" prefWidth="100.0">
                                  <padding>
@@ -136,7 +136,7 @@
                         </ScrollPane>
                         <HBox alignment="CENTER">
                            <children>
-                              <TextArea maxHeight="20.0" maxWidth="375.0" promptText="Lascia una nota" wrapText="true">
+                              <TextArea fx:id="campoNota" maxHeight="20.0" maxWidth="375.0" promptText="Lascia una nota" wrapText="true">
                                  <styleClass>
                                     <String fx:value="brano-nota-text-area" />
                                     <String fx:value="font-book" />
@@ -146,7 +146,7 @@
                                     <Insets />
                                  </opaqueInsets>
                               </TextArea>
-                              <Button mnemonicParsing="false" prefWidth="60.0" text="Invia">
+                              <Button mnemonicParsing="false" onAction="#OnAddNotaClick" prefWidth="60.0" text="Invia">
                                  <HBox.margin>
                                     <Insets left="20.0" />
                                  </HBox.margin>
@@ -181,7 +181,7 @@
                         </Text>
                   <HBox alignment="CENTER">
                      <children>
-                        <TextArea maxHeight="30.0" maxWidth="900.0" prefWidth="900.0" promptText="Lascia un commento" wrapText="true">
+                        <TextArea fx:id="campoCommento" maxHeight="30.0" maxWidth="900.0" prefWidth="900.0" promptText="Lascia un commento" wrapText="true">
                            <styleClass>
                               <String fx:value="brano-nota-text-area" />
                               <String fx:value="font-book" />
@@ -191,7 +191,7 @@
                               <Insets />
                            </opaqueInsets>
                         </TextArea>
-                        <Button mnemonicParsing="false" prefWidth="60.0" text="Invia">
+                        <Button mnemonicParsing="false" onAction="#OnAddCommentoClick" prefWidth="60.0" text="Invia">
                            <HBox.margin>
                               <Insets left="20.0" />
                            </HBox.margin>
