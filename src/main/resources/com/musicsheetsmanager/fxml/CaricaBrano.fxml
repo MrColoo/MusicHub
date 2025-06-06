@@ -173,12 +173,12 @@
                         <Insets />
                      </VBox.margin>
                      <children>
-                        <ImageView fitWidth="170.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="cover" fitWidth="170.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../ui/Cover.jpg" />
                            </image>
                         </ImageView>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: -fx-secondary-white;" text="a me mi piace (feat. Manu Chao)" wrappingWidth="170.0">
+                        <Text fx:id="cardTitolo" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: -fx-secondary-white;" text="Titolo" wrappingWidth="170.0">
                            <VBox.margin>
                               <Insets top="10.0" />
                            </VBox.margin>
@@ -187,7 +187,7 @@
                               <String fx:value="font-bold" />
                            </styleClass>
                         </Text>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: -fx-secondary-white;" text="Alfa - Manu Chao">
+                        <Text fx:id="cardAutore" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: -fx-secondary-white;" text="Autore" wrappingWidth="170.0">
                            <VBox.margin>
                               <Insets top="10.0" />
                            </VBox.margin>
