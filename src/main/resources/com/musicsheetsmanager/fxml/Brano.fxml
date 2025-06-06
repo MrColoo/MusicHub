@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<ScrollPane hbarPolicy="NEVER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="1070.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.musicsheetsmanager.controller.CaricaCommentoController">
+<ScrollPane hbarPolicy="NEVER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="1070.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.musicsheetsmanager.controller.BranoFileController">
     <content>
         <VBox prefWidth="1070.0" styleClass="bra">
             <children>
@@ -68,7 +68,7 @@
                     <children>
                   <VBox>
                      <children>
-                              <VBox minHeight="250.0" prefWidth="505.0" styleClass="brano-allegati-container">
+                              <VBox fx:id="fileListVBox" minHeight="250.0" prefWidth="505.0" styleClass="brano-allegati-container">
                                   <children>
                                       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Documenti allegati">
                                           <styleClass>
