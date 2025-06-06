@@ -43,8 +43,8 @@ public class EsploraController implements  Controller{
         }
 
         Type branoType = new TypeToken<List<Brano>>() {}.getType();
-        listaBraniPota = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType);
-        mostraBraniPota(listaBraniPota);
+        listaBraniPota = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType); //TODO CAMBIA NOME
+        mostraBraniPota(listaBraniPota); //TODO CAMBIA NOME
     }
 
     public void mostraBraniPota(List<Brano> listaBrani) {
