@@ -26,7 +26,7 @@ public class NavBarController implements Controller{
     }
 
     private void changeNavBar() {
-        if (!SessionManager.isLoggedIn()) { // da cambiare e mettere admin
+        if (!SessionManager.getLoggedUser().isAdmin()) { // da cambiare e mettere admin
             adminBtn.setVisible(false);
         }else{
             adminBtn.setVisible(true);

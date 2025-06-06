@@ -98,7 +98,7 @@ public class RegisterController implements Controller {
         }
 
         // Crea un nuovo utente con i dati inseriti
-        Utente newUser = new Utente(email, username, password, false);
+        Utente newUser = new Utente(email, username, password, false, true); // TODO FARE ADMIN
         newUser.setApproved(false); // setto l'approvazione direttamente a FALSE
 
         // Provo a salvare l'utente nel JSON
