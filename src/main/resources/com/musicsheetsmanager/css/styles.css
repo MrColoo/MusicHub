@@ -55,7 +55,9 @@
 .text-xl { -fx-font-size: 20px; }
 .text-2xl { -fx-font-size: 24px; }
 .text-3xl { -fx-font-size: 30px; }
+.text-4xl { -fx-font-size: 40px; }
 
+.text-white { -fx-fill: -fx-secondary-white }
 
 /* TOPBAR */
 
@@ -128,15 +130,120 @@
 /* CARICA BRANO */
 
 .preview-container{
-    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #d4a31c, #5e421e);
+    -fx-background-color: transparent;
     -fx-background-radius: 18px;
     -fx-text-fill: -fx-secondary-white;
     -fx-effect: dropshadow(gaussian, #5D5D5D, 250, 0.00005, 0, 0);
 }
 
-/* Global Styles */
-.root {
+previewBackground{
+    -fx-background-radius: 50px;
+    -fx-effect: dropshadow(gaussian, #5D5D5D, 250, 0.00005, 0, 0);
+}
 
+/* BRANO */
+.brano-scroll-pane{
+    -fx-background-color: -fx-secondary-black-02;
+}
+
+.brano-scroll-pane > .viewport {
+    -fx-background-color: -fx-secondary-black-02;
+}
+
+.scroll-bar:vertical{
+    -fx-background-color:transparent;
+}
+
+.scroll-pane > .corner {
+    -fx-background-color: transparent;
+}
+
+.increment-button, .decrement-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: -fx-secondary-gray;
+    -fx-background-radius: 20px;
+}
+
+.brano-banner {
+    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #d4a31c, #5e421e);
+}
+
+.brano-banner .image-view {
+        -fx-effect: dropshadow(gaussian, #5e421e, 60, .1, 0, 10);
+}
+
+.brano-allegati-container{
+    -fx-background-color: -fx-secondary-gray;
+    -fx-background-radius: 11;
+}
+
+.brano-nota-text-area{
+    -fx-text-fill: -fx-secondary-white;
+}
+
+.brano-nota-text-area .content{
+      -fx-background-color: -fx-secondary-gray;
+  }
+
+.brano-nota-btn {
+    -fx-background-color: -fx-secondary-white;
+    -fx-background-radius: 127;
+    -fx-text-fill: -fx-secondary-black;
+}
+
+/* ESPLORA */
+
+.explore-background {
+    -fx-background-color:
+        linear-gradient(
+            from 0% 0% to 0% 50%,
+            -fx-primary-green, /* verde scuro in alto */
+            #000000  /* nero in basso */
+        );
+}
+
+.explore-scroll-pane{
+    -fx-background-color: transparent;
+}
+
+.explore-scroll-pane .viewport{
+    -fx-background-color: transparent;
+}
+
+.explore-card{
+    -fx-background-radius: 7px;
+}
+
+.explore-card:hover{
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ADMIN */
+.admin-table{
+    -fx-background-color: rgba(0, 0, 0, 0.2);
+    -fx-background-radius: 11px;
+}
+
+.admin-row{
+    -fx-border-color: rgba(255, 255, 255, 0.1) transparent transparent transparent;
+    -fx-border-width: 3 0 0 0; /* top right bottom left */
+    -fx-border-style: solid;
+}
+
+.approve-btn{
+    -fx-background-color: -fx-primary-green;
+    -fx-text-fill: -fx-secondary-black-02;
+    -fx-background-radius: 200px;
+}
+
+.delete-btn{
+    -fx-background-color: red;
+    -fx-text-fill: white;
+    -fx-background-radius: 200px;
 }
 
 /* Button Styles */

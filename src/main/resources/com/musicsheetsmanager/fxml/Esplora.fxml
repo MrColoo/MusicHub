@@ -1,13 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            prefHeight="400.0" prefWidth="600.0">
-
+<AnchorPane prefHeight="740.0" prefWidth="1070.0" styleClass="explore-background" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.musicsheetsmanager.controller.EsploraController">
+   <children>
+      <Text layoutX="43.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Esplora">
+         <styleClass>
+            <String fx:value="font-black" />
+            <String fx:value="text-white" />
+            <String fx:value="text-4xl" />
+         </styleClass>
+      </Text>
+      <ScrollPane hbarPolicy="NEVER" layoutY="120.0" prefHeight="620.0" prefWidth="1070.0" styleClass="explore-scroll-pane">
+         <content>
+            <FlowPane fx:id="braniContainer" hgap="20.0" prefWidth="1070.0" prefWrapLength="0.0">
+               <padding>
+                  <Insets bottom="25.0" left="25.0" right="25.0" />
+               </padding>
+            </FlowPane>
+         </content>
+      </ScrollPane>
+   </children>
 </AnchorPane>
