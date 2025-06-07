@@ -1,6 +1,5 @@
 package com.musicsheetsmanager.controller;
 
-import com.musicsheetsmanager.model.Brano;
 import com.musicsheetsmanager.model.Utente;
 import com.musicsheetsmanager.config.SessionManager;
 import javafx.fxml.FXML;
@@ -18,7 +17,7 @@ public class MainController {
 
     @FXML private TopBarController topBarController;
     @FXML private EsploraController esploraController;
-    @FXML private BranoFileController branoFileController;
+    @FXML private BranoController branoController;
 
 
     private Utente currentUser;
@@ -37,8 +36,8 @@ public class MainController {
         showNavBar();
     }
 
-    public BranoFileController getBranoFileController() {
-        return branoFileController;
+    public BranoController getBranoFileController() {
+        return branoController;
     }
 
     public void setEsploraController(EsploraController esploraController) {
@@ -48,10 +47,10 @@ public class MainController {
         }
     }
 
-    public void setBranoFileController(BranoFileController branoFileController) {
-        this.branoFileController = branoFileController;
+    public void setBranoFileController(BranoController branoController) {
+        this.branoController = branoController;
         if (esploraController != null) {
-            esploraController.setBranoFileController(branoFileController);
+            esploraController.setBranoFileController(branoController);
         }
     }
 
@@ -77,10 +76,10 @@ public class MainController {
                 if (esploraController != null) {
                     this.topBarController.setEsploraController(esploraController);
                 }
-            } else if (controller instanceof BranoFileController) {
-                this.branoFileController = (BranoFileController) controller;
+            } else if (controller instanceof BranoController) {
+                this.branoController = (BranoController) controller;
                 if (esploraController != null) {
-                    esploraController.setBranoFileController(this.branoFileController);
+                    esploraController.setBranoFileController(this.branoController);
                 }
             }
 
