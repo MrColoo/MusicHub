@@ -137,7 +137,6 @@
 }
 
 previewBackground{
-    -fx-background-radius: 50px;
     -fx-effect: dropshadow(gaussian, #5D5D5D, 250, 0.00005, 0, 0);
 }
 

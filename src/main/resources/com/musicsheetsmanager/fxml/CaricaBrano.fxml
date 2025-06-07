@@ -170,7 +170,7 @@
             <Region prefWidth="55.0" />
             <StackPane fx:id="previewStackPane" maxHeight="-Infinity" maxWidth="-Infinity">
                <children>
-                  <Rectangle fx:id="previewBackground" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" stroke="TRANSPARENT" strokeType="INSIDE" />
+                  <Rectangle fx:id="previewBackground" arcHeight="18.0" arcWidth="18.0" fill="TRANSPARENT" stroke="TRANSPARENT" strokeType="INSIDE" />
                   <VBox fx:id="previewContainer" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefWidth="250.0" styleClass="preview-container">
                      <children>
                         <VBox>

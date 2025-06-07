@@ -102,12 +102,8 @@ public class CaricaBranoController {
         previewBackground.widthProperty().bind(previewStackPane.widthProperty());
         previewBackground.heightProperty().bind(previewStackPane.heightProperty());
 
-        // 2. Imposta lo sfondo inizialmente con un gradiente di default
-        previewBackground.setFill(new LinearGradient(
-                0, 0, 0, 1, true, CycleMethod.NO_CYCLE,
-                new Stop(0, Color.web("#1DB954")),
-                new Stop(1, Color.web("#000000"))
-        ));
+        Color[] gradientColors = estraiColoriDominanti(defaultCover);
+        aggiornaSfondoGradiente(previewBackground, gradientColors);
     }
 
     private void realtimeWriting(){
@@ -456,6 +452,8 @@ public class CaricaBranoController {
         Rectangle overlay = new Rectangle();
         overlay.widthProperty().bind(background.widthProperty());
         overlay.heightProperty().bind(background.heightProperty());
+        overlay.arcHeightProperty().bind(background.arcHeightProperty());
+        overlay.arcWidthProperty().bind(background.arcWidthProperty());
         overlay.setFill(nuovoGradiente);
         overlay.setOpacity(0);
 
