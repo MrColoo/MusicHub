@@ -27,10 +27,6 @@ public class BranoController extends CaricaCommentoController {
     public void initialize() {
     }
 
-    public void inizializzaConBrano(Brano brano) {
-        fetchBranoData(brano);
-    }
-
     // mostra i dati del brano(titolo, autore ecc...) quando l'utente interagisce con un brano in Esplora
     public void fetchBranoData(Brano brano) {
         branoTitolo.setText(brano.getTitolo());

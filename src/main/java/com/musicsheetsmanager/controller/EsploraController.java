@@ -41,6 +41,10 @@ public class EsploraController implements  Controller{
             "com", "musicsheetsmanager", "data", "brani.json"
     );
     public void initialize() {
+
+    }
+
+    public void inizializzaBrani() {
         if (mainController != null) {
             mainController.setEsploraController(this);
         }
@@ -76,16 +80,11 @@ public class EsploraController implements  Controller{
         vbox.setPadding(new Insets(15));
         vbox.setCursor(Cursor.HAND);
 
-        vbox.setUserData(brano);    // associa brano alla card
-        vbox.setOnMouseClicked(event -> {
-            mainController.show("Brano");
-            // aspetta che il controller sia pronto
-            Platform.runLater(() -> {
-                BranoController controller = mainController.getBranoFileController();
-                if (controller != null) {
-                    controller.inizializzaConBrano(brano);
-                }
-            });
+        mainController.goToBrano(vbox, brano, () -> {
+            BranoController controller = mainController.getBranoFileController();
+            if (controller != null) {
+                controller.fetchBranoData(brano);
+            }
         });
 
         File imageFile = new File("src/main/resources/com/musicsheetsmanager/ui/covers/" + idBrano + ".jpg");

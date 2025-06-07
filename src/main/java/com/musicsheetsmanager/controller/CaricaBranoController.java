@@ -50,7 +50,7 @@ import java.lang.reflect.Type;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class CaricaBranoController {
+public class CaricaBranoController implements Controller {
 
     @FXML private TextField campoTitolo;
     @FXML private TextField campoAutori;
@@ -66,16 +66,22 @@ public class CaricaBranoController {
     @FXML private StackPane previewStackPane;
     @FXML private Rectangle previewBackground;
     @FXML private ImageView cover;
+    @FXML private Button caricaBottone;
     private final Image defaultCover = new Image(getClass().getResource("/com/musicsheetsmanager/ui/Cover.jpg").toExternalForm());
     private String coverURL;
-    //@FXML private HBox listaFileBox;
+
     private String idBrano = "";
-
-
 
     private final List<Documento> fileAllegati = new ArrayList<>();     // salva temporaneamente i file
                                                                         // allegati finché l'utente
                                                                         // non carica il brano
+
+    private MainController mainController;
+
+    @Override
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
+    }
 
     private static final Path BRANI_JSON_PATH = Paths.get( // percorso verso il file JSON
             "src", "main", "resources",
@@ -337,6 +343,13 @@ public class CaricaBranoController {
         List<Brano> listaBrani = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType); // brani letti dal json
         listaBrani.add(nuovoBrano);
         JsonUtils.scriviSuJson(listaBrani, BRANI_JSON_PATH);
+
+        mainController.goToBrano(caricaBottone, nuovoBrano, () -> {
+            BranoController controller = mainController.getBranoFileController();
+            if (controller != null) {
+                controller.fetchBranoData(nuovoBrano);
+            }
+        });
 
         return true;
     }
