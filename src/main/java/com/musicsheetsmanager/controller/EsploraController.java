@@ -3,6 +3,7 @@ package com.musicsheetsmanager.controller;
 import com.google.gson.reflect.TypeToken;
 import com.musicsheetsmanager.config.JsonUtils;
 import com.musicsheetsmanager.model.Brano;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -12,8 +13,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
-
-import javafx.scene.input.MouseEvent;
 
 import java.io.File;
 import java.lang.reflect.Type;
@@ -30,6 +29,9 @@ public class EsploraController implements  Controller{
     @Override
     public void setMainController(MainController mainController) {
         this.mainController = mainController;
+    }
+
+    public void setBranoFileController(BranoFileController branoFileController) {
     }
 
     private List<Brano> listaBraniPota;
@@ -73,6 +75,18 @@ public class EsploraController implements  Controller{
         vbox.setPadding(new Insets(15));
         vbox.setCursor(Cursor.HAND);
 
+        vbox.setUserData(brano);    // associa brano alla card
+        vbox.setOnMouseClicked(event -> {
+            mainController.show("Brano");
+            // aspetta che il controller sia pronto
+            Platform.runLater(() -> {
+                BranoFileController controller = mainController.getBranoFileController();
+                if (controller != null) {
+                    controller.inizializzaConBrano(brano);
+                }
+            });
+        });
+
         File imageFile = new File("src/main/resources/com/musicsheetsmanager/ui/covers/" + idBrano + ".jpg");
         if (!imageFile.exists()) {
             imageFile = new File("src/main/resources/com/musicsheetsmanager/ui/Cover.jpg");
@@ -93,10 +107,5 @@ public class EsploraController implements  Controller{
 
         vbox.getChildren().addAll(cover, titolo, autore);
         return vbox;
-    }
-
-    @FXML
-    private void onBranoClick(MouseEvent event) {
-        mainController.show("Brano");
     }
 }

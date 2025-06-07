@@ -17,7 +17,7 @@
             <children>
                 <HBox alignment="CENTER_LEFT" prefWidth="1070.0" styleClass="brano-banner">
                     <children>
-                        <ImageView fitWidth="170.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="branoCover" fitWidth="170.0" pickOnBounds="true" preserveRatio="true">
                             <image>
                                 <Image url="@../ui/Cover.jpg" />
                             </image>
