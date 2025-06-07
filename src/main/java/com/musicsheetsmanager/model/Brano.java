@@ -35,6 +35,9 @@ public class Brano {
     }
 
     // Getter e Setter
+    public String getYoutubeLink() {
+        return linkYoutube;
+    }
 
     public String getTitolo() {
         return titolo;

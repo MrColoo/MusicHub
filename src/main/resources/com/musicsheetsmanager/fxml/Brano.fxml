@@ -82,7 +82,7 @@
                                       <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
                                   </padding>
                               </VBox>
-                              <VBox minHeight="250.0" prefWidth="505.0" styleClass="brano-allegati-container">
+                              <VBox fx:id="mediaListVBox" minHeight="250.0" prefWidth="505.0" styleClass="brano-allegati-container">
                                   <children>
                                       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="File Multimediali">
                                           <styleClass>
