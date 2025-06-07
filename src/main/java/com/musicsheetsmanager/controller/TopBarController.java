@@ -9,7 +9,6 @@ import com.musicsheetsmanager.config.SessionManager;
 import com.musicsheetsmanager.model.Brano;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 
@@ -23,7 +22,10 @@ public class TopBarController implements Controller{
     private Button mainButton; // "Accedi" o "Carica Brano"
     @FXML private HBox searchBar; // Box campo di ricerca
     @FXML private TextField campoRicerca;
-    @FXML private ListView<String> listaRisultati;  // brani trovati
+
+    private EsploraController esploraController;
+
+    private List<Brano> risultatiRircerca;  // risultati ricerca brano
 
     private static final Path BRANI_JSON_PATH = Paths.get( // percorso verso il file JSON
             "src", "main", "resources",
@@ -37,6 +39,9 @@ public class TopBarController implements Controller{
         this.mainController = mainController;
     }
 
+    public void setEsploraController(EsploraController esploraController) {
+        this.esploraController = esploraController;
+    }
 
     public void initialize(){
         campoRicerca.setOnAction(event -> onSearchBarEnter());
@@ -64,15 +69,10 @@ public class TopBarController implements Controller{
         Type branoType = new TypeToken<List<Brano>>() {}.getType();
         List<Brano> listaBrani = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType);
 
-        List<Brano> risultati = Brano.cerca(listaBrani, chiave);
-        listaRisultati.getItems().clear();
+        risultatiRircerca = Brano.cerca(listaBrani, chiave);
 
-        if(risultati.isEmpty()){
-            listaRisultati.getItems().add("Nessun brano trovato con i criteri specificati.");
-        } else {
-            listaRisultati.getItems().addAll(risultati.stream()
-                    .map(Brano::toString)
-                    .toList());
+        if(esploraController != null) {
+            esploraController.mostraBrani(risultatiRircerca);
         }
     }
 

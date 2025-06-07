@@ -15,6 +15,9 @@ public class MainController {
     @FXML private StackPane navBarContainer;
     @FXML private StackPane mainContentPane;
 
+    @FXML private TopBarController topBarController;
+    @FXML private EsploraController esploraController;
+
     private Utente currentUser;
 
 
@@ -24,6 +27,9 @@ public class MainController {
             showTopBar();
             return;
         }
+
+        topBarController.setMainController(this);
+        topBarController.setEsploraController(esploraController);
 
         showNavBar();
     }
