@@ -10,8 +10,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.stream.Collectors;
 
 import com.musicsheetsmanager.model.Brano;
+import javafx.scene.text.Text;
 
 public class BranoFileController extends CaricaCommentoController {
 
@@ -20,6 +22,11 @@ public class BranoFileController extends CaricaCommentoController {
 
     @FXML
     ImageView branoCover;
+    @FXML
+    Text branoTitolo;
+    @FXML
+    Text branoAutori;
+
 
     @FXML
     public void initialize() {
@@ -75,10 +82,13 @@ public class BranoFileController extends CaricaCommentoController {
 
     // mostra i dati del brano(titolo, autore ecc...) quando l'utente interagisce con un brano in Esplora
     public void fetchBranoData(Brano brano) {
+        branoTitolo.setText(brano.getTitolo());
+
+        String autori = String.join(" ,", brano.getAutori());
+        branoAutori.setText(autori);
 
         // cover brano
         String idBrano = brano.getIdBrano();
-        System.out.println(idBrano);
         File imageFile = new File("src/main/resources/com/musicsheetsmanager/ui/covers/" + idBrano + ".jpg");
         if (!imageFile.exists()) {
             imageFile = new File("src/main/resources/com/musicsheetsmanager/ui/Cover.jpg");

@@ -34,7 +34,7 @@
                                         <Insets bottom="10.0" />
                                     </VBox.margin>
                                 </Text>
-                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="a me mi piace (feat. Manu Chao)" wrappingWidth="740.0">
+                                <Text fx:id="branoTitolo" strokeType="OUTSIDE" strokeWidth="0.0" text="a me mi piace (feat. Manu Chao)" wrappingWidth="740.0">
                                     <styleClass>
                                         <String fx:value="text-white" />
                                         <String fx:value="font-black" />
@@ -44,7 +44,7 @@
                                         <Insets bottom="5.0" />
                                     </VBox.margin>
                                 </Text>
-                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Alfa - Manu Chao">
+                                <Text fx:id="branoAutori" strokeType="OUTSIDE" strokeWidth="0.0" text="Alfa - Manu Chao">
                                     <styleClass>
                                         <String fx:value="text-white" />
                                         <String fx:value="font-bold" />
