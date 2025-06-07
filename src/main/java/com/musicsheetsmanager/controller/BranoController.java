@@ -53,6 +53,25 @@ public class BranoController {
             "com", "musicsheetsmanager", "data", "brani.json"
     );
 
+    // mostra i dati del brano(titolo, autore ecc...) quando l'utente interagisce con un brano in Esplora
+    public void fetchBranoData(Brano brano) {
+        idBrano = brano.getIdBrano();
+        branoTitolo.setText(brano.getTitolo());
+
+        String autori = String.join(" ,", brano.getAutori());
+        branoAutori.setText(autori);
+
+        // cover brano
+        String idBrano = brano.getIdBrano();
+        File imageFile = new File("src/main/resources/com/musicsheetsmanager/ui/covers/" + idBrano + ".jpg");
+        if (!imageFile.exists()) {
+            imageFile = new File("src/main/resources/com/musicsheetsmanager/ui/Cover.jpg");
+        }
+        branoCover.setImage(new Image(imageFile.toURI().toString()));
+    }
+
+    //TODO AGGIUNGERE MESSAGGIO DI ERRORE COMMENTO VUOTO
+
     // funzione per salvare un commento generico
     private void aggiungiCommento(String testo, boolean isNota) {
         // controllo se commento è vuoto
@@ -90,20 +109,4 @@ public class BranoController {
         campoNota.clear();
     }
 
-    // mostra i dati del brano(titolo, autore ecc...) quando l'utente interagisce con un brano in Esplora
-    public void fetchBranoData(Brano brano) {
-        idBrano = brano.getIdBrano();
-        branoTitolo.setText(brano.getTitolo());
-
-        String autori = String.join(" ,", brano.getAutori());
-        branoAutori.setText(autori);
-
-        // cover brano
-        String idBrano = brano.getIdBrano();
-        File imageFile = new File("src/main/resources/com/musicsheetsmanager/ui/covers/" + idBrano + ".jpg");
-        if (!imageFile.exists()) {
-            imageFile = new File("src/main/resources/com/musicsheetsmanager/ui/Cover.jpg");
-        }
-        branoCover.setImage(new Image(imageFile.toURI().toString()));
-    }
 }

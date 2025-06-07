@@ -25,9 +25,15 @@ public class TopBarController implements Controller{
 
     private EsploraController esploraController;
 
-    private List<Brano> risultatiRircerca;  // risultati ricerca brano
+    private List<Brano> risultatiRircercaBrani;
+    private List<String> risultatiRircercaCatalogo;
 
     private static final Path BRANI_JSON_PATH = Paths.get( // percorso verso il file JSON
+            "src", "main", "resources",
+            "com", "musicsheetsmanager", "data", "brani.json"
+    );
+
+    private static final Path DIZIONARIO_JSON_PATH = Paths.get( // percorso verso il file JSON
             "src", "main", "resources",
             "com", "musicsheetsmanager", "data", "brani.json"
     );
@@ -66,16 +72,31 @@ public class TopBarController implements Controller{
     // restituisce una lista con i brani trovati
     @FXML
     public void onSearchBarEnter (){
+        // String viewTypeText = esploraController.getViewType().getText().toLowerCase();
+        String viewTypeText = "generi";
         String chiave = campoRicerca.getText();
 
-        Type branoType = new TypeToken<List<Brano>>() {}.getType();
-        List<Brano> listaBrani = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType);
+        if("esplora".equals(viewTypeText)) {        // se sono in esplora cerco i brani per nome e/o titolo
+            Type branoType = new TypeToken<List<Brano>>() {}.getType();
+            List<Brano> listaBrani = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType);
 
-        risultatiRircerca = Brano.cerca(listaBrani, chiave);
+            risultatiRircercaBrani = Brano.cercaBrano(listaBrani, chiave);
 
-        if(esploraController != null) {
-            esploraController.mostraBrani(risultatiRircerca);
+            esploraController.mostraBrani(risultatiRircercaBrani);
+        } else {
+            Path DIZIONARIO_JSON_PATH = Paths.get( // percorso verso il file JSON
+                    "src", "main", "resources",
+                    "com", "musicsheetsmanager", "data", viewTypeText + ".json"
+            );
+
+            Type stringType = new TypeToken<List<String>>() {}.getType();
+            List<String> dizionario = JsonUtils.leggiDaJson(DIZIONARIO_JSON_PATH, stringType);
+
+            risultatiRircercaCatalogo = Brano.cercaCatalogo(dizionario, chiave);
+
+            esploraController.mostraCatalogo(risultatiRircercaCatalogo);
         }
+
     }
 
 }

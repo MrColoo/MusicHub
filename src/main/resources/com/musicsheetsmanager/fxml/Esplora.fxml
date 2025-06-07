@@ -18,7 +18,7 @@
       </Text>
       <ScrollPane hbarPolicy="NEVER" layoutY="120.0" prefHeight="620.0" prefWidth="1070.0" styleClass="explore-scroll-pane">
          <content>
-            <FlowPane fx:id="braniContainer" hgap="20.0" prefWidth="1070.0" prefWrapLength="0.0">
+            <FlowPane fx:id="container" hgap="20.0" prefWidth="1070.0" prefWrapLength="0.0">
                <padding>
                   <Insets bottom="25.0" left="25.0" right="25.0" />
                </padding>
