@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="740.0" prefWidth="1070.0" styleClass="explore-background" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.musicsheetsmanager.controller.EsploraController">
+<AnchorPane prefHeight="740.0" prefWidth="1070.0" styleClass="explore-background" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.musicsheetsmanager.controller.AdminController">
    <children>
       <Text layoutX="43.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Interfaccia di Amministrazione" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="40.0">
          <styleClass>

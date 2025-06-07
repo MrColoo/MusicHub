@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<ScrollPane hbarPolicy="NEVER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="1070.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.musicsheetsmanager.controller.BranoController">
+<ScrollPane hbarPolicy="NEVER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="1070.0" styleClass="brano-scroll-pane" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.musicsheetsmanager.controller.BranoController">
     <content>
         <VBox prefWidth="1070.0" styleClass="bra">
             <children>
@@ -113,7 +113,7 @@
                               <String fx:value="text-xl" />
                            </styleClass>
                         </Text>
-                        <ScrollPane hbarPolicy="NEVER" maxHeight="340.0" prefWidth="455.0">
+                        <ScrollPane hbarPolicy="NEVER" maxHeight="340.0" prefWidth="455.0" styleClass="brano-scroll-pane">
                            <content>
                               <VBox maxWidth="455.0" prefWidth="100.0">
                                  <padding>

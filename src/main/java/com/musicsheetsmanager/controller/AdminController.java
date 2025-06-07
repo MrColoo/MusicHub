@@ -44,9 +44,11 @@ public class AdminController implements Controller, Initializable {
     @FXML
     private ListView<Utente> userList;
 
+    //TODO DA FARE
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        if (utenti != null && !utenti.isEmpty()) {
+        /*if (utenti != null && !utenti.isEmpty()) {
             // 1) Filtro solo quelli con approved == false
             List<Utente> utentiPending = utenti.stream()
                     .filter(u -> !u.isApproved())
@@ -71,7 +73,7 @@ public class AdminController implements Controller, Initializable {
 
             // 4) (Opzionale) Preseleziona il primo
             userList.getSelectionModel().selectFirst();
-        }
+        }*/
     }
 
     /**
