@@ -5,7 +5,6 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextArea?>
-<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -17,11 +16,7 @@
             <children>
                 <HBox alignment="CENTER_LEFT" prefWidth="1070.0" styleClass="brano-banner">
                     <children>
-                        <ImageView fx:id="branoCover" fitWidth="170.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@../ui/Cover.jpg" />
-                            </image>
-                        </ImageView>
+                        <ImageView fx:id="branoCover" fitHeight="170.0" fitWidth="170.0" pickOnBounds="true" preserveRatio="true" />
                         <VBox alignment="BOTTOM_LEFT">
                             <children>
                                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Singolo">
@@ -34,7 +29,7 @@
                                         <Insets bottom="10.0" />
                                     </VBox.margin>
                                 </Text>
-                                <Text fx:id="branoTitolo" strokeType="OUTSIDE" strokeWidth="0.0" text="a me mi piace (feat. Manu Chao)" wrappingWidth="740.0">
+                                <Text fx:id="branoTitolo" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="740.0">
                                     <styleClass>
                                         <String fx:value="text-white" />
                                         <String fx:value="font-black" />
@@ -44,7 +39,7 @@
                                         <Insets bottom="5.0" />
                                     </VBox.margin>
                                 </Text>
-                                <Text fx:id="branoAutori" strokeType="OUTSIDE" strokeWidth="0.0" text="Alfa - Manu Chao">
+                                <Text fx:id="branoAutori" strokeType="OUTSIDE" strokeWidth="0.0">
                                     <styleClass>
                                         <String fx:value="text-white" />
                                         <String fx:value="font-bold" />
