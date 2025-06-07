@@ -141,7 +141,7 @@
                               <Insets right="15.0" />
                            </HBox.margin>
                             </Button>
-                        <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#onAddBranoClick" prefHeight="33.0" text="Carica">
+                        <Button fx:id="caricaBottone" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#onAddBranoClick" prefHeight="33.0" text="Carica">
                            <styleClass>
                               <String fx:value="form-btn" />
                               <String fx:value="font-book" />
