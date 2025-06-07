@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.musicsheetsmanager.config.JsonUtils;
+import com.musicsheetsmanager.config.SessionManager;
 import com.musicsheetsmanager.model.Brano;
 import com.musicsheetsmanager.model.Documento;
 import javafx.animation.FadeTransition;
@@ -346,11 +347,15 @@ public class CaricaBranoController implements Controller {
         listaBrani.add(nuovoBrano);
         JsonUtils.scriviSuJson(listaBrani, BRANI_JSON_PATH);
 
+        System.out.println("Brano salvato con successo");
+
         // aggiorna dizionari
         aggiornaDizionario(Collections.singletonList(titolo), "titoli");
         aggiornaDizionario(autori, "autori");
         aggiornaDizionario(generi, "generi");
         aggiornaDizionario(strumentiMusicali, "strumentiMusicali");
+
+        System.out.println("Dizionari salvati con successo");
 
         mainController.goToBrano(caricaBottone, nuovoBrano, () -> {
             BranoController controller = mainController.getBranoFileController();
@@ -369,8 +374,7 @@ public class CaricaBranoController implements Controller {
         File selectedFile = fileChooser.showOpenDialog(allegaFileBtn.getScene().getWindow());
 
         if(selectedFile != null && !fileAllegati.contains(selectedFile)){
-            // TODO mettere Utente.getUsername invece di Pippo
-            Documento documento = new Documento("Pippo", selectedFile.getName(), selectedFile.getAbsolutePath());
+            Documento documento = new Documento(SessionManager.getLoggedUser().getUsername(), selectedFile.getName(), selectedFile.getAbsolutePath());
 
             // controllo per duplicati
             boolean exist = fileAllegati.stream()
