@@ -11,13 +11,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<ScrollPane hbarPolicy="NEVER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="1070.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.musicsheetsmanager.controller.CaricaCommentoController">
+<ScrollPane hbarPolicy="NEVER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="1070.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.musicsheetsmanager.controller.BranoController">
     <content>
         <VBox prefWidth="1070.0" styleClass="bra">
             <children>
                 <HBox alignment="CENTER_LEFT" prefWidth="1070.0" styleClass="brano-banner">
                     <children>
-                        <ImageView fitWidth="170.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="branoCover" fitWidth="170.0" pickOnBounds="true" preserveRatio="true">
                             <image>
                                 <Image url="@../ui/Cover.jpg" />
                             </image>
@@ -34,7 +34,7 @@
                                         <Insets bottom="10.0" />
                                     </VBox.margin>
                                 </Text>
-                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="a me mi piace (feat. Manu Chao)" wrappingWidth="740.0">
+                                <Text fx:id="branoTitolo" strokeType="OUTSIDE" strokeWidth="0.0" text="a me mi piace (feat. Manu Chao)" wrappingWidth="740.0">
                                     <styleClass>
                                         <String fx:value="text-white" />
                                         <String fx:value="font-black" />
@@ -44,7 +44,7 @@
                                         <Insets bottom="5.0" />
                                     </VBox.margin>
                                 </Text>
-                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Alfa - Manu Chao">
+                                <Text fx:id="branoAutori" strokeType="OUTSIDE" strokeWidth="0.0" text="Alfa - Manu Chao">
                                     <styleClass>
                                         <String fx:value="text-white" />
                                         <String fx:value="font-bold" />
@@ -68,7 +68,7 @@
                     <children>
                   <VBox>
                      <children>
-                              <VBox minHeight="250.0" prefWidth="505.0" styleClass="brano-allegati-container">
+                              <VBox fx:id="fileListVBox" minHeight="250.0" prefWidth="505.0" styleClass="brano-allegati-container">
                                   <children>
                                       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Documenti allegati">
                                           <styleClass>

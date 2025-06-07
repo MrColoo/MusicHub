@@ -130,18 +130,23 @@
 /* CARICA BRANO */
 
 .preview-container{
-    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #d4a31c, #5e421e);
+    -fx-background-color: transparent;
     -fx-background-radius: 18px;
     -fx-text-fill: -fx-secondary-white;
     -fx-effect: dropshadow(gaussian, #5D5D5D, 250, 0.00005, 0, 0);
 }
 
+previewBackground{
+    -fx-background-radius: 50px;
+    -fx-effect: dropshadow(gaussian, #5D5D5D, 250, 0.00005, 0, 0);
+}
+
 /* BRANO */
-.scroll-pane{
+.brano-scroll-pane{
     -fx-background-color: -fx-secondary-black-02;
 }
 
-.scroll-pane > .viewport {
+.brano-scroll-pane > .viewport {
     -fx-background-color: -fx-secondary-black-02;
 }
 
@@ -190,9 +195,55 @@
     -fx-text-fill: -fx-secondary-black;
 }
 
-/* Global Styles */
-.root {
+/* ESPLORA */
 
+.explore-background {
+    -fx-background-color:
+        linear-gradient(
+            from 0% 0% to 0% 50%,
+            -fx-primary-green, /* verde scuro in alto */
+            #000000  /* nero in basso */
+        );
+}
+
+.explore-scroll-pane{
+    -fx-background-color: transparent;
+}
+
+.explore-scroll-pane .viewport{
+    -fx-background-color: transparent;
+}
+
+.explore-card{
+    -fx-background-radius: 7px;
+}
+
+.explore-card:hover{
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ADMIN */
+.admin-table{
+    -fx-background-color: rgba(0, 0, 0, 0.2);
+    -fx-background-radius: 11px;
+}
+
+.admin-row{
+    -fx-border-color: rgba(255, 255, 255, 0.1) transparent transparent transparent;
+    -fx-border-width: 3 0 0 0; /* top right bottom left */
+    -fx-border-style: solid;
+}
+
+.approve-btn{
+    -fx-background-color: -fx-primary-green;
+    -fx-text-fill: -fx-secondary-black-02;
+    -fx-background-radius: 200px;
+}
+
+.delete-btn{
+    -fx-background-color: red;
+    -fx-text-fill: white;
+    -fx-background-radius: 200px;
 }
 
 /* Button Styles */

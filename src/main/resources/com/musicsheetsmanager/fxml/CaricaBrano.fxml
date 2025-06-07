@@ -9,7 +9,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Text?>
 
 <AnchorPane prefHeight="740.0" prefWidth="1070.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.musicsheetsmanager.controller.CaricaBranoController">
@@ -166,46 +168,48 @@
                   </children>
               </VBox>
             <Region prefWidth="55.0" />
-            <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefWidth="250.0" styleClass="preview-container">
+            <StackPane fx:id="previewStackPane" maxHeight="-Infinity" maxWidth="-Infinity">
                <children>
-                  <VBox>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
+                  <Rectangle fx:id="previewBackground" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" stroke="TRANSPARENT" strokeType="INSIDE" />
+                  <VBox fx:id="previewContainer" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefWidth="250.0" styleClass="preview-container">
                      <children>
-                        <ImageView fitWidth="170.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../ui/Cover.jpg" />
-                           </image>
-                        </ImageView>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: -fx-secondary-white;" text="a me mi piace (feat. Manu Chao)" wrappingWidth="170.0">
+                        <VBox>
                            <VBox.margin>
-                              <Insets top="10.0" />
+                              <Insets />
                            </VBox.margin>
-                           <styleClass>
-                              <String fx:value="text-xl" />
-                              <String fx:value="font-bold" />
-                           </styleClass>
-                        </Text>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: -fx-secondary-white;" text="Alfa - Manu Chao">
-                           <VBox.margin>
-                              <Insets top="10.0" />
-                           </VBox.margin>
-                           <styleClass>
-                              <String fx:value="font-bold" />
-                              <String fx:value="text-lg" />
-                           </styleClass>
-                        </Text>
+                           <children>
+                              <ImageView fx:id="cover" fitWidth="170.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../ui/Cover.jpg" />
+                                 </image>
+                              </ImageView>
+                              <Text fx:id="cardTitolo" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: -fx-secondary-white;" text="Titolo" wrappingWidth="170.0">
+                                 <VBox.margin>
+                                    <Insets top="10.0" />
+                                 </VBox.margin>
+                                 <styleClass>
+                                    <String fx:value="text-xl" />
+                                    <String fx:value="font-bold" />
+                                 </styleClass>
+                              </Text>
+                              <Text fx:id="cardAutore" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: -fx-secondary-white;" text="Autore" wrappingWidth="170.0">
+                                 <VBox.margin>
+                                    <Insets top="10.0" />
+                                 </VBox.margin>
+                                 <styleClass>
+                                    <String fx:value="font-bold" />
+                                    <String fx:value="text-lg" />
+                                 </styleClass>
+                              </Text>
+                           </children>
+                        </VBox>
                      </children>
+                     <padding>
+                        <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+                     </padding>
                   </VBox>
                </children>
-               <HBox.margin>
-                  <Insets />
-               </HBox.margin>
-               <padding>
-                  <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
-               </padding>
-            </VBox>
+            </StackPane>
          </children>
          <padding>
             <Insets left="56.0" right="56.0" />

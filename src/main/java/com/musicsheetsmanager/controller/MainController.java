@@ -15,6 +15,11 @@ public class MainController {
     @FXML private StackPane navBarContainer;
     @FXML private StackPane mainContentPane;
 
+    @FXML private TopBarController topBarController;
+    @FXML private EsploraController esploraController;
+    @FXML private BranoController branoController;
+
+
     private Utente currentUser;
 
 
@@ -25,7 +30,28 @@ public class MainController {
             return;
         }
 
+        topBarController.setMainController(this);
+        topBarController.setEsploraController(esploraController);
+
         showNavBar();
+    }
+
+    public BranoController getBranoFileController() {
+        return branoController;
+    }
+
+    public void setEsploraController(EsploraController esploraController) {
+        this.esploraController = esploraController;
+        if (topBarController != null) {
+            topBarController.setEsploraController(esploraController);
+        }
+    }
+
+    public void setBranoFileController(BranoController branoController) {
+        this.branoController = branoController;
+        if (esploraController != null) {
+            esploraController.setBranoFileController(branoController);
+        }
     }
 
     // Funzione generale per caricare una pagina FXML
@@ -37,6 +63,24 @@ public class MainController {
 
             if (controller instanceof Controller) {
                 ((Controller) controller).setMainController(this);
+            }
+
+            if (controller instanceof EsploraController) {
+                this.esploraController = (EsploraController) controller;
+                if (topBarController != null) {
+                    topBarController.setEsploraController(esploraController);
+                }
+            } else if (controller instanceof TopBarController) {
+                this.topBarController = (TopBarController) controller;
+                this.topBarController.setMainController(this);
+                if (esploraController != null) {
+                    this.topBarController.setEsploraController(esploraController);
+                }
+            } else if (controller instanceof BranoController) {
+                this.branoController = (BranoController) controller;
+                if (esploraController != null) {
+                    esploraController.setBranoFileController(this.branoController);
+                }
             }
 
             pane.getChildren().setAll(content);
@@ -63,6 +107,12 @@ public class MainController {
     // Nasconde NavBar
     public void hideNavBar() {
         navBarContainer.getChildren().clear();
+    }
+
+    // Ricarica TopBar
+    public void reloadTopBar() {
+        navBarContainer.getChildren().clear();
+        loadContent("TopBar", topBarContainer);
     }
 
 }

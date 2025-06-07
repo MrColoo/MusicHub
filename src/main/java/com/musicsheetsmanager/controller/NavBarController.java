@@ -4,6 +4,8 @@ import com.musicsheetsmanager.config.SessionManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.ToggleButton;
 
+import static com.musicsheetsmanager.config.SessionManager.logout;
+
 public class NavBarController implements Controller{
 
     @FXML private ToggleButton esploraBtn;
@@ -24,7 +26,7 @@ public class NavBarController implements Controller{
     }
 
     private void changeNavBar() {
-        if (!SessionManager.isLoggedIn()) { // da cambiare e mettere admin
+        if (!SessionManager.getLoggedUser().isAdmin()) { // da cambiare e mettere admin
             adminBtn.setVisible(false);
         }else{
             adminBtn.setVisible(true);
@@ -55,6 +57,8 @@ public class NavBarController implements Controller{
             case "logoutBtn":
                 alreadySelected(btn);
                 mainController.hideNavBar();
+                logout(); // imposta a null l'utente loggato in SessionManager
+                mainController.reloadTopBar();
                 mainController.show("Login");
                 break;
             default:
