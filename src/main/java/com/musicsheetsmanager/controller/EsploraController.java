@@ -34,7 +34,8 @@ public class EsploraController implements  Controller{
     public void setBranoFileController(BranoFileController branoFileController) {
     }
 
-    private List<Brano> listaBraniPota;
+    // quando l'utente è nella homepage mostra tutti i brani
+    private List<Brano> listaBrani;
     private static final Path BRANI_JSON_PATH = Paths.get( // percorso verso il file JSON
             "src", "main", "resources",
             "com", "musicsheetsmanager", "data", "brani.json"
@@ -45,11 +46,11 @@ public class EsploraController implements  Controller{
         }
 
         Type branoType = new TypeToken<List<Brano>>() {}.getType();
-        listaBraniPota = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType); //TODO CAMBIA NOME
-        mostraBraniPota(listaBraniPota); //TODO CAMBIA NOME
+        listaBrani = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType);
+        mostraTuttiBrani(listaBrani);
     }
 
-    public void mostraBraniPota(List<Brano> listaBrani) {
+    public void mostraTuttiBrani(List<Brano> listaBrani) {
          braniContainer.getChildren().clear(); // pulisce view precedente
 
          for(Brano brano: listaBrani) {
