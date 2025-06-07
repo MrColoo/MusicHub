@@ -31,7 +31,7 @@ public class EsploraController implements  Controller{
         this.mainController = mainController;
     }
 
-    public void setBranoFileController(BranoFileController branoFileController) {
+    public void setBranoFileController(BranoController branoController) {
     }
 
     // quando l'utente è nella homepage mostra tutti i brani
@@ -81,7 +81,7 @@ public class EsploraController implements  Controller{
             mainController.show("Brano");
             // aspetta che il controller sia pronto
             Platform.runLater(() -> {
-                BranoFileController controller = mainController.getBranoFileController();
+                BranoController controller = mainController.getBranoFileController();
                 if (controller != null) {
                     controller.inizializzaConBrano(brano);
                 }

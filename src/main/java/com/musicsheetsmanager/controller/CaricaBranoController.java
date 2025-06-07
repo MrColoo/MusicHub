@@ -6,6 +6,8 @@ import com.google.gson.JsonParser;
 import com.musicsheetsmanager.config.JsonUtils;
 import com.musicsheetsmanager.model.Brano;
 import com.musicsheetsmanager.model.Documento;
+import javafx.animation.FadeTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -30,8 +32,19 @@ import java.util.Collections;
 import java.util.List;
 import com.google.gson.reflect.TypeToken;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelReader;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import javafx.util.Duration;
+
 import javax.imageio.ImageIO;
 import java.lang.reflect.Type;
 import java.util.UUID;
@@ -49,11 +62,15 @@ public class CaricaBranoController {
     @FXML private Button allegaFileBtn;
     @FXML private Text cardTitolo;
     @FXML private Text cardAutore;
+    @FXML private VBox previewContainer;
+    @FXML private StackPane previewStackPane;
+    @FXML private Rectangle previewBackground;
     @FXML private ImageView cover;
     private final Image defaultCover = new Image(getClass().getResource("/com/musicsheetsmanager/ui/Cover.jpg").toExternalForm());
     private String coverURL;
     //@FXML private HBox listaFileBox;
     private String idBrano = "";
+
 
 
     private final List<Documento> fileAllegati = new ArrayList<>();     // salva temporaneamente i file
@@ -75,11 +92,26 @@ public class CaricaBranoController {
         idBrano = UUID.randomUUID().toString();
 
         realtimeWriting();
+        initializePreviewBackground();
 
         errore.setVisible(false);
     }
 
+    private void initializePreviewBackground(){
+        // 1. Rectangle che funge da sfondo
+        previewBackground.widthProperty().bind(previewStackPane.widthProperty());
+        previewBackground.heightProperty().bind(previewStackPane.heightProperty());
+
+        // 2. Imposta lo sfondo inizialmente con un gradiente di default
+        previewBackground.setFill(new LinearGradient(
+                0, 0, 0, 1, true, CycleMethod.NO_CYCLE,
+                new Stop(0, Color.web("#1DB954")),
+                new Stop(1, Color.web("#000000"))
+        ));
+    }
+
     private void realtimeWriting(){
+
         // Listeners per aggiornamento automatico del nome inserito
         campoTitolo.textProperty().addListener((obs, oldValue, newValue) -> {
             if (newValue == null || newValue.trim().isEmpty()) {
@@ -114,7 +146,7 @@ public class CaricaBranoController {
         if (titolo.isEmpty() || autore.isEmpty() ||
                 !titolo.matches("[\\w\\sÀ-ÿ’',.!?\\-]+") ||
                 !autore.matches("[\\w\\sÀ-ÿ’',.!?\\-]+")) {
-            cover.setImage(defaultCover);
+            cambiaImmagineConFade(cover, defaultCover);
             return;
         }
         downloadCover();
@@ -143,7 +175,11 @@ public class CaricaBranoController {
 
                 if (results.size() == 0) {
                     System.out.println("Nessuna copertina trovata per: " + titolo + " - " + autore);
-                    cover.setImage(defaultCover);
+                    Platform.runLater(() -> {
+                        Color[] gradientColors = estraiColoriDominanti(defaultCover);
+                        aggiornaSfondoGradiente(previewBackground, gradientColors);
+                        cambiaImmagineConFade(cover, defaultCover);
+                    });
                     return;
                 }
 
@@ -155,13 +191,44 @@ public class CaricaBranoController {
 
                 // Carica l'immagine nel componente ImageView
                 Image fxImage = new Image(coverURL);
-                cover.setImage(fxImage);
+                Color[] gradientColors = estraiColoriDominanti(fxImage);
+                Platform.runLater(() -> {
+                    aggiornaSfondoGradiente(previewBackground, gradientColors);
+                    cambiaImmagineConFade(cover, fxImage);
+                });
 
             } catch (IOException e) {
                 System.err.println("Errore nel download della copertina: " + e.getMessage());
-                cover.setImage(defaultCover);
+                cambiaImmagineConFade(cover, defaultCover);
+                initializePreviewBackground();
             }
         }).start();
+    }
+
+    private void cambiaImmagineConFade(ImageView imageView, Image nuovaImmagine) {
+        Image attuale = imageView.getImage();
+
+        // Controlla se è la stessa immagine (confronta URL se disponibili)
+        if (attuale != null && attuale.getUrl() != null && nuovaImmagine.getUrl() != null) {
+            if (attuale.getUrl().equals(nuovaImmagine.getUrl())) {
+                return; // Nessun cambiamento → niente fade
+            }
+        }
+
+        FadeTransition fadeOut = new FadeTransition(Duration.millis(200), imageView);
+        fadeOut.setFromValue(1.0);
+        fadeOut.setToValue(0.0);
+
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(200), imageView);
+        fadeIn.setFromValue(0.0);
+        fadeIn.setToValue(1.0);
+
+        fadeOut.setOnFinished(event -> {
+            imageView.setImage(nuovaImmagine);
+            fadeIn.play();
+        });
+
+        fadeOut.play();
     }
 
     private void salvaCover() throws IOException {
@@ -347,5 +414,62 @@ public class CaricaBranoController {
         }
 
         JsonUtils.scriviSuJson(listaDizionario, DIZIONARIO_JSON_PATH);
+    }
+
+    private Color[] estraiColoriDominanti(Image image) {
+        PixelReader reader = image.getPixelReader();
+        int width = (int) image.getWidth();
+        int height = (int) image.getHeight();
+
+        long redSum = 0, greenSum = 0, blueSum = 0;
+        int count = 0;
+
+        for (int y = 0; y < height; y += 5) {
+            for (int x = 0; x < width; x += 5) {
+                javafx.scene.paint.Color c = reader.getColor(x, y);
+                redSum += (int)(c.getRed() * 255);
+                greenSum += (int)(c.getGreen() * 255);
+                blueSum += (int)(c.getBlue() * 255);
+                count++;
+            }
+        }
+
+        int r = (int)(redSum / count);
+        int g = (int)(greenSum / count);
+        int b = (int)(blueSum / count);
+
+        javafx.scene.paint.Color colore1 = Color.rgb(r, g, b);
+        javafx.scene.paint.Color colore2 = colore1.darker();
+
+        return new Color[]{colore1, colore2};
+    }
+
+    private void aggiornaSfondoGradiente(Rectangle background, Color[] nuoviColori) {
+        // Crea nuovo gradiente
+        LinearGradient nuovoGradiente = new LinearGradient(
+                0, 0, 0, 1, true, CycleMethod.NO_CYCLE,
+                new Stop(0, nuoviColori[0]),
+                new Stop(1, nuoviColori[1])
+        );
+
+        // Transizione di opacità solo sul fill del background
+        Rectangle overlay = new Rectangle();
+        overlay.widthProperty().bind(background.widthProperty());
+        overlay.heightProperty().bind(background.heightProperty());
+        overlay.setFill(nuovoGradiente);
+        overlay.setOpacity(0);
+
+        ((Pane) background.getParent()).getChildren().add(1, overlay);
+
+        // Dissolvenza in entrata
+        FadeTransition fade = new FadeTransition(Duration.millis(400), overlay);
+        fade.setFromValue(0);
+        fade.setToValue(1);
+        fade.setOnFinished(e -> {
+            // Una volta completato, sostituisce il fill originale
+            background.setFill(nuovoGradiente);
+            ((Pane) background.getParent()).getChildren().remove(overlay);
+        });
+        fade.play();
     }
 }
