@@ -330,19 +330,31 @@ public class CaricaBranoController implements Controller {
                 .map(Documento::getPercorso)
                 .collect(Collectors.toList());
 
+
         Brano nuovoBrano = new Brano(idBrano, titolo, autori, generi, anno, linkYoutube, strumentiMusicali, pathAllegati);
+
+        Type branoType = new TypeToken<List<Brano>>() {}.getType();
+        List<Brano> listaBrani = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType); // brani letti dal json
+
+        // controllo che il brano non esista già (stesso titolo, autori, anno di composizione, esecutori, strumenti musicali)
+        for(Brano brano: listaBrani){
+
+            if(brano.equals(nuovoBrano)) {
+                errore.setText("Il brano esiste già");
+                errore.setVisible(true);
+                return false;
+            }
+        }
+
+        // aggiorna file json contenente tutti i brani
+        listaBrani.add(nuovoBrano);
+        JsonUtils.scriviSuJson(listaBrani, BRANI_JSON_PATH);
 
         // aggiorna dizionari
         aggiornaDizionario(Collections.singletonList(titolo), "titoli");
         aggiornaDizionario(autori, "autori");
         aggiornaDizionario(generi, "generi");
         aggiornaDizionario(strumentiMusicali, "strumentiMusicali");
-
-        // aggiorna file json contenente tutti i brani
-        Type branoType = new TypeToken<List<Brano>>() {}.getType();
-        List<Brano> listaBrani = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType); // brani letti dal json
-        listaBrani.add(nuovoBrano);
-        JsonUtils.scriviSuJson(listaBrani, BRANI_JSON_PATH);
 
         mainController.goToBrano(caricaBottone, nuovoBrano, () -> {
             BranoController controller = mainController.getBranoFileController();
