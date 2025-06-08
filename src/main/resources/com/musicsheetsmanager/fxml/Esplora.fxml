@@ -2,26 +2,202 @@
 
 <?import java.lang.String?>
 <?import javafx.geometry.Insets?>
+<?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Text?>
 
 <AnchorPane prefHeight="740.0" prefWidth="1070.0" styleClass="explore-background" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.musicsheetsmanager.controller.EsploraController">
    <children>
-      <Text layoutX="43.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Esplora">
-         <styleClass>
-            <String fx:value="font-black" />
-            <String fx:value="text-white" />
-            <String fx:value="text-4xl" />
-         </styleClass>
-      </Text>
+      <GridPane alignment="CENTER" hgap="10.0" layoutX="25.0" layoutY="44.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="44.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Esplora">
+               <styleClass>
+                  <String fx:value="font-black" />
+                  <String fx:value="text-white" />
+                  <String fx:value="text-4xl" />
+               </styleClass>
+            </Text>
+            <ToggleButton mnemonicParsing="false" text="Generi" GridPane.columnIndex="4">
+               <toggleGroup>
+                  <ToggleGroup fx:id="esploraToggleGroup" />
+               </toggleGroup>
+               <styleClass>
+                  <String fx:value="explore-btn" />
+                  <String fx:value="text-base" />
+                  <String fx:value="font-medium" />
+               </styleClass>
+            </ToggleButton>
+            <ToggleButton mnemonicParsing="false" text="Artisti" toggleGroup="$esploraToggleGroup" GridPane.columnIndex="3">
+               <styleClass>
+                  <String fx:value="explore-btn" />
+                  <String fx:value="text-base" />
+                  <String fx:value="font-medium" />
+               </styleClass>
+            </ToggleButton>
+            <ToggleButton mnemonicParsing="false" selected="true" text="Esplora" toggleGroup="$esploraToggleGroup" GridPane.columnIndex="2">
+               <styleClass>
+                  <String fx:value="explore-btn" />
+                  <String fx:value="text-base" />
+                  <String fx:value="font-medium" />
+               </styleClass>
+            </ToggleButton>
+         </children>
+      </GridPane>
       <ScrollPane hbarPolicy="NEVER" layoutY="120.0" prefHeight="620.0" prefWidth="1070.0" styleClass="explore-scroll-pane">
          <content>
             <FlowPane fx:id="braniContainer" hgap="20.0" prefWidth="1070.0" prefWrapLength="0.0">
                <padding>
                   <Insets bottom="25.0" left="25.0" right="25.0" />
                </padding>
+               <children>
+                  <GridPane fx:id="gridpane" prefHeight="150.0" prefWidth="240.0" style="-fx-background-color: darkviolet; -fx-background-radius: 11;">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="TOP" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Estate" wrappingWidth="99.67578125">
+                           <GridPane.margin>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </GridPane.margin>
+                           <styleClass>
+                              <String fx:value="text-white" />
+                              <String fx:value="font-black" />
+                              <String fx:value="text-2xl" />
+                           </styleClass>
+                        </Text>
+                        <ImageView fitHeight="110.0" pickOnBounds="true" preserveRatio="true" rotate="23.0" GridPane.columnIndex="1" GridPane.valignment="BOTTOM">
+                           <image>
+                              <Image url="@../ui/covers/8e1eb215-31f0-4002-b9bc-35419f361872.jpg" />
+                           </image>
+                           <viewport>
+                              <Rectangle2D />
+                           </viewport>
+                           <GridPane.margin>
+                              <Insets left="20.0" />
+                           </GridPane.margin>
+                        </ImageView>
+                     </children>
+                  </GridPane>
+                  <GridPane fx:id="gridpane1" prefHeight="150.0" prefWidth="240.0" style="-fx-background-color: darkorange; -fx-background-radius: 11;">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="TOP" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Estate" wrappingWidth="99.67578125">
+                           <GridPane.margin>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </GridPane.margin>
+                           <styleClass>
+                              <String fx:value="text-white" />
+                              <String fx:value="font-black" />
+                              <String fx:value="text-2xl" />
+                           </styleClass>
+                        </Text>
+                        <ImageView fitHeight="110.0" pickOnBounds="true" preserveRatio="true" rotate="23.0" GridPane.columnIndex="1" GridPane.valignment="BOTTOM">
+                           <image>
+                              <Image url="@../ui/covers/8e1eb215-31f0-4002-b9bc-35419f361872.jpg" />
+                           </image>
+                           <viewport>
+                              <Rectangle2D />
+                           </viewport>
+                           <GridPane.margin>
+                              <Insets left="20.0" />
+                           </GridPane.margin>
+                        </ImageView>
+                     </children>
+                  </GridPane>
+                  <GridPane fx:id="gridpane2" prefHeight="150.0" prefWidth="240.0" style="-fx-background-color: darkblue; -fx-background-radius: 11;">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="TOP" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Estate" wrappingWidth="99.67578125">
+                           <GridPane.margin>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </GridPane.margin>
+                           <styleClass>
+                              <String fx:value="text-white" />
+                              <String fx:value="font-black" />
+                              <String fx:value="text-2xl" />
+                           </styleClass>
+                        </Text>
+                        <ImageView fitHeight="110.0" pickOnBounds="true" preserveRatio="true" rotate="23.0" GridPane.columnIndex="1" GridPane.valignment="BOTTOM">
+                           <image>
+                              <Image url="@../ui/covers/8e1eb215-31f0-4002-b9bc-35419f361872.jpg" />
+                           </image>
+                           <viewport>
+                              <Rectangle2D />
+                           </viewport>
+                           <GridPane.margin>
+                              <Insets left="20.0" />
+                           </GridPane.margin>
+                        </ImageView>
+                     </children>
+                  </GridPane>
+                  <GridPane fx:id="gridpane3" prefHeight="150.0" prefWidth="240.0" style="-fx-background-color: darkgreen; -fx-background-radius: 11;">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="TOP" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Estate" wrappingWidth="99.67578125">
+                           <GridPane.margin>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </GridPane.margin>
+                           <styleClass>
+                              <String fx:value="text-white" />
+                              <String fx:value="font-black" />
+                              <String fx:value="text-2xl" />
+                           </styleClass>
+                        </Text>
+                        <ImageView fitHeight="110.0" pickOnBounds="true" preserveRatio="true" rotate="23.0" GridPane.columnIndex="1" GridPane.valignment="BOTTOM">
+                           <image>
+                              <Image url="@../ui/covers/8e1eb215-31f0-4002-b9bc-35419f361872.jpg" />
+                           </image>
+                           <viewport>
+                              <Rectangle2D />
+                           </viewport>
+                           <GridPane.margin>
+                              <Insets left="20.0" />
+                           </GridPane.margin>
+                        </ImageView>
+                     </children>
+                  </GridPane>
+               </children>
             </FlowPane>
          </content>
       </ScrollPane>

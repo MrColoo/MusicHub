@@ -9,7 +9,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.geometry.Insets;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 
 public class EsploraController implements  Controller{
     @FXML private FlowPane braniContainer;
+    @FXML private GridPane gridpane; //TODO TOGLIERE, SOLO TEST
 
     private MainController mainController;
 
@@ -45,9 +48,13 @@ public class EsploraController implements  Controller{
             mainController.setEsploraController(this);
         }
 
-        Type branoType = new TypeToken<List<Brano>>() {}.getType();
-        listaBrani = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType);
-        mostraTuttiBrani(listaBrani);
+        // Clip per nascondere overflow //TODO TOGLIERE, SOLO TEST
+        Rectangle clip = new Rectangle();
+        clip.widthProperty().bind(gridpane.widthProperty());
+        clip.heightProperty().bind(gridpane.heightProperty());
+        gridpane.setClip(clip);
+
+
     }
 
     public void mostraTuttiBrani(List<Brano> listaBrani) {
