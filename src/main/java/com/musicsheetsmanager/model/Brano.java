@@ -1,8 +1,6 @@
 package com.musicsheetsmanager.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Brano {
@@ -97,5 +95,36 @@ public class Brano {
     public void aggiungiCommento(String idCommento) {
         if (idCommenti == null) idCommenti = new ArrayList<>();
         idCommenti.add(idCommento);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+                titolo,
+                autori,
+                annoComposizione,
+                esecutori == null ? Collections.emptySet() : new HashSet<>(esecutori),
+                strumentiMusicali == null ? Collections.emptySet() : new HashSet<>(strumentiMusicali)
+        );
+    }
+
+    // due brani sono uguali se hanno stesso titolo, autori, anno di composizione, esecutori e strumenti musicali
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        Brano other = (Brano) obj;
+
+        return Objects.equals(titolo, other.titolo)
+                && Objects.equals(autori, other.autori)
+                && Objects.equals(annoComposizione, other.annoComposizione)
+                // non mi importa l'ordine degli esecutori e degli strumenti musicali
+                //
+                // dato che non sono campi obbligatori possono anche essere vuoti
+                && (esecutori == null ? Collections.emptySet() : new HashSet<>(esecutori))
+                .equals(other.esecutori == null ? Collections.emptySet() : new HashSet<>(other.esecutori))
+                && (strumentiMusicali == null ? Collections.emptySet() : new HashSet<>(strumentiMusicali))
+                .equals(other.strumentiMusicali == null ? Collections.emptySet() : new HashSet<>(other.strumentiMusicali));
     }
 }
