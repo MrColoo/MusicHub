@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Text?>
 
-<GridPane hgap="20.0" styleClass="admin-row" vgap="10.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane fx:id="userListGridPane" hgap="20.0" styleClass="admin-row" vgap="10.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.musicsheetsmanager.controller.AdminRowController">
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -19,26 +19,26 @@
       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
    </rowConstraints>
    <children>
-      <Button minWidth="90.0" mnemonicParsing="false" text="Approva" GridPane.columnIndex="2">
+      <Button fx:id="approveButton" minWidth="90.0" mnemonicParsing="false" text="Approva" GridPane.columnIndex="2">
          <styleClass>
             <String fx:value="font-bold" />
             <String fx:value="approve-btn" />
          </styleClass>
       </Button>
-      <Button minWidth="90.0" mnemonicParsing="false" text="Elimina" GridPane.columnIndex="3">
+      <Button fx:id="rejectButton" minWidth="90.0" mnemonicParsing="false" text="Elimina" GridPane.columnIndex="3">
          <styleClass>
             <String fx:value="font-bold" />
             <String fx:value="delete-btn" />
          </styleClass>
       </Button>
-      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="pota">
+      <Text fx:id="usernameText" strokeType="OUTSIDE" strokeWidth="0.0" text="pota">
          <styleClass>
             <String fx:value="font-book" />
             <String fx:value="text-white" />
             <String fx:value="text-base" />
          </styleClass>
       </Text>
-      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="pota@pota.com" GridPane.columnIndex="1">
+      <Text fx:id="emailText" strokeType="OUTSIDE" strokeWidth="0.0" text="pota@pota.com" GridPane.columnIndex="1">
          <styleClass>
             <String fx:value="font-book" />
             <String fx:value="text-white" />
