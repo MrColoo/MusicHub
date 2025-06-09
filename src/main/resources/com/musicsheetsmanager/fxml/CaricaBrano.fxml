@@ -141,7 +141,7 @@
                               <Insets right="15.0" />
                            </HBox.margin>
                             </Button>
-                        <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#onAddBranoClick" prefHeight="33.0" text="Carica">
+                        <Button fx:id="caricaBottone" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#onAddBranoClick" prefHeight="33.0" text="Carica">
                            <styleClass>
                               <String fx:value="form-btn" />
                               <String fx:value="font-book" />
@@ -170,7 +170,7 @@
             <Region prefWidth="55.0" />
             <StackPane fx:id="previewStackPane" maxHeight="-Infinity" maxWidth="-Infinity">
                <children>
-                  <Rectangle fx:id="previewBackground" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" stroke="TRANSPARENT" strokeType="INSIDE" />
+                  <Rectangle fx:id="previewBackground" arcHeight="18.0" arcWidth="18.0" fill="TRANSPARENT" stroke="TRANSPARENT" strokeType="INSIDE" />
                   <VBox fx:id="previewContainer" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefWidth="250.0" styleClass="preview-container">
                      <children>
                         <VBox>

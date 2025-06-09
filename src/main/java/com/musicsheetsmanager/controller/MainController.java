@@ -1,7 +1,9 @@
 package com.musicsheetsmanager.controller;
 
+import com.musicsheetsmanager.model.Brano;
 import com.musicsheetsmanager.model.Utente;
 import com.musicsheetsmanager.config.SessionManager;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -19,9 +21,7 @@ public class MainController {
     @FXML private EsploraController esploraController;
     @FXML private BranoController branoController;
 
-
     private Utente currentUser;
-
 
     public void initialize() {
         if (!SessionManager.isLoggedIn()) {
@@ -47,13 +47,6 @@ public class MainController {
         }
     }
 
-    public void setBranoFileController(BranoController branoController) {
-        this.branoController = branoController;
-        if (esploraController != null) {
-            esploraController.setBranoFileController(branoController);
-        }
-    }
-
     // Funzione generale per caricare una pagina FXML
     private void loadContent(String nomePagina, StackPane pane) {
         try {
@@ -65,28 +58,39 @@ public class MainController {
                 ((Controller) controller).setMainController(this);
             }
 
-            if (controller instanceof EsploraController) {
-                this.esploraController = (EsploraController) controller;
-                if (topBarController != null) {
-                    topBarController.setEsploraController(esploraController);
-                }
-            } else if (controller instanceof TopBarController) {
-                this.topBarController = (TopBarController) controller;
-                this.topBarController.setMainController(this);
-                if (esploraController != null) {
-                    this.topBarController.setEsploraController(esploraController);
-                }
-            } else if (controller instanceof BranoController) {
-                this.branoController = (BranoController) controller;
-                if (esploraController != null) {
-                    esploraController.setBranoFileController(this.branoController);
-                }
+            // controller specifici
+            if (controller instanceof EsploraController esplora) {
+                this.esploraController = esplora;
+                if (topBarController != null) topBarController.setEsploraController(esplora);
+                this.esploraController.inizializzaBrani();
             }
+
+            if (controller instanceof TopBarController topBar) {
+                this.topBarController = topBar;
+                topBar.setMainController(this);
+                if (esploraController != null) topBar.setEsploraController(esploraController);
+            }
+
+            if (controller instanceof BranoController branoController) {
+                this.branoController = branoController;
+                if (esploraController != null) esploraController.setBranoFileController(branoController);
+            }
+
 
             pane.getChildren().setAll(content);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    // vai alla pagina "Brano"
+    public void goToBrano(Node node, Brano brano, Runnable onPageReady) {
+        node.setUserData(brano);    // associa brano alla card
+
+        node.setOnMouseClicked(event ->{
+            show("Brano");
+            Platform.runLater(onPageReady);
+        });
     }
 
     // Funzione per caricare pagine FXML nella sezione MAIN
@@ -114,5 +118,4 @@ public class MainController {
         navBarContainer.getChildren().clear();
         loadContent("TopBar", topBarContainer);
     }
-
 }
