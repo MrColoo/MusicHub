@@ -179,18 +179,18 @@ public class EsploraController implements  Controller{
     public VBox creaCardBrano(Brano brano, String idBrano) {
         File imageFile = new File("src/main/resources/com/musicsheetsmanager/ui/covers/" + idBrano + ".jpg");
 
-        Runnable onClick = () -> {
-            mainController.goToBrano(null, brano, () -> {
-                BranoController controller = mainController.getBranoFileController();
-                if (controller != null) {
-                    controller.fetchBranoData(brano);
-                }
-            });
-        };
+        VBox card = creaCard(brano.getTitolo(), String.join(" ,", brano.getAutori()), imageFile, null);
 
-        String autori = String.join(" ,", brano.getAutori());
+        Runnable onClick = () -> mainController.goToBrano(card, brano, () -> {
+            BranoController controller = mainController.getBranoFileController();
+            if (controller != null) {
+                controller.fetchBranoData(brano);
+            }
+        });
 
-        return creaCard(brano.getTitolo(), autori, imageFile, onClick);
+        card.setOnMouseClicked(e -> onClick.run());
+
+        return card;
     }
 
     public VBox creaCardCatalogo(String titoloCard) {
