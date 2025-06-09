@@ -79,7 +79,7 @@ public class Brano {
     }
 
     // ricerca per titolo-autori-esecutori
-    public static List<Brano> cerca (List<Brano> brani, String chiave){
+    public static List<Brano> cercaBrano (List<Brano> brani, String chiave){
 
         if(chiave == null || chiave.isBlank()) return brani;
 
@@ -88,10 +88,18 @@ public class Brano {
                 .filter(b ->
                         (b.getTitolo() != null && b.getTitolo().toLowerCase().contains(key)) ||
                                 (b.getAutori() != null && b.getAutori().stream()
-                                        .anyMatch(e -> e.toLowerCase().contains(key))) ||
-                                (b.getEsecutori() != null && b.getEsecutori().stream()
                                         .anyMatch(e -> e.toLowerCase().contains(key)))
                 )
+                .collect(Collectors.toList());
+    }
+
+    public static List<String> cercaCatalogo (List<String> dizionario, String chiave){
+
+        if(chiave == null || chiave.isBlank()) return dizionario;
+
+        String key = chiave.toLowerCase();
+        return dizionario.stream()
+                .filter(b -> b.contains(key))
                 .collect(Collectors.toList());
     }
 
