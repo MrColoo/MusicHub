@@ -72,8 +72,7 @@ public class TopBarController implements Controller{
     // restituisce una lista con i brani trovati
     @FXML
     public void onSearchBarEnter (){
-        // String viewTypeText = esploraController.getViewType().getText().toLowerCase();
-        String viewTypeText = "generi";
+        String viewTypeText = esploraController.getViewType();
         String chiave = campoRicerca.getText();
 
         if("esplora".equals(viewTypeText)) {        // se sono in esplora cerco i brani per nome e/o titolo
@@ -82,7 +81,7 @@ public class TopBarController implements Controller{
 
             risultatiRircercaBrani = Brano.cercaBrano(listaBrani, chiave);
 
-            esploraController.mostraBrani(risultatiRircercaBrani);
+            esploraController.generaCatalogo(risultatiRircercaBrani, brano -> esploraController.creaCardBrano(brano, brano.getIdBrano()));
         } else {
             Path DIZIONARIO_JSON_PATH = Paths.get( // percorso verso il file JSON
                     "src", "main", "resources",
@@ -94,10 +93,8 @@ public class TopBarController implements Controller{
 
             risultatiRircercaCatalogo = Brano.cercaCatalogo(dizionario, chiave);
 
-            esploraController.mostraCatalogo(risultatiRircercaCatalogo);
+            esploraController.generaCatalogo(risultatiRircercaCatalogo, esploraController::creaCardCatalogo);
         }
-
     }
-
 }
 

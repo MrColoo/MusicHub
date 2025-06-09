@@ -36,9 +36,9 @@
                   <String fx:value="text-4xl" />
                </styleClass>
             </Text>
-            <ToggleButton mnemonicParsing="false" text="Generi" GridPane.columnIndex="4">
+            <ToggleButton fx:id="generiBtn" mnemonicParsing="false" text="Generi" toggleGroup="$catalogoGroup" GridPane.columnIndex="4">
                <toggleGroup>
-                  <ToggleGroup fx:id="esploraToggleGroup" />
+                  <ToggleGroup fx:id="catalogoGroup" />
                </toggleGroup>
                <styleClass>
                   <String fx:value="explore-btn" />
@@ -46,14 +46,14 @@
                   <String fx:value="font-medium" />
                </styleClass>
             </ToggleButton>
-            <ToggleButton mnemonicParsing="false" text="Artisti" toggleGroup="$esploraToggleGroup" GridPane.columnIndex="3">
+            <ToggleButton fx:id="autoriBtn" mnemonicParsing="false" text="Autori" toggleGroup="$catalogoGroup" GridPane.columnIndex="3">
                <styleClass>
                   <String fx:value="explore-btn" />
                   <String fx:value="text-base" />
                   <String fx:value="font-medium" />
                </styleClass>
             </ToggleButton>
-            <ToggleButton mnemonicParsing="false" selected="true" text="Esplora" toggleGroup="$esploraToggleGroup" GridPane.columnIndex="2">
+            <ToggleButton fx:id="esploraBtn" mnemonicParsing="false" selected="true" text="Esplora" toggleGroup="$catalogoGroup" GridPane.columnIndex="2">
                <styleClass>
                   <String fx:value="explore-btn" />
                   <String fx:value="text-base" />
@@ -90,7 +90,7 @@
                         </Text>
                         <ImageView fitHeight="110.0" pickOnBounds="true" preserveRatio="true" rotate="23.0" GridPane.columnIndex="1" GridPane.valignment="BOTTOM">
                            <image>
-                              <Image url="@../ui/covers/8e1eb215-31f0-4002-b9bc-35419f361872.jpg" />
+                              <Image url="@../ui/Cover.jpg" />
                            </image>
                            <viewport>
                               <Rectangle2D />
