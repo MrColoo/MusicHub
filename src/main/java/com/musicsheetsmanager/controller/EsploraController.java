@@ -3,7 +3,6 @@ package com.musicsheetsmanager.controller;
 import com.google.gson.reflect.TypeToken;
 import com.musicsheetsmanager.config.JsonUtils;
 import com.musicsheetsmanager.model.Brano;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Rectangle2D;
 import javafx.geometry.VPos;
@@ -60,6 +59,7 @@ public class EsploraController implements  Controller{
     @FXML
     public void initialize(){
         toggleGroup();
+
     }
 
     public void inizializzaBrani() {
@@ -72,7 +72,6 @@ public class EsploraController implements  Controller{
             mostraCatalogo(viewTypeText);
         }
     }
-
 
     // inizializza il toggle group
     public void toggleGroup() {
@@ -148,6 +147,7 @@ public class EsploraController implements  Controller{
         if (onClick != null) {
             vbox.setOnMouseClicked(e -> onClick.run());
         }
+
 
         if (imageFile == null || !imageFile.exists()) {
             imageFile = new File("src/main/resources/com/musicsheetsmanager/ui/Cover.jpg");
