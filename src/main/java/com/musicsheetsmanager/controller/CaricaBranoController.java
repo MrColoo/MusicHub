@@ -198,6 +198,8 @@ public class CaricaBranoController implements Controller {
                 Platform.runLater(() -> {
                     aggiornaSfondoGradiente(previewBackground, gradientColors);
                     cambiaImmagineConFade(cover, fxImage);
+                    //campoTitolo.setText(firstResult.get("trackName").getAsString());
+                    //campoAutori.setText(firstResult.get("artistName").getAsString());
                 });
 
             } catch (IOException e) {

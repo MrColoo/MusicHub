@@ -199,7 +199,7 @@ previewBackground{
 .explore-background {
     -fx-background-color:
         linear-gradient(
-            from 0% 0% to 0% 50%,
+            from 0% 0% to 0% 30%,
             -fx-primary-green, /* verde scuro in alto */
             #000000  /* nero in basso */
         );
@@ -219,6 +219,21 @@ previewBackground{
 
 .explore-card:hover{
     -fx-background-color: rgba(255, 255, 255, 0.2);
+}
+
+.explore-btn{
+    -fx-text-fill: white;
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-background-radius: 7px;
+}
+
+.explore-btn:hover{
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+}
+
+.explore-btn:selected{
+    -fx-text-fill: black;
+    -fx-background-color: rgba(255, 255, 255, 1);
 }
 
 /* ADMIN */
