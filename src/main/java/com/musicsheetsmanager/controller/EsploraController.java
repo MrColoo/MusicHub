@@ -4,11 +4,16 @@ import com.google.gson.reflect.TypeToken;
 import com.musicsheetsmanager.config.JsonUtils;
 import com.musicsheetsmanager.model.Brano;
 import javafx.fxml.FXML;
+import javafx.geometry.Rectangle2D;
+import javafx.geometry.VPos;
+import javafx.scene.Node;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.*;
 import javafx.geometry.Insets;
-import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -18,12 +23,20 @@ import java.lang.reflect.Type;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.function.Function;
 
 public class EsploraController implements  Controller{
-    @FXML private FlowPane braniContainer;
+    @FXML private FlowPane container;
 
     private MainController mainController;
+
+    // mostra tipo di catalogo
+    @FXML private ToggleButton esploraBtn;
+    @FXML private ToggleButton autoriBtn;
+    @FXML private ToggleButton generiBtn;
+    // @FXML private ToggleButton esecutoriBtn;
+
+    @FXML private ToggleGroup catalogoGroup;
 
     @Override
     public void setMainController(MainController mainController) {
@@ -33,13 +46,19 @@ public class EsploraController implements  Controller{
     public void setBranoFileController(BranoController branoController) {
     }
 
-    // quando l'utente è nella homepage mostra tutti i brani
-    private List<Brano> listaBrani;
     private static final Path BRANI_JSON_PATH = Paths.get( // percorso verso il file JSON
             "src", "main", "resources",
             "com", "musicsheetsmanager", "data", "brani.json"
     );
-    public void initialize() {
+
+    public String getViewType() {
+        ToggleButton selectedBtn = (ToggleButton) catalogoGroup.getSelectedToggle();
+        return selectedBtn.getText().toLowerCase();
+    }
+
+    @FXML
+    public void initialize(){
+        toggleGroup();
 
     }
 
@@ -48,30 +67,76 @@ public class EsploraController implements  Controller{
             mainController.setEsploraController(this);
         }
 
-        Type branoType = new TypeToken<List<Brano>>() {}.getType();
-        listaBrani = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType);
-        mostraTuttiBrani(listaBrani);
-    }
-
-    public void mostraTuttiBrani(List<Brano> listaBrani) {
-         braniContainer.getChildren().clear(); // pulisce view precedente
-
-         for(Brano brano: listaBrani) {
-             VBox card = creaCardBrano(brano, brano.getIdBrano());
-             braniContainer.getChildren().add(card);
-         }
-     }
-
-    public void mostraBrani(List<Brano> listaBrani) {
-        braniContainer.getChildren().clear(); // pulisce view precedente
-
-        for(Brano brano: listaBrani) {
-            VBox card = creaCardBrano(brano, brano.getIdBrano());
-            braniContainer.getChildren().add(card);
+        String viewTypeText = getViewType();
+        if (viewTypeText != null) {
+            mostraCatalogo(viewTypeText);
         }
     }
 
-    private VBox creaCardBrano(Brano brano, String idBrano) {
+    // inizializza il toggle group
+    public void toggleGroup() {
+        catalogoGroup = new ToggleGroup();
+
+        esploraBtn.setToggleGroup(catalogoGroup);
+        autoriBtn.setToggleGroup(catalogoGroup);
+        generiBtn.setToggleGroup(catalogoGroup);
+        //esecutoriBtn.setToggleGroup(catalogoGroup);
+
+        // default
+        esploraBtn.setSelected(true);
+
+        // listener che reagisce al cambio selezione
+        catalogoGroup.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> {
+            if (newToggle != null) {
+                ToggleButton selected = (ToggleButton) newToggle;
+                String viewTypeText = selected.getText().toLowerCase();
+                mostraCatalogo(viewTypeText);
+            } else {
+                // rimetto il toggle precedente se nessuno selezionato
+                Platform.runLater(() -> catalogoGroup.selectToggle(oldToggle));
+            }
+        });
+
+    }
+
+    public void mostraCatalogo(String viewType) {
+        Type branoType = new TypeToken<List<Brano>>() {}.getType();
+        List<Brano> listaBrani = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType);
+        if("esplora".equals(viewType)) {
+            generaCatalogo(listaBrani, brano -> creaCardBrano(brano, brano.getIdBrano()));
+        }else {
+            Path DIZIONARIO_JSON_PATH = Paths.get( // percorso verso il file JSON
+                    "src", "main", "resources",
+                    "com", "musicsheetsmanager", "data", viewType + ".json"
+            );
+
+            Type stringType = new TypeToken<List<String>>() {}.getType();
+            List<String> dizionario = JsonUtils.leggiDaJson(DIZIONARIO_JSON_PATH, stringType);
+
+            if("generi".equals(viewType)) {
+                generaCatalogo(dizionario, element -> creaCardGenere(listaBrani, element, viewType));
+            } else {
+                generaCatalogo(dizionario, this::creaCardCatalogo);
+            }
+        }
+    }
+
+    public <T> void generaCatalogo(List<T> elements, Function<T, Node> creaCard) {
+        container.getChildren().clear(); // pulisce view precedente
+
+        for(T element: elements) {
+            Node card = creaCard.apply(element);
+            container.getChildren().add(card);
+        }
+    }
+
+    // crea una card generica
+    private VBox creaCard(
+            String titoloCard,
+            String autoreBrano,    // può essere null
+            File imageFile,        // può essere null
+            Runnable onClick       // può essere null
+    ) {
         VBox vbox = new VBox();
         vbox.setAlignment(Pos.CENTER);
         vbox.setMaxWidth(154.0);
@@ -79,32 +144,123 @@ public class EsploraController implements  Controller{
         vbox.setPadding(new Insets(15));
         vbox.setCursor(Cursor.HAND);
 
-        mainController.goToBrano(vbox, brano, () -> {
-            BranoController controller = mainController.getBranoFileController();
-            if (controller != null) {
-                controller.fetchBranoData(brano);
-            }
-        });
+        if (onClick != null) {
+            vbox.setOnMouseClicked(e -> onClick.run());
+        }
 
-        File imageFile = new File("src/main/resources/com/musicsheetsmanager/ui/covers/" + idBrano + ".jpg");
-        if (!imageFile.exists()) {
+
+        if (imageFile == null || !imageFile.exists()) {
             imageFile = new File("src/main/resources/com/musicsheetsmanager/ui/Cover.jpg");
         }
+
         ImageView cover = new ImageView(new Image(imageFile.toURI().toString()));
 
         cover.setFitWidth(154);
         cover.setPreserveRatio(true);
         cover.setPickOnBounds(true);
 
-        Text titolo = new Text(brano.getTitolo());
+        Text titolo = new Text(titoloCard);
         titolo.getStyleClass().addAll("text-white", "font-bold", "text-base");
         VBox.setMargin(titolo, new Insets(7, 0, 0, 0));
 
-        Text autore = new Text(brano.getAutori().stream().collect(Collectors.joining(" ,")));
-        autore.getStyleClass().addAll("text-white", "font-light", "text-sm");
-        VBox.setMargin(autore, new Insets(2, 0, 0, 0));
+        vbox.getChildren().add(cover);
+        vbox.getChildren().add(titolo);
 
-        vbox.getChildren().addAll(cover, titolo, autore);
+        if (autoreBrano != null && !autoreBrano.isEmpty()) {
+            Text autore = new Text(autoreBrano);
+            autore.getStyleClass().addAll("text-white", "font-light", "text-sm");
+            VBox.setMargin(autore, new Insets(2, 0, 0, 0));
+            vbox.getChildren().add(autore);
+        }
+
         return vbox;
+    }
+
+    public VBox creaCardBrano(Brano brano, String idBrano) {
+        File imageFile = new File("src/main/resources/com/musicsheetsmanager/ui/covers/" + idBrano + ".jpg");
+
+        Runnable onClick = () -> {
+            mainController.goToBrano(null, brano, () -> {
+                BranoController controller = mainController.getBranoFileController();
+                if (controller != null) {
+                    controller.fetchBranoData(brano);
+                }
+            });
+        };
+
+        String autori = String.join(" ,", brano.getAutori());
+
+        return creaCard(brano.getTitolo(), autori, imageFile, onClick);
+    }
+
+    public VBox creaCardCatalogo(String titoloCard) {
+        return creaCard(titoloCard, null, null, null);
+    }
+
+    private GridPane creaCardGenere(List<Brano> listaBrani, String genere, String viewType) {
+        GridPane gridPane = new GridPane();
+        gridPane.setPrefSize(240.0, 150.0);
+        gridPane.setStyle("-fx-background-color: darkviolet; -fx-background-radius: 11;");
+
+        // Column constraints
+        ColumnConstraints col1 = new ColumnConstraints();
+        col1.setHgrow(Priority.SOMETIMES);
+        col1.setMinWidth(10);
+        col1.setPrefWidth(100);
+
+        ColumnConstraints col2 = new ColumnConstraints();
+        col2.setHgrow(Priority.SOMETIMES);
+        col2.setMinWidth(10);
+        col2.setPrefWidth(100);
+
+        gridPane.getColumnConstraints().addAll(col1, col2);
+
+    // Row constraints
+        RowConstraints row = new RowConstraints();
+        row.setMinHeight(10);
+        row.setPrefHeight(30);
+        row.setValignment(VPos.TOP);
+        row.setVgrow(Priority.SOMETIMES);
+
+        gridPane.getRowConstraints().add(row);
+
+        // Clip per nascondere overflow
+        Rectangle clip = new Rectangle();
+        clip.widthProperty().bind(gridPane.widthProperty());
+        clip.heightProperty().bind(gridPane.heightProperty());
+        clip.setArcHeight(11);
+        clip.setArcWidth(11);
+        gridPane.setClip(clip);
+
+        // Testo (titolo genere) nella prima riga, prima colonna
+        Text titoloText = new Text(genere);
+        titoloText.getStyleClass().addAll("text-white", "font-black", "text-2xl");
+        GridPane.setMargin(titoloText, new Insets(15, 15, 15, 15));
+        gridPane.add(titoloText, 0, 0);
+
+        // Prendo la cover del primo brano di quel genere
+        String idBrano = Brano.cercaBranoConDizionario(listaBrani, genere, viewType).getFirst().getIdBrano();
+        File imageFile = new File("src/main/resources/com/musicsheetsmanager/ui/covers/" + idBrano + ".jpg");
+        if (!imageFile.exists()) {
+            imageFile = new File("src/main/resources/com/musicsheetsmanager/ui/Cover.jpg");
+        }
+
+        Image image = new Image(imageFile.toURI().toString());
+
+        ImageView imageView = new ImageView(image);
+        imageView.setFitHeight(110.0);
+        imageView.setPreserveRatio(true);
+        imageView.setPickOnBounds(true);
+        imageView.setRotate(23.0);
+
+        // Imposto immagine in seconda riga (1), seconda colonna (1), in basso a destra
+        GridPane.setColumnIndex(imageView, 1);
+        GridPane.setRowIndex(imageView, 1);
+        GridPane.setValignment(imageView, VPos.BOTTOM);
+        GridPane.setMargin(imageView, new Insets(0, 0, 0, 28));
+
+        gridPane.getChildren().add(imageView);
+
+        return gridPane;
     }
 }

@@ -76,8 +76,7 @@ public class Brano {
     }
 
     // ricerca per titolo-autori-esecutori
-    public static List<Brano> cerca (List<Brano> brani, String chiave){
-
+    public static List<Brano> cercaBrano (List<Brano> brani, String chiave){
         if(chiave == null || chiave.isBlank()) return brani;
 
         String key = chiave.toLowerCase();
@@ -85,10 +84,40 @@ public class Brano {
                 .filter(b ->
                         (b.getTitolo() != null && b.getTitolo().toLowerCase().contains(key)) ||
                                 (b.getAutori() != null && b.getAutori().stream()
-                                        .anyMatch(e -> e.toLowerCase().contains(key))) ||
-                                (b.getEsecutori() != null && b.getEsecutori().stream()
                                         .anyMatch(e -> e.toLowerCase().contains(key)))
                 )
+                .collect(Collectors.toList());
+    }
+
+    public static List<Brano> cercaBranoConDizionario(List<Brano> brani, String chiave, String tipoDizionario) {
+        if (chiave == null || chiave.isBlank() || tipoDizionario == null) return brani;
+
+        String key = chiave.toLowerCase();
+
+        return brani.stream().filter(b -> {
+            switch (tipoDizionario.toLowerCase()) {
+                case "autori":
+                    return b.getAutori() != null && b.getAutori().stream()
+                            .anyMatch(a -> a.toLowerCase().contains(key));
+                case "generi":
+                    return b.getGeneri() != null && b.getGeneri().stream()
+                            .anyMatch(g -> g.equalsIgnoreCase(key));
+                case "esecutori":
+                    return b.getEsecutori() != null && b.getAutori().stream()
+                            .anyMatch(a -> a.toLowerCase().contains(key));
+                default:
+                    return false;
+            }
+        }).collect(Collectors.toList());
+    }
+
+    public static List<String> cercaCatalogo (List<String> dizionario, String chiave){
+
+        if(chiave == null || chiave.isBlank()) return dizionario;
+
+        String key = chiave.toLowerCase();
+        return dizionario.stream()
+                .filter(b -> b.contains(key))
                 .collect(Collectors.toList());
     }
 
