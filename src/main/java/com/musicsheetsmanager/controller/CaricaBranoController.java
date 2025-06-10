@@ -373,6 +373,22 @@ public class CaricaBranoController implements Controller {
     @FXML
     private void onAllegaFileClick() {
         FileChooser fileChooser = new FileChooser();
+
+        // filtri file consentiti
+        FileChooser.ExtensionFilter filtroTutti = new FileChooser.ExtensionFilter(
+                "Tutti i file supportati",
+                "*.mp3", "*.mp4", "*.pdf", "*.jpg", "*.png", "*.midi"
+        );
+
+        FileChooser.ExtensionFilter filtroMP3 = new FileChooser.ExtensionFilter("File MP3 (.mp3)", "*.mp3");
+        FileChooser.ExtensionFilter filtroMP4 = new FileChooser.ExtensionFilter("File MP4 (.mp4)", "*.mp4");
+        FileChooser.ExtensionFilter filtroPDF = new FileChooser.ExtensionFilter("File PDF (.pdf)", "*.pdf");
+        FileChooser.ExtensionFilter filtroJPG = new FileChooser.ExtensionFilter("File JPG (.jpg)", "*.jpg");
+        FileChooser.ExtensionFilter filtroPNG = new FileChooser.ExtensionFilter("File PNG (.png)", "*.png");
+        FileChooser.ExtensionFilter filtroMIDI = new FileChooser.ExtensionFilter("File MIDI (.midi)", "*.midi");
+
+        fileChooser.getExtensionFilters().addAll(filtroTutti, filtroMP3, filtroMP4, filtroPDF, filtroJPG, filtroPNG, filtroMIDI);
+
         File selectedFile = fileChooser.showOpenDialog(allegaFileBtn.getScene().getWindow());
 
         if(selectedFile != null && !fileAllegati.contains(selectedFile)){
@@ -386,7 +402,6 @@ public class CaricaBranoController implements Controller {
                 //viewFile(documento);
             }
         }
-
     }
 
     // TODO implementare visualizzazione allegati caricati e relativa possibilità di eliminarli

@@ -3,6 +3,7 @@ package com.musicsheetsmanager.controller;
 import com.google.gson.reflect.TypeToken;
 import com.musicsheetsmanager.config.JsonUtils;
 import com.musicsheetsmanager.model.Brano;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Rectangle2D;
 import javafx.geometry.VPos;
