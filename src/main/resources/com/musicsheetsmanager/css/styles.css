@@ -88,6 +88,10 @@
     -fx-background-radius: 200px;
 }
 
+.topbar-btn:hover{
+    -fx-background-color: -fx-secondary-white;
+}
+
 /* NAVBAR */
 .navbar{
     -fx-background-color: -fx-secondary-black;
@@ -100,9 +104,10 @@
     -fx-margin: 30px;
 }
 
-.navbar-btn:selected {
+.navbar-btn:selected, .navbar-btn:hover {
     -fx-background-color: -fx-secondary-gray;
 }
+
 
 /* LOGIN */
 
@@ -230,7 +235,6 @@ previewBackground{
         -fx-border-style: solid;
 }
 
-
 /* ESPLORA */
 
 .explore-background {
@@ -298,6 +302,6 @@ previewBackground{
 }
 
 /* Button Styles */
-.button {
+.button, .toggle-button {
     -fx-cursor: hand;
 }
