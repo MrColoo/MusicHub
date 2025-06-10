@@ -271,7 +271,6 @@ public class CaricaBranoController implements Controller {
         nuovoBrano.setDocumenti(pathAllegati);
 
         // aggiorna file json contenente tutti i brani
-        listaBrani.add(nuovoBrano);
         JsonUtils.scriviSuJson(listaBrani, BRANI_JSON_PATH);
         System.out.println("Path allegati modificati con successo");
 
@@ -348,7 +347,6 @@ public class CaricaBranoController implements Controller {
 
         // controllo che il brano non esista già (stesso titolo, autori, anno di composizione, esecutori, strumenti musicali)
         for(Brano brano: listaBrani){
-
             if(brano.equals(nuovoBrano)) {
                 errore.setText("Il brano esiste già");
                 errore.setVisible(true);
@@ -359,7 +357,6 @@ public class CaricaBranoController implements Controller {
         // aggiorna file json contenente tutti i brani
         listaBrani.add(nuovoBrano);
         JsonUtils.scriviSuJson(listaBrani, BRANI_JSON_PATH);
-        System.out.println("Brano salvato con successo");
 
         // aggiorna dizionari
         aggiornaDizionario(Collections.singletonList(titolo), "titoli");
