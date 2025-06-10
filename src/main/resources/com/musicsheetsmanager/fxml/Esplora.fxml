@@ -24,6 +24,7 @@
             <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
             <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
             <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -54,6 +55,13 @@
                </styleClass>
             </ToggleButton>
             <ToggleButton fx:id="esploraBtn" mnemonicParsing="false" selected="true" text="Esplora" toggleGroup="$catalogoGroup" GridPane.columnIndex="2">
+               <styleClass>
+                  <String fx:value="explore-btn" />
+                  <String fx:value="text-base" />
+                  <String fx:value="font-medium" />
+               </styleClass>
+            </ToggleButton>
+            <ToggleButton fx:id="generiBtn1" mnemonicParsing="false" text="Esecutori" toggleGroup="$catalogoGroup" GridPane.columnIndex="5">
                <styleClass>
                   <String fx:value="explore-btn" />
                   <String fx:value="text-base" />
