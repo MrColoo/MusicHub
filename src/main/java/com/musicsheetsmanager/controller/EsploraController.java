@@ -135,8 +135,7 @@ public class EsploraController implements  Controller{
     private VBox creaCard(
             String titoloCard,
             String autoreBrano,    // può essere null
-            File imageFile,        // può essere null
-            Runnable onClick       // può essere null
+            File imageFile         // può essere null
     ) {
         VBox vbox = new VBox();
         vbox.setAlignment(Pos.CENTER);
@@ -144,11 +143,6 @@ public class EsploraController implements  Controller{
         vbox.getStyleClass().add("explore-card");
         vbox.setPadding(new Insets(15));
         vbox.setCursor(Cursor.HAND);
-
-        if (onClick != null) {
-            vbox.setOnMouseClicked(e -> onClick.run());
-        }
-
 
         if (imageFile == null || !imageFile.exists()) {
             imageFile = new File("src/main/resources/com/musicsheetsmanager/ui/Cover.jpg");
@@ -180,7 +174,7 @@ public class EsploraController implements  Controller{
     public VBox creaCardBrano(Brano brano, String idBrano) {
         File imageFile = new File("src/main/resources/com/musicsheetsmanager/ui/covers/" + idBrano + ".jpg");
 
-        VBox card = creaCard(brano.getTitolo(), String.join(" ,", brano.getAutori()), imageFile, null);
+        VBox card = creaCard(brano.getTitolo(), String.join(" ,", brano.getAutori()), imageFile);
 
         Runnable onClick = () -> mainController.goToBrano(card, brano, () -> {
             BranoController controller = mainController.getBranoFileController();
@@ -195,7 +189,7 @@ public class EsploraController implements  Controller{
     }
 
     public VBox creaCardCatalogo(String titoloCard) {
-        return creaCard(titoloCard, null, null, null);
+        return creaCard(titoloCard, null, null);
     }
 
     private GridPane creaCardGenere(List<Brano> listaBrani, String genere, String viewType) {
