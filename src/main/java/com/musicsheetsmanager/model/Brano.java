@@ -19,7 +19,7 @@ public class Brano {
 
     public Brano(){};
 
-    public Brano(String idBrano, String titolo, List<String> autori, List<String> generi, Integer annoComposizione, String linkYoutube, List<String> strumentiMusicali, List<String> documenti) {
+    public Brano(String idBrano, String titolo, List<String> autori, List<String> generi, Integer annoComposizione, String linkYoutube, List<String> strumentiMusicali) {
         this.idBrano = idBrano;     // genera id alfanumerico casuale
         this.titolo = titolo;
         this.autori = autori;
@@ -28,7 +28,7 @@ public class Brano {
         this.linkYoutube = linkYoutube;
         this.strumentiMusicali = strumentiMusicali;
 
-        this.documenti = documenti;
+        this.documenti = new ArrayList<>();
         this.idCommenti = new ArrayList<>();
     }
 
@@ -66,6 +66,10 @@ public class Brano {
         return idBrano;
     }
 
+    public void setDocumenti(List<String> documenti) {
+        this.documenti = documenti;
+    }
+
     public String toString() {
         return titolo +
                 " - " +
@@ -73,6 +77,13 @@ public class Brano {
                 " (" +
                 annoComposizione +
                 ")";
+    }
+
+    public static Brano getBranoById(List<Brano> brani, String idBrano) {
+        return brani.stream()
+                .filter(brano -> brano.getIdBrano().equals(idBrano))
+                .findFirst()
+                .orElse(null);
     }
 
     // ricerca per titolo-autori-esecutori
