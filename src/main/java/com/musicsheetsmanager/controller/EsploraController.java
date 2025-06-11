@@ -55,7 +55,7 @@ public class EsploraController implements  Controller{
 
         // String viewTypeText = viewType.getText().toLowerCase();
         // mostraCard(viewTypeText);
-        mostraCard("generi");
+        mostraCard("esplora");
     }
 
     // quando l'utente è nella homepage mostra tutti i brani
