@@ -87,10 +87,8 @@ public class MainController {
     public void goToBrano(Node node, Brano brano, Runnable onPageReady) {
         node.setUserData(brano);    // associa brano alla card
 
-        node.setOnMouseClicked(event ->{
-            show("Brano");
-            Platform.runLater(onPageReady);
-        });
+        show("Brano");
+        Platform.runLater(onPageReady);
     }
 
     // Funzione per caricare pagine FXML nella sezione MAIN

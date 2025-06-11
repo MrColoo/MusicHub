@@ -187,6 +187,11 @@ public class CaricaBranoController implements Controller {
                 }
 
                 JsonObject firstResult = results.get(0).getAsJsonObject();
+
+                //imposta automaticamente il valore dei campi anno di composizione e genere
+                campoAnnoDiComposizione.setText(firstResult.get("releaseDate").getAsString().substring(0, 4));
+                campoGeneri.setText(firstResult.get("primaryGenreName").getAsString());
+
                 String artworkUrl = firstResult.get("artworkUrl100").getAsString();
                 coverURL = artworkUrl.replace("100x100", "300x300");
 
@@ -198,8 +203,7 @@ public class CaricaBranoController implements Controller {
                 Platform.runLater(() -> {
                     aggiornaSfondoGradiente(previewBackground, gradientColors);
                     cambiaImmagineConFade(cover, fxImage);
-                    //campoTitolo.setText(firstResult.get("trackName").getAsString());
-                    //campoAutori.setText(firstResult.get("artistName").getAsString());
+
                 });
 
             } catch (IOException e) {
@@ -258,6 +262,21 @@ public class CaricaBranoController implements Controller {
 
         salvaCover();
         salvaFileAllegati(idBrano);
+
+        Type branoType = new TypeToken<List<Brano>>() {}.getType();
+        List<Brano> listaBrani = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType); // brani letti dal json
+        Brano nuovoBrano = Brano.getBranoById(listaBrani, idBrano);
+
+        // aggiorna path allegati del brano
+        List<String> pathAllegati = fileAllegati.stream()
+                .map(Documento::getPercorso)
+                .collect(Collectors.toList());
+
+        nuovoBrano.setDocumenti(pathAllegati);
+
+        // aggiorna file json contenente tutti i brani
+        JsonUtils.scriviSuJson(listaBrani, BRANI_JSON_PATH);
+        System.out.println("Path allegati modificati con successo");
 
         // aggiorna file json contenente i documenti
         Type documentoType = new TypeToken<List<Documento>>() {}.getType();     // documenti letti dal json
@@ -325,19 +344,13 @@ public class CaricaBranoController implements Controller {
             linkYoutube = "";
         }
 
-        List<String> pathAllegati = fileAllegati.stream()
-                .map(Documento::getPercorso)
-                .collect(Collectors.toList());
-
-
-        Brano nuovoBrano = new Brano(idBrano, titolo, autori, generi, anno, linkYoutube, strumentiMusicali, pathAllegati);
+        Brano nuovoBrano = new Brano(idBrano, titolo, autori, generi, anno, linkYoutube, strumentiMusicali);
 
         Type branoType = new TypeToken<List<Brano>>() {}.getType();
         List<Brano> listaBrani = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType); // brani letti dal json
 
         // controllo che il brano non esista già (stesso titolo, autori, anno di composizione, esecutori, strumenti musicali)
         for(Brano brano: listaBrani){
-
             if(brano.equals(nuovoBrano)) {
                 errore.setText("Il brano esiste già");
                 errore.setVisible(true);
@@ -348,8 +361,6 @@ public class CaricaBranoController implements Controller {
         // aggiorna file json contenente tutti i brani
         listaBrani.add(nuovoBrano);
         JsonUtils.scriviSuJson(listaBrani, BRANI_JSON_PATH);
-
-        System.out.println("Brano salvato con successo");
 
         // aggiorna dizionari
         aggiornaDizionario(Collections.singletonList(titolo), "titoli");
@@ -373,6 +384,22 @@ public class CaricaBranoController implements Controller {
     @FXML
     private void onAllegaFileClick() {
         FileChooser fileChooser = new FileChooser();
+
+        // filtri file consentiti
+        FileChooser.ExtensionFilter filtroTutti = new FileChooser.ExtensionFilter(
+                "Tutti i file supportati",
+                "*.mp3", "*.mp4", "*.pdf", "*.jpg", "*.png", "*.midi"
+        );
+
+        FileChooser.ExtensionFilter filtroMP3 = new FileChooser.ExtensionFilter("File MP3 (.mp3)", "*.mp3");
+        FileChooser.ExtensionFilter filtroMP4 = new FileChooser.ExtensionFilter("File MP4 (.mp4)", "*.mp4");
+        FileChooser.ExtensionFilter filtroPDF = new FileChooser.ExtensionFilter("File PDF (.pdf)", "*.pdf");
+        FileChooser.ExtensionFilter filtroJPG = new FileChooser.ExtensionFilter("File JPG (.jpg)", "*.jpg");
+        FileChooser.ExtensionFilter filtroPNG = new FileChooser.ExtensionFilter("File PNG (.png)", "*.png");
+        FileChooser.ExtensionFilter filtroMIDI = new FileChooser.ExtensionFilter("File MIDI (.midi)", "*.midi");
+
+        fileChooser.getExtensionFilters().addAll(filtroTutti, filtroMP3, filtroMP4, filtroPDF, filtroJPG, filtroPNG, filtroMIDI);
+
         File selectedFile = fileChooser.showOpenDialog(allegaFileBtn.getScene().getWindow());
 
         if(selectedFile != null && !fileAllegati.contains(selectedFile)){
@@ -386,7 +413,6 @@ public class CaricaBranoController implements Controller {
                 //viewFile(documento);
             }
         }
-
     }
 
     // TODO implementare visualizzazione allegati caricati e relativa possibilità di eliminarli

@@ -7,6 +7,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
@@ -37,18 +38,31 @@
                       </Text>
                   <VBox>
                      <children>
-                            <TextField fx:id="campoTitolo" maxWidth="570.0" prefHeight="50.0" prefWidth="570.0" promptText="Titolo *">
-                                <VBox.margin>
-                                    <Insets bottom="10.0" />
-                                </VBox.margin>
-                                <styleClass>
-                                    <String fx:value="form-text-field" />
-                                    <String fx:value="text-base" />
-                                </styleClass>
-                            </TextField>
                         <HBox>
                            <children>
+                                  <TextField fx:id="campoTitolo" maxWidth="570.0" prefHeight="50.0" prefWidth="570.0" promptText="Titolo *">
+                                      <styleClass>
+                                          <String fx:value="form-text-field" />
+                                          <String fx:value="text-base" />
+                                      </styleClass>
+                                 <HBox.margin>
+                                    <Insets right="10.0" />
+                                 </HBox.margin>
+                                  </TextField>
                               <TextField fx:id="campoAutori" maxWidth="570.0" prefHeight="50.0" prefWidth="380.0" promptText="Artista *">
+                                 <styleClass>
+                                    <String fx:value="form-text-field" />
+                                    <String fx:value="text-base" />
+                                 </styleClass>
+                              </TextField>
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="10.0" />
+                           </VBox.margin>
+                        </HBox>
+                        <HBox>
+                           <children>
+                              <TextField fx:id="campoAnnoDiComposizione" editable="false" maxWidth="570.0" prefHeight="50.0" prefWidth="290.0" promptText="Anno di composizione *">
                                  <styleClass>
                                     <String fx:value="form-text-field" />
                                     <String fx:value="text-base" />
@@ -57,7 +71,7 @@
                                     <Insets right="10.0" />
                                  </HBox.margin>
                               </TextField>
-                              <TextField fx:id="campoGeneri" prefHeight="50.0" prefWidth="190.0" promptText="Genere *">
+                              <TextField fx:id="campoGeneri" editable="false" prefHeight="50.0" prefWidth="290.0" promptText="Genere *">
                                  <styleClass>
                                     <String fx:value="form-text-field" />
                                     <String fx:value="text-base" />
@@ -73,7 +87,7 @@
                         </HBox>
                         <HBox>
                            <children>
-                              <TextField fx:id="campoAnnoDiComposizione" maxWidth="570.0" prefHeight="50.0" prefWidth="190.0" promptText="Anno di composizione *">
+                              <TextField fx:id="campoEsecutori" maxWidth="570.0" prefHeight="50.0" prefWidth="200.0" promptText="Esecutori">
                                  <styleClass>
                                     <String fx:value="form-text-field" />
                                     <String fx:value="text-base" />
@@ -122,15 +136,15 @@
                   </VBox>
                   <HBox alignment="CENTER_RIGHT">
                      <children>
-                            <Button fx:id="allegaFileBtn" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#onAllegaFileClick" prefHeight="33.0" style="-fx-background-color: -fx-secondary-white;" text="Allega File">
+                            <Button fx:id="allegaFileBtn" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#onAllegaFileClick" prefHeight="33.0" text="Allega File">
                                 <styleClass>
-                                    <String fx:value="form-btn" />
                                     <String fx:value="font-book" />
+                                    <String fx:value="allega-file-btn" />
                                 </styleClass>
                            <graphic>
                               <ImageView fitHeight="17.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../ui/icons/right-arrow-black.png" />
+                                    <Image url="@../ui/icons/file-plus.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -149,7 +163,7 @@
                            <graphic>
                               <ImageView fitHeight="17.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../ui/icons/right-arrow-black.png" />
+                                    <Image url="@../ui/icons/music-notes-plus.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -215,5 +229,29 @@
             <Insets left="56.0" right="56.0" />
          </padding>
       </HBox>
+      <FlowPane hgap="10.0" layoutX="61.0" layoutY="619.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="106.0" prefWidth="645.0" vgap="10.0">
+         <children>
+            <Button contentDisplay="RIGHT" mnemonicParsing="false" text="Documento.PDF">
+               <FlowPane.margin>
+                  <Insets />
+               </FlowPane.margin>
+               <padding>
+                  <Insets bottom="5.0" left="15.0" right="5.0" top="5.0" />
+               </padding>
+               <styleClass>
+                  <String fx:value="text-sm" />
+                  <String fx:value="font-book" />
+                  <String fx:value="allegato-btn" />
+               </styleClass>
+               <graphic>
+                  <ImageView fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../ui/icons/x-circle_black.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+         </children>
+      </FlowPane>
     </children>
 </AnchorPane>

@@ -9,19 +9,39 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="210.0" style="-fx-background-color: -fx-secondary-black;" styleClass="navbar" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.musicsheetsmanager.controller.NavBarController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="210.0" styleClass="navbar" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.musicsheetsmanager.controller.NavBarController">
    <fx:define>
       <ToggleGroup fx:id="toggleGroup" />
    </fx:define>
 
    <children>
-      <VBox prefHeight="237.0" prefWidth="170.0">
+      <VBox alignment="TOP_CENTER" prefHeight="237.0" prefWidth="195.0">
          <children>
-            <ToggleButton fx:id="esploraBtn" alignment="CENTER_LEFT" mnemonicParsing="false" onAction="#changeView" prefWidth="170.0" text=" Esplora" toggleGroup="$toggleGroup">
+            <ToggleButton fx:id="esploraBtn" alignment="CENTER_LEFT" mnemonicParsing="false" onAction="#changeView" prefWidth="190.0" selected="true" text=" Esplora">
                <graphic>
-                  <ImageView pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../ui/icons/library.png" />
+                        <Image url="@../ui/icons/playlist.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <styleClass>
+                  <String fx:value="navbar-btn" />
+                  <String fx:value="text-lg" />
+                  <String fx:value="font-medium" />
+               </styleClass>
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+               <toggleGroup>
+                  <ToggleGroup fx:id="toggleGroup" />
+               </toggleGroup>
+            </ToggleButton>
+            <ToggleButton fx:id="concertiBtn" alignment="CENTER_LEFT" mnemonicParsing="false" onAction="#changeView" prefWidth="190.0" text=" Concerti" toggleGroup="$toggleGroup">
+               <graphic>
+                  <ImageView fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../ui/icons/microphone-stage.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -34,28 +54,11 @@
                   <Insets top="10.0" />
                </VBox.margin>
             </ToggleButton>
-            <ToggleButton fx:id="concertiBtn" alignment="CENTER_LEFT" mnemonicParsing="false" onAction="#changeView" prefWidth="170.0" text=" Concerti" toggleGroup="$toggleGroup">
+            <ToggleButton fx:id="cronologiaBtn" alignment="CENTER_LEFT" mnemonicParsing="false" onAction="#changeView" prefWidth="190.0" text=" Cronologia" toggleGroup="$toggleGroup">
                <graphic>
-                  <ImageView pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../ui/icons/library.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-               <styleClass>
-                  <String fx:value="navbar-btn" />
-                  <String fx:value="text-lg" />
-                  <String fx:value="font-medium" />
-               </styleClass>
-               <VBox.margin>
-                  <Insets top="10.0" />
-               </VBox.margin>
-            </ToggleButton>
-            <ToggleButton fx:id="cronologiaBtn" alignment="CENTER_LEFT" mnemonicParsing="false" onAction="#changeView" prefWidth="170.0" text=" Cronologia" toggleGroup="$toggleGroup">
-               <graphic>
-                  <ImageView pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../ui/icons/library.png" />
+                        <Image url="@../ui/icons/clock-counter-clockwise.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -71,13 +74,13 @@
          </children>
       </VBox>
       <Region prefHeight="368.0" prefWidth="210.0" />
-      <VBox prefHeight="135.0" prefWidth="170.0">
+      <VBox alignment="TOP_CENTER" prefHeight="135.0" prefWidth="170.0">
          <children>
-            <ToggleButton fx:id="adminBtn" alignment="CENTER_LEFT" mnemonicParsing="false" onAction="#changeView" prefWidth="170.0" text=" Admin" toggleGroup="$toggleGroup">
+            <ToggleButton fx:id="adminBtn" alignment="CENTER_LEFT" mnemonicParsing="false" onAction="#changeView" prefWidth="190.0" text=" Admin" toggleGroup="$toggleGroup">
                <graphic>
-                  <ImageView pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../ui/icons/library.png" />
+                        <Image url="@../ui/icons/user-list.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -90,11 +93,11 @@
                   <Insets top="10.0" />
                </VBox.margin>
             </ToggleButton>
-            <ToggleButton fx:id="logoutBtn" alignment="CENTER_LEFT" mnemonicParsing="false" onAction="#changeView" prefWidth="170.0" text=" Logout" toggleGroup="$toggleGroup">
+            <ToggleButton fx:id="logoutBtn" alignment="CENTER_LEFT" mnemonicParsing="false" onAction="#changeView" prefWidth="190.0" text=" Logout" toggleGroup="$toggleGroup">
                <graphic>
-                  <ImageView pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../ui/icons/library.png" />
+                        <Image url="@../ui/icons/sign-out.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -110,4 +113,7 @@
          </children>
       </VBox>
    </children>
+   <padding>
+      <Insets bottom="20.0" top="20.0" />
+   </padding>
 </VBox>
