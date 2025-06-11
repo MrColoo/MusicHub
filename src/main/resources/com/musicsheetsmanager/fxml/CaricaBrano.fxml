@@ -62,7 +62,7 @@
                         </HBox>
                         <HBox>
                            <children>
-                              <TextField fx:id="campoAnnoDiComposizione" maxWidth="570.0" prefHeight="50.0" prefWidth="290.0" promptText="Anno di composizione *">
+                              <TextField fx:id="campoAnnoDiComposizione" editable="false" maxWidth="570.0" prefHeight="50.0" prefWidth="290.0" promptText="Anno di composizione *">
                                  <styleClass>
                                     <String fx:value="form-text-field" />
                                     <String fx:value="text-base" />
@@ -71,7 +71,7 @@
                                     <Insets right="10.0" />
                                  </HBox.margin>
                               </TextField>
-                              <TextField fx:id="campoGeneri" prefHeight="50.0" prefWidth="290.0" promptText="Genere *">
+                              <TextField fx:id="campoGeneri" editable="false" prefHeight="50.0" prefWidth="290.0" promptText="Genere *">
                                  <styleClass>
                                     <String fx:value="form-text-field" />
                                     <String fx:value="text-base" />
