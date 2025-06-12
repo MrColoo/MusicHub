@@ -6,17 +6,15 @@ import com.musicsheetsmanager.config.SessionManager;
 import com.musicsheetsmanager.model.Commento;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.GridPane;
+
 
 import java.awt.*;
 import java.io.File;
 import java.lang.reflect.Type;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,14 +25,14 @@ import com.musicsheetsmanager.model.Brano;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 
+import javax.print.attribute.standard.Media;
+
 public class BranoController {
 
     @FXML
-    private VBox fileListVBox;
-
+    private GridPane mediaGridPane;
     @FXML
-    private VBox mediaListVBox;
-
+    private GridPane allegatiGridPane;
     @FXML
     ImageView branoCover;
     @FXML
@@ -80,18 +78,9 @@ public class BranoController {
         }
         branoCover.setImage(new Image(imageFile.toURI().toString()));
 
-        // Carica allegati
-        fileListVBox.getChildren().clear();
-        for (String path : brano.getDocumenti()) {
-            File file = new File(path);
-            fileListVBox.getChildren().add(creaPulsanteFile(file));
-        }
+        caricaAllegatiBrano(brano, allegatiGridPane);
 
-        // Carica link YouTube
-        mediaListVBox.getChildren().clear();
-        if (brano.getYoutubeLink() != null && !brano.getYoutubeLink().isBlank()) {
-            mediaListVBox.getChildren().add(creaPulsanteYouTube(brano.getYoutubeLink()));
-        }
+        caricaMediaBrano(brano, mediaGridPane);
     }
 
     //TODO AGGIUNGERE MESSAGGIO DI ERRORE COMMENTO VUOTO
@@ -133,50 +122,164 @@ public class BranoController {
         campoNota.clear();
     }
 
-    private HBox creaPulsanteFile(File file) {
-        Text nome = new Text(file.getName());
-        Button apri = new Button("Apri");
-        Button scarica = new Button("Scarica");
+    private void aggiungiFileAllegati(List<File> files, GridPane gridPane) {
+        gridPane.getChildren().clear();
+        int row = 0;
 
-        apri.setOnAction(e -> {
-            try {
-                if (file.exists()) Desktop.getDesktop().open(file);
-                else System.out.println("File non trovato: " + file.getAbsolutePath());
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        });
+        for (File file : files) {
 
-        scarica.setOnAction(e -> {
-            try {
-                FileChooser fileChooser = new FileChooser();
-                fileChooser.setInitialFileName(file.getName());
-                File destinazione = fileChooser.showSaveDialog(null);
-                if (destinazione != null) {
-                    Files.copy(file.toPath(), destinazione.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            // 1. Nome del file (colonna 0)
+            Text fileNameText = new Text(file.getName());
+            fileNameText.getStyleClass().addAll("font-light", "text-base");
+            GridPane.setColumnIndex(fileNameText, 0);
+            GridPane.setRowIndex(fileNameText, row);
+
+            // 2. Bottone APRI (colonna 1)
+            Button apriButton = new Button();
+            ImageView apriIcon = new ImageView(new Image(getClass().getResourceAsStream("/com/musicsheetsmanager/ui/icons/arrow-square-out-bold.png")));
+            apriIcon.setFitWidth(20);
+            apriIcon.setPreserveRatio(true);
+            apriButton.setGraphic(apriIcon);
+
+            apriButton.setOnAction(e -> {
+                try {
+                    if (file.exists()) Desktop.getDesktop().open(file);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        });
+            });
 
-        HBox box = new HBox(10, nome, apri, scarica);
-        return box;
+            GridPane.setColumnIndex(apriButton, 1);
+            GridPane.setRowIndex(apriButton, row);
+
+            // 3. Bottone DOWNLOAD (colonna 2)
+            Button downloadButton = new Button();
+            ImageView downloadIcon = new ImageView(new Image(getClass().getResourceAsStream("/com/musicsheetsmanager/ui/icons/download-simple-bold.png")));
+            downloadIcon.setFitWidth(20);
+            downloadIcon.setPreserveRatio(true);
+            downloadButton.setGraphic(downloadIcon);
+
+            downloadButton.setOnAction(e -> {
+                try {
+                    FileChooser fileChooser = new FileChooser();
+                    fileChooser.setInitialFileName(file.getName());
+                    File destinazione = fileChooser.showSaveDialog(null);
+                    if (destinazione != null) {
+                        Files.copy(file.toPath(), destinazione.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            });
+
+            GridPane.setColumnIndex(downloadButton, 2);
+            GridPane.setRowIndex(downloadButton, row);
+
+            // 4. Aggiunta di tutti i nodi alla riga
+            gridPane.getChildren().addAll(fileNameText, apriButton, downloadButton);
+
+            row++;
+        }
     }
 
-    private HBox creaPulsanteYouTube(String url) {
-        Text label = new Text("YouTube:");
-        Hyperlink link = new Hyperlink(url);
+    public void caricaAllegatiBrano(Brano brano, GridPane allegatiGridPane) {
+        File folder = new File("src/main/resources/attachments/" + idBrano);
 
-        link.setOnAction(e -> {
-            try {
-                Desktop.getDesktop().browse(new URI(url));
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+        if (!folder.exists() || !folder.isDirectory()) {
+            System.out.println("La cartella degli allegati non esiste per il brano: " + idBrano);
+            return;
+        }
+
+        File[] fileArray = folder.listFiles(file -> {
+            String name = file.getName().toLowerCase();
+            return (name.endsWith(".pdf") || name.endsWith(".txt")) && file.isFile();
         });
 
-        HBox box = new HBox(10, label, link);
-        return box;
+        if (fileArray != null && fileArray.length > 0) {
+            aggiungiFileAllegati(List.of(fileArray), allegatiGridPane);
+        } else {
+            System.out.println("Nessun file allegato valido trovato per il brano: " + idBrano);
+        }
+    }
+
+    public void caricaMediaBrano(Brano brano, GridPane mediaGridPane) {
+        File folder = new File("src/main/resources/attachments/" + idBrano);
+
+        if (!folder.exists() || !folder.isDirectory()) {
+            System.out.println("La cartella degli allegati non esiste per il brano: " + idBrano);
+            return;
+        }
+
+        File[] fileArray = folder.listFiles(file -> {
+            String name = file.getName().toLowerCase();
+            return (name.endsWith(".mp3") || name.endsWith(".mp4")) && file.isFile();
+        });
+
+        if (fileArray != null && fileArray.length > 0) {
+            aggiungiMediaAllegati(List.of(fileArray), mediaGridPane);
+        } else {
+            System.out.println("Nessun file allegato valido trovato per il brano: " + idBrano);
+        }
+    }
+
+
+    private void aggiungiMediaAllegati(List<File> files, GridPane gridPane) {
+        gridPane.getChildren().clear();
+        int row = 0;
+
+        for (File file : files) {
+
+            // 1. Nome del file (colonna 0)
+            Text mediaNameText = new Text(file.getName());
+            mediaNameText.getStyleClass().addAll("font-light", "text-base");
+            GridPane.setColumnIndex(mediaNameText, 0);
+            GridPane.setRowIndex(mediaNameText, row);
+
+            // 2. Bottone APRI (colonna 1)
+            Button playButton = new Button();
+            ImageView apriIcon = new ImageView(new Image(getClass().getResourceAsStream("/com/musicsheetsmanager/ui/icons/play-bold.png")));
+            apriIcon.setFitWidth(20);
+            apriIcon.setPreserveRatio(true);
+            playButton.setGraphic(apriIcon);
+
+            playButton.setOnAction(e -> {
+                try {
+                    if (file.exists()) {
+                        Desktop.getDesktop().open(file);  // tenta di aprire con il player predefinito
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            });
+
+            GridPane.setColumnIndex(playButton, 1);
+            GridPane.setRowIndex(playButton, row);
+
+            // 3. Bottone DOWNLOAD (colonna 2)
+            Button downloadButton = new Button();
+            ImageView downloadIcon = new ImageView(new Image(getClass().getResourceAsStream("/com/musicsheetsmanager/ui/icons/download-simple-bold.png")));
+            downloadIcon.setFitWidth(20);
+            downloadIcon.setPreserveRatio(true);
+            downloadButton.setGraphic(downloadIcon);
+
+            downloadButton.setOnAction(e -> {
+                try {
+                    FileChooser fileChooser = new FileChooser();
+                    fileChooser.setInitialFileName(file.getName());
+                    File destinazione = fileChooser.showSaveDialog(null);
+                    if (destinazione != null) {
+                        Files.copy(file.toPath(), destinazione.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            });
+
+            GridPane.setColumnIndex(downloadButton, 2);
+            GridPane.setRowIndex(downloadButton, row);
+            gridPane.getChildren().addAll(mediaNameText, playButton, downloadButton);
+
+            row++;
+        }
     }
 }

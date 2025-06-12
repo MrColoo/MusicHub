@@ -188,10 +188,6 @@ public class CaricaBranoController implements Controller {
 
                 JsonObject firstResult = results.get(0).getAsJsonObject();
 
-                //imposta automaticamente il valore dei campi anno di composizione e genere
-                campoAnnoDiComposizione.setText(firstResult.get("releaseDate").getAsString().substring(0, 4));
-                campoGeneri.setText(firstResult.get("primaryGenreName").getAsString());
-
                 String artworkUrl = firstResult.get("artworkUrl100").getAsString();
                 coverURL = artworkUrl.replace("100x100", "300x300");
 
@@ -203,6 +199,10 @@ public class CaricaBranoController implements Controller {
                 Platform.runLater(() -> {
                     aggiornaSfondoGradiente(previewBackground, gradientColors);
                     cambiaImmagineConFade(cover, fxImage);
+
+                    //imposta automaticamente il valore dei campi anno di composizione e genere
+                    campoAnnoDiComposizione.setText(firstResult.get("releaseDate").getAsString().substring(0, 4));
+                    campoGeneri.setText(firstResult.get("primaryGenreName").getAsString());
 
                 });
 
