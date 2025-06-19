@@ -44,7 +44,7 @@ public class NavBarController implements Controller{
                 break;
             case "concertiBtn":
                 alreadySelected(btn);
-                mainController.show("EsploraConcerti");
+                mainController.show("Concerti");
                 break;
             case "cronologiaBtn":
                 alreadySelected(btn);
