@@ -301,6 +301,11 @@ previewBackground{
     -fx-background-radius: 200px;
 }
 
+/* CONCERTO */
+.combo-box > .list-cell{
+    -fx-text-fill: -fx-secondary-white;
+}
+
 /* Button Styles */
 .button, .toggle-button {
     -fx-cursor: hand;
