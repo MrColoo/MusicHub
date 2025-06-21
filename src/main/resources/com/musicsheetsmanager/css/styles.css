@@ -306,6 +306,21 @@ previewBackground{
     -fx-text-fill: -fx-secondary-white;
 }
 
+/* COMMENTI */
+.delete-btn{
+    -fx-background-color: none;
+}
+
+.reply-btn{
+    -fx-background-color: -fx-secondary-light-gray;
+    -fx-background-radius: 50px;
+    -fx-text-fill: -fx-secondary-white;
+}
+
+.reply-btn:hover{
+    -fx-background-color: -fx-primary-green;
+}
+
 /* Button Styles */
 .button, .toggle-button {
     -fx-cursor: hand;
