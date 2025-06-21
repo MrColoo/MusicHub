@@ -18,8 +18,8 @@ import java.util.List;
 
 public class TopBarController implements Controller{
 
-    @FXML
-    private Button mainButton; // "Accedi" o "Carica Brano"
+    @FXML private Button mainButton; // "Accedi" o "Carica Brano"
+    @FXML private Button caricaConcertoBtn;
     @FXML private HBox searchBar; // Box campo di ricerca
     @FXML private TextField campoRicerca;
 
@@ -61,11 +61,16 @@ public class TopBarController implements Controller{
             searchBar.setManaged(false);
             mainButton.setText("Accedi");
             mainButton.setOnAction(event -> mainController.show("Accedi"));
+            caricaConcertoBtn.setVisible(false);
+            caricaConcertoBtn.setManaged(false);
         }else{
             searchBar.setVisible(true);
             searchBar.setManaged(true);
             mainButton.setText("Carica Brano");
             mainButton.setOnAction(event -> mainController.show("CaricaBrano"));
+            caricaConcertoBtn.setVisible(true);
+            caricaConcertoBtn.setManaged(true);
+            caricaConcertoBtn.setOnAction(event -> mainController.show("CaricaConcerto"));
         }
     }
 

@@ -21,7 +21,7 @@
             <Insets />
          </HBox.margin>
       </ImageView>
-      <Region prefHeight="60.0" prefWidth="227.0" HBox.hgrow="ALWAYS" />
+      <Region prefHeight="60.0" prefWidth="150.0" HBox.hgrow="ALWAYS" />
       <HBox fx:id="searchBar" alignment="CENTER" styleClass="search-bar">
          <children>
             <TextField fx:id="campoRicerca" onAction="#onSearchBarEnter" prefHeight="32.0" prefWidth="308.0" promptText="Search something...">
@@ -54,11 +54,27 @@
             <Insets />
          </HBox.margin>
       </HBox>
-      <Region prefHeight="60.0" prefWidth="227.0" HBox.hgrow="ALWAYS" />
-      <Button fx:id="mainButton" contentDisplay="RIGHT" mnemonicParsing="false" text="Crea Brano">
+      <Region prefHeight="60.0" prefWidth="150.0" HBox.hgrow="ALWAYS" />
+      <Button fx:id="caricaConcertoBtn" contentDisplay="RIGHT" mnemonicParsing="false" style="-fx-background-color: -fx-secondary-white;" text="Carica Concerto">
          <HBox.margin>
-            <Insets />
+            <Insets right="10.0" />
          </HBox.margin>
+         <styleClass>
+            <String fx:value="topbar-btn" />
+            <String fx:value="font-bold" />
+         </styleClass>
+         <font>
+            <Font name="Brush Script MT Italic" size="12.0" />
+         </font>
+         <graphic>
+            <ImageView fitHeight="15.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../ui/icons/right-arrow-black.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+      <Button fx:id="mainButton" contentDisplay="RIGHT" mnemonicParsing="false" text="Crea Brano">
          <styleClass>
             <String fx:value="topbar-btn" />
             <String fx:value="font-bold" />
