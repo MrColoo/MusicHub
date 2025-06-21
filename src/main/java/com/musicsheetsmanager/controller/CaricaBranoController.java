@@ -57,6 +57,7 @@ public class CaricaBranoController implements Controller {
     @FXML private TextField campoAutori;
     @FXML private TextField campoAnnoDiComposizione;
     @FXML private TextField campoGeneri;
+    @FXML private TextField campoEsecutori;
     @FXML private TextField campoStrumentiMusicali;
     @FXML private TextField campoLinkYoutube;
     @FXML private Text errore;
@@ -308,6 +309,13 @@ public class CaricaBranoController implements Controller {
             return false;
         }
 
+        String esecutoriText = campoEsecutori.getText().trim().toLowerCase();
+        if(esecutoriText.isEmpty()) {
+            errore.setText("Campo esecutori obbligatorio");
+            errore.setVisible(true);
+            return false;
+        }
+
         // controlla che l'anno di composizione sia un numero intero valido
         int anno;
         try {
@@ -332,6 +340,7 @@ public class CaricaBranoController implements Controller {
 
         List<String> autori = List.of(campoAutori.getText().trim().split(",\\s*"));
         List<String> generi = List.of(campoGeneri.getText().toLowerCase().trim().split(",\\s*"));
+        List<String> esecutori = List.of(campoEsecutori.getText().trim().split(",\\s*"));
 
         String strumentiText = campoStrumentiMusicali.getText().toLowerCase().trim();
         List<String> strumentiMusicali = strumentiText.isEmpty()
@@ -344,7 +353,7 @@ public class CaricaBranoController implements Controller {
             linkYoutube = "";
         }
 
-        Brano nuovoBrano = new Brano(idBrano, titolo, autori, generi, anno, linkYoutube, strumentiMusicali);
+        Brano nuovoBrano = new Brano(idBrano, titolo, autori, generi, anno, esecutori, linkYoutube, strumentiMusicali);
 
         Type branoType = new TypeToken<List<Brano>>() {}.getType();
         List<Brano> listaBrani = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType); // brani letti dal json
@@ -366,6 +375,7 @@ public class CaricaBranoController implements Controller {
         aggiornaDizionario(Collections.singletonList(titolo), "titoli");
         aggiornaDizionario(autori, "autori");
         aggiornaDizionario(generi, "generi");
+        aggiornaDizionario(esecutori, "esecutori");
         aggiornaDizionario(strumentiMusicali, "strumentiMusicali");
 
         System.out.println("Dizionari salvati con successo");

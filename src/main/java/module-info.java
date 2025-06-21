@@ -3,6 +3,7 @@ module com.musicsheetsmanager {
     requires com.google.gson;
     requires javafx.web;
     requires java.desktop;
+    requires javafx.graphics;
 
 
     opens com.musicsheetsmanager to javafx.fxml;
