@@ -9,12 +9,16 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.GridPane;
 
 
 import java.awt.*;
 import java.io.File;
+import java.io.InputStream;
 import java.lang.reflect.Type;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -192,7 +196,7 @@ public class BranoController {
 
         File[] fileArray = folder.listFiles(file -> {
             String name = file.getName().toLowerCase();
-            return (name.endsWith(".pdf") || name.endsWith(".txt")) && file.isFile();
+            return (name.endsWith(".pdf") || name.endsWith(".txt") || name.endsWith(".midi")) && file.isFile();
         });
 
         if (fileArray != null && fileArray.length > 0) {
@@ -203,8 +207,10 @@ public class BranoController {
     }
 
     public void caricaMediaBrano(Brano brano, GridPane mediaGridPane) {
-        File folder = new File("src/main/resources/attachments/" + idBrano);
+        // DEBUG: stampa l'id del brano corrente
+        System.out.println("DEBUG: ID Brano attuale = " + brano.getIdBrano());
 
+        File folder = new File("src/main/resources/attachments/" + idBrano);
         if (!folder.exists() || !folder.isDirectory()) {
             System.out.println("La cartella degli allegati non esiste per il brano: " + idBrano);
             return;
@@ -216,11 +222,113 @@ public class BranoController {
         });
 
         if (fileArray != null && fileArray.length > 0) {
+            System.out.println("DEBUG: Allegati trovati = " + fileArray.length);
             aggiungiMediaAllegati(List.of(fileArray), mediaGridPane);
         } else {
             System.out.println("Nessun file allegato valido trovato per il brano: " + idBrano);
         }
+
+        try {
+            Path jsonPath = Paths.get("src/main/resources/com/musicsheetsmanager/data/brani.json");
+            Type listType = new TypeToken<List<Brano>>() {}.getType();
+            List<Brano> tuttiIBrani = JsonUtils.leggiDaJson(jsonPath, listType);
+
+            if (tuttiIBrani == null || tuttiIBrani.isEmpty()) {
+                System.out.println("DEBUG: Il file JSON non contiene brani o non è stato caricato.");
+                return;
+            }
+
+            System.out.println("DEBUG: Numero di brani letti da JSON = " + tuttiIBrani.size());
+            System.out.println("DEBUG: ID cercato = " + brano.getIdBrano());
+
+            tuttiIBrani.stream()
+                    .filter(b -> {
+                        boolean match = b.getIdBrano().equals(brano.getIdBrano());
+                        if (match) {
+                            System.out.println("DEBUG: Brano trovato: " + b.getTitolo());
+                        }
+                        return match;
+                    })
+                    .findFirst()
+                    .ifPresent(b -> {
+                        String youtubeLink = b.getYoutubeLink();
+                        System.out.println("DEBUG: YouTube link = " + youtubeLink);
+                        if (youtubeLink != null && !youtubeLink.isBlank()) {
+                            aggiungiLinkYoutubeSingolo(youtubeLink, mediaGridPane);
+                        } else {
+                            System.out.println("DEBUG: Il link YouTube è nullo o vuoto");
+                        }
+                    });
+
+        } catch (Exception e) {
+            System.out.println("DEBUG: Eccezione durante la lettura del JSON o aggiunta del link");
+            e.printStackTrace();
+        }
     }
+
+    private void aggiungiLinkYoutubeSingolo(String link, GridPane gridPane) {
+        int row = gridPane.getRowCount(); // aggiunta alla riga successiva
+
+        // 1. Etichetta "YouTube Link" (colonna 0)
+        Text linkText = new Text("YouTube Link");
+        linkText.getStyleClass().addAll("font-light", "text-base");
+        GridPane.setColumnIndex(linkText, 0);
+        GridPane.setRowIndex(linkText, row);
+
+        // 2. Bottone "Guarda" (colonna 1)
+        Button openButton = new Button();
+        ImageView playIcon = null;
+        InputStream playStream = getClass().getResourceAsStream("/com/musicsheetsmanager/ui/icons/play-bold.png");
+        if (playStream != null) {
+            playIcon = new ImageView(new Image(playStream));
+            playIcon.setFitWidth(20);
+            playIcon.setPreserveRatio(true);
+            openButton.setGraphic(playIcon);
+        } else {
+            openButton.setText("Guarda");
+            System.out.println("DEBUG: Icona play non trovata");
+        }
+
+        openButton.setOnAction(e -> {
+            try {
+                Desktop.getDesktop().browse(new URI(link));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        GridPane.setColumnIndex(openButton, 1);
+        GridPane.setRowIndex(openButton, row);
+
+        // 3. Bottone "Copia link" (colonna 2)
+        Button copyButton = new Button();
+        ImageView copyIcon = null;
+        InputStream copyStream = getClass().getResourceAsStream("/com/musicsheetsmanager/ui/icons/copy-bold.png");
+        if (copyStream != null) {
+            copyIcon = new ImageView(new Image(copyStream));
+            copyIcon.setFitWidth(20);
+            copyIcon.setPreserveRatio(true);
+            copyButton.setGraphic(copyIcon);
+        } else {
+            copyButton.setText("Copia");
+            System.out.println("DEBUG: Icona copy non trovata");
+        }
+
+        copyButton.setOnAction(e -> {
+            Clipboard clipboard = Clipboard.getSystemClipboard();
+            ClipboardContent content = new ClipboardContent();
+            content.putString(link);
+            clipboard.setContent(content);
+        });
+
+        GridPane.setColumnIndex(copyButton, 2);
+        GridPane.setRowIndex(copyButton, row);
+
+        // Aggiunta dei nodi alla grid
+        gridPane.getChildren().addAll(linkText, openButton, copyButton);
+    }
+
+
 
 
     private void aggiungiMediaAllegati(List<File> files, GridPane gridPane) {
