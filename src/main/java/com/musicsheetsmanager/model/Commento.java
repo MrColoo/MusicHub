@@ -48,6 +48,10 @@ public class Commento {
         return risposte;
     }
 
+    public boolean isNota() {
+        return isNota;
+    }
+
     public String toString(){
         return testo;
     }
