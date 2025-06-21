@@ -40,7 +40,6 @@ public class EsploraController implements  Controller{
     @FXML private ToggleButton autoriBtn;
     @FXML private ToggleButton generiBtn;
     @FXML private ToggleButton esecutoriBtn;
-    // @FXML private ToggleButton esecutoriBtn;
 
     @FXML private ToggleGroup catalogoGroup;
 
@@ -87,7 +86,6 @@ public class EsploraController implements  Controller{
         autoriBtn.setToggleGroup(catalogoGroup);
         generiBtn.setToggleGroup(catalogoGroup);
         esecutoriBtn.setToggleGroup(catalogoGroup);
-        //esecutoriBtn.setToggleGroup(catalogoGroup);
 
         // default
         esploraBtn.setSelected(true);

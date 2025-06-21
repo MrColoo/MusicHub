@@ -19,12 +19,13 @@ public class Brano {
 
     public Brano(){};
 
-    public Brano(String idBrano, String titolo, List<String> autori, List<String> generi, Integer annoComposizione, String linkYoutube, List<String> strumentiMusicali) {
+    public Brano(String idBrano, String titolo, List<String> autori, List<String> generi, Integer annoComposizione, List<String> esecutori, String linkYoutube, List<String> strumentiMusicali) {
         this.idBrano = idBrano;     // genera id alfanumerico casuale
         this.titolo = titolo;
         this.autori = autori;
         this.generi = generi;
         this.annoComposizione = annoComposizione;
+        this.esecutori = esecutori;
         this.linkYoutube = linkYoutube;
         this.strumentiMusicali = strumentiMusicali;
 
