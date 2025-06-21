@@ -5,6 +5,7 @@ import com.musicsheetsmanager.config.JsonUtils;
 import com.musicsheetsmanager.config.SessionManager;
 import com.musicsheetsmanager.model.Commento;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
@@ -12,8 +13,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.GridPane;
-
-
 import java.awt.*;
 import java.io.File;
 import java.io.InputStream;
@@ -24,12 +23,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Objects;
 
 import com.musicsheetsmanager.model.Brano;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
-
-import javax.print.attribute.standard.Media;
 
 public class BranoController {
 
@@ -127,24 +125,30 @@ public class BranoController {
     }
 
     private void aggiungiFileAllegati(List<File> files, GridPane gridPane) {
+        // Pulisce la griglia rimuovendo ogni contenuto precedente
         gridPane.getChildren().clear();
-        int row = 0;
+        int row = 0; // Contatore per la riga corrente
 
+        // Cicla su tutti i file forniti
         for (File file : files) {
 
-            // 1. Nome del file (colonna 0)
-            Text fileNameText = new Text(file.getName());
-            fileNameText.getStyleClass().addAll("font-light", "text-base");
-            GridPane.setColumnIndex(fileNameText, 0);
-            GridPane.setRowIndex(fileNameText, row);
+            // === Colonna 0: Nome del file ===
+            Text fileNameText = new Text(file.getName()); // Crea un nodo testo con il nome del file
+            fileNameText.getStyleClass().addAll("font-light", "text-base"); // Applica classi di stile CSS
+            GridPane.setColumnIndex(fileNameText, 0); // Posiziona nella colonna 0
+            GridPane.setRowIndex(fileNameText, row);  // Nella riga corrente
 
-            // 2. Bottone APRI (colonna 1)
+            // === Colonna 1: Bottone APRI ===
             Button apriButton = new Button();
-            ImageView apriIcon = new ImageView(new Image(getClass().getResourceAsStream("/com/musicsheetsmanager/ui/icons/arrow-square-out-bold.png")));
-            apriIcon.setFitWidth(20);
-            apriIcon.setPreserveRatio(true);
-            apriButton.setGraphic(apriIcon);
+            // Carica l'icona per il bottone "apri"
+            ImageView apriIcon = new ImageView(
+                    new Image(getClass().getResourceAsStream("/com/musicsheetsmanager/ui/icons/arrow-square-out-bold.png"))
+            );
+            apriIcon.setFitWidth(20); // Larghezza icona
+            apriIcon.setPreserveRatio(true); // Mantiene proporzioni
+            apriButton.setGraphic(apriIcon); // Imposta l'icona nel bottone
 
+            // Quando cliccato, apre il file con l'app predefinita del sistema
             apriButton.setOnAction(e -> {
                 try {
                     if (file.exists()) Desktop.getDesktop().open(file);
@@ -153,22 +157,27 @@ public class BranoController {
                 }
             });
 
-            GridPane.setColumnIndex(apriButton, 1);
-            GridPane.setRowIndex(apriButton, row);
+            GridPane.setColumnIndex(apriButton, 1); // Colonna 1
+            GridPane.setRowIndex(apriButton, row);  // Riga corrente
 
-            // 3. Bottone DOWNLOAD (colonna 2)
+            // === Colonna 2: Bottone DOWNLOAD ===
             Button downloadButton = new Button();
-            ImageView downloadIcon = new ImageView(new Image(getClass().getResourceAsStream("/com/musicsheetsmanager/ui/icons/download-simple-bold.png")));
+            // Carica l'icona per il bottone "download"
+            ImageView downloadIcon = new ImageView(
+                    new Image(getClass().getResourceAsStream("/com/musicsheetsmanager/ui/icons/download-simple-bold.png"))
+            );
             downloadIcon.setFitWidth(20);
             downloadIcon.setPreserveRatio(true);
             downloadButton.setGraphic(downloadIcon);
 
+            // Quando cliccato, apre un FileChooser per salvare il file
             downloadButton.setOnAction(e -> {
                 try {
                     FileChooser fileChooser = new FileChooser();
-                    fileChooser.setInitialFileName(file.getName());
-                    File destinazione = fileChooser.showSaveDialog(null);
+                    fileChooser.setInitialFileName(file.getName()); // Suggerisce il nome originale
+                    File destinazione = fileChooser.showSaveDialog(null); // Mostra dialogo per salvataggio
                     if (destinazione != null) {
+                        // Copia il file selezionato nella destinazione scelta
                         Files.copy(file.toPath(), destinazione.toPath(), StandardCopyOption.REPLACE_EXISTING);
                     }
                 } catch (Exception ex) {
@@ -176,29 +185,35 @@ public class BranoController {
                 }
             });
 
-            GridPane.setColumnIndex(downloadButton, 2);
-            GridPane.setRowIndex(downloadButton, row);
+            GridPane.setColumnIndex(downloadButton, 2); // Colonna 2
+            GridPane.setRowIndex(downloadButton, row);  // Riga corrente
 
-            // 4. Aggiunta di tutti i nodi alla riga
+            // === Aggiunta di tutti i nodi alla griglia ===
             gridPane.getChildren().addAll(fileNameText, apriButton, downloadButton);
 
+            // Passa alla riga successiva
             row++;
         }
     }
 
+
     public void caricaAllegatiBrano(Brano brano, GridPane allegatiGridPane) {
+        // Costruisce il percorso della cartella degli allegati del brano
         File folder = new File("src/main/resources/attachments/" + idBrano);
 
+        // Verifica l'esistenza e la validità della cartella
         if (!folder.exists() || !folder.isDirectory()) {
             System.out.println("La cartella degli allegati non esiste per il brano: " + idBrano);
             return;
         }
 
+        // Filtra i file: solo PDF, TXT e MIDI
         File[] fileArray = folder.listFiles(file -> {
             String name = file.getName().toLowerCase();
             return (name.endsWith(".pdf") || name.endsWith(".txt") || name.endsWith(".midi")) && file.isFile();
         });
 
+        // Mostra i file validi nella griglia
         if (fileArray != null && fileArray.length > 0) {
             aggiungiFileAllegati(List.of(fileArray), allegatiGridPane);
         } else {
@@ -207,86 +222,79 @@ public class BranoController {
     }
 
     public void caricaMediaBrano(Brano brano, GridPane mediaGridPane) {
-        // DEBUG: stampa l'id del brano corrente
-        System.out.println("DEBUG: ID Brano attuale = " + brano.getIdBrano());
-
+        // Costruisce il percorso della cartella degli allegati multimediali del brano
         File folder = new File("src/main/resources/attachments/" + idBrano);
+
+        // Verifica l'esistenza della cartella
         if (!folder.exists() || !folder.isDirectory()) {
             System.out.println("La cartella degli allegati non esiste per il brano: " + idBrano);
             return;
         }
 
+        // Filtra i file: solo MP3 e MP4
         File[] fileArray = folder.listFiles(file -> {
             String name = file.getName().toLowerCase();
             return (name.endsWith(".mp3") || name.endsWith(".mp4")) && file.isFile();
         });
 
+        // Mostra i file multimediali nella griglia
         if (fileArray != null && fileArray.length > 0) {
-            System.out.println("DEBUG: Allegati trovati = " + fileArray.length);
             aggiungiMediaAllegati(List.of(fileArray), mediaGridPane);
         } else {
             System.out.println("Nessun file allegato valido trovato per il brano: " + idBrano);
         }
 
+        // Carica i dati dei brani dal file JSON per ottenere il link YouTube
         try {
             Path jsonPath = Paths.get("src/main/resources/com/musicsheetsmanager/data/brani.json");
             Type listType = new TypeToken<List<Brano>>() {}.getType();
             List<Brano> tuttiIBrani = JsonUtils.leggiDaJson(jsonPath, listType);
 
             if (tuttiIBrani == null || tuttiIBrani.isEmpty()) {
-                System.out.println("DEBUG: Il file JSON non contiene brani o non è stato caricato.");
                 return;
             }
 
-            System.out.println("DEBUG: Numero di brani letti da JSON = " + tuttiIBrani.size());
-            System.out.println("DEBUG: ID cercato = " + brano.getIdBrano());
-
+            // Cerca il brano corrente nella lista
             tuttiIBrani.stream()
-                    .filter(b -> {
-                        boolean match = b.getIdBrano().equals(brano.getIdBrano());
-                        if (match) {
-                            System.out.println("DEBUG: Brano trovato: " + b.getTitolo());
-                        }
-                        return match;
-                    })
+                    .filter(b -> b.getIdBrano().equals(brano.getIdBrano()))
                     .findFirst()
                     .ifPresent(b -> {
                         String youtubeLink = b.getYoutubeLink();
-                        System.out.println("DEBUG: YouTube link = " + youtubeLink);
                         if (youtubeLink != null && !youtubeLink.isBlank()) {
                             aggiungiLinkYoutubeSingolo(youtubeLink, mediaGridPane);
-                        } else {
-                            System.out.println("DEBUG: Il link YouTube è nullo o vuoto");
                         }
                     });
 
         } catch (Exception e) {
-            System.out.println("DEBUG: Eccezione durante la lettura del JSON o aggiunta del link");
             e.printStackTrace();
         }
     }
 
-    private void aggiungiLinkYoutubeSingolo(String link, GridPane gridPane) {
-        int row = gridPane.getRowCount(); // aggiunta alla riga successiva
 
-        // 1. Etichetta "YouTube Link" (colonna 0)
+    private void aggiungiLinkYoutubeSingolo(String link, GridPane gridPane) {
+        // Calcola la prossima riga disponibile basandosi solo sui nodi che hanno un RowIndex esplicito
+        int row = gridPane.getChildren().stream()
+                .map(GridPane::getRowIndex)
+                .filter(Objects::nonNull)
+                .max(Integer::compare)
+                .orElse(-1) + 1;
+
+        // === Colonna 0: Etichetta descrittiva ===
         Text linkText = new Text("YouTube Link");
         linkText.getStyleClass().addAll("font-light", "text-base");
         GridPane.setColumnIndex(linkText, 0);
         GridPane.setRowIndex(linkText, row);
 
-        // 2. Bottone "Guarda" (colonna 1)
+        // === Colonna 1: Bottone per aprire il link ===
         Button openButton = new Button();
-        ImageView playIcon = null;
         InputStream playStream = getClass().getResourceAsStream("/com/musicsheetsmanager/ui/icons/play-bold.png");
         if (playStream != null) {
-            playIcon = new ImageView(new Image(playStream));
+            ImageView playIcon = new ImageView(new Image(playStream));
             playIcon.setFitWidth(20);
             playIcon.setPreserveRatio(true);
             openButton.setGraphic(playIcon);
         } else {
-            openButton.setText("Guarda");
-            System.out.println("DEBUG: Icona play non trovata");
+            openButton.setText("Guarda"); // Fallback testuale se l'icona manca
         }
 
         openButton.setOnAction(e -> {
@@ -300,18 +308,16 @@ public class BranoController {
         GridPane.setColumnIndex(openButton, 1);
         GridPane.setRowIndex(openButton, row);
 
-        // 3. Bottone "Copia link" (colonna 2)
+        // === Colonna 2: Bottone per copiare il link ===
         Button copyButton = new Button();
-        ImageView copyIcon = null;
         InputStream copyStream = getClass().getResourceAsStream("/com/musicsheetsmanager/ui/icons/copy-bold.png");
         if (copyStream != null) {
-            copyIcon = new ImageView(new Image(copyStream));
+            ImageView copyIcon = new ImageView(new Image(copyStream));
             copyIcon.setFitWidth(20);
             copyIcon.setPreserveRatio(true);
             copyButton.setGraphic(copyIcon);
         } else {
             copyButton.setText("Copia");
-            System.out.println("DEBUG: Icona copy non trovata");
         }
 
         copyButton.setOnAction(e -> {
@@ -324,70 +330,89 @@ public class BranoController {
         GridPane.setColumnIndex(copyButton, 2);
         GridPane.setRowIndex(copyButton, row);
 
-        // Aggiunta dei nodi alla grid
+        // Aggiunge i nodi alla griglia
         gridPane.getChildren().addAll(linkText, openButton, copyButton);
     }
 
 
 
 
-    private void aggiungiMediaAllegati(List<File> files, GridPane gridPane) {
-        gridPane.getChildren().clear();
-        int row = 0;
 
+
+
+    private void aggiungiMediaAllegati(List<File> files, GridPane gridPane) {
+        // Pulisce la griglia rimuovendo eventuali contenuti precedenti
+        gridPane.getChildren().clear();
+        int row = 0; // Indice della riga corrente nella griglia
+
+        // Itera su ciascun file multimediale da visualizzare
         for (File file : files) {
 
-            // 1. Nome del file (colonna 0)
-            Text mediaNameText = new Text(file.getName());
-            mediaNameText.getStyleClass().addAll("font-light", "text-base");
-            GridPane.setColumnIndex(mediaNameText, 0);
-            GridPane.setRowIndex(mediaNameText, row);
+            // === Colonna 0: Nome del file ===
+            Text mediaNameText = new Text(file.getName()); // Crea il nodo testuale con il nome del file
+            mediaNameText.getStyleClass().addAll("font-light", "text-base"); // Applica classi di stile CSS
+            GridPane.setColumnIndex(mediaNameText, 0); // Posiziona nella colonna 0
+            GridPane.setRowIndex(mediaNameText, row);  // Alla riga corrente
 
-            // 2. Bottone APRI (colonna 1)
+            // === Colonna 1: Bottone "Apri" per riprodurre il file ===
             Button playButton = new Button();
-            ImageView apriIcon = new ImageView(new Image(getClass().getResourceAsStream("/com/musicsheetsmanager/ui/icons/play-bold.png")));
-            apriIcon.setFitWidth(20);
-            apriIcon.setPreserveRatio(true);
-            playButton.setGraphic(apriIcon);
+            // Carica l’icona per il bottone di apertura
+            ImageView apriIcon = new ImageView(
+                    new Image(getClass().getResourceAsStream("/com/musicsheetsmanager/ui/icons/play-bold.png"))
+            );
+            apriIcon.setFitWidth(20); // Imposta la larghezza dell’icona
+            apriIcon.setPreserveRatio(true); // Mantiene le proporzioni
+            playButton.setGraphic(apriIcon); // Assegna l’icona al bottone
 
+            // Quando cliccato, apre il file con l’applicazione predefinita del sistema
             playButton.setOnAction(e -> {
                 try {
                     if (file.exists()) {
-                        Desktop.getDesktop().open(file);  // tenta di aprire con il player predefinito
+                        Desktop.getDesktop().open(file);
                     }
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    ex.printStackTrace(); // Logga l’eccezione in caso di errore
                 }
             });
 
-            GridPane.setColumnIndex(playButton, 1);
-            GridPane.setRowIndex(playButton, row);
+            GridPane.setColumnIndex(playButton, 1); // Posiziona il bottone nella colonna 1
+            GridPane.setRowIndex(playButton, row);  // Alla riga corrente
 
-            // 3. Bottone DOWNLOAD (colonna 2)
+            // === Colonna 2: Bottone "Download" per salvare una copia del file ===
             Button downloadButton = new Button();
-            ImageView downloadIcon = new ImageView(new Image(getClass().getResourceAsStream("/com/musicsheetsmanager/ui/icons/download-simple-bold.png")));
+            // Carica l’icona del bottone di download
+            ImageView downloadIcon = new ImageView(
+                    new Image(getClass().getResourceAsStream("/com/musicsheetsmanager/ui/icons/download-simple-bold.png"))
+            );
             downloadIcon.setFitWidth(20);
             downloadIcon.setPreserveRatio(true);
-            downloadButton.setGraphic(downloadIcon);
+            downloadButton.setGraphic(downloadIcon); // Assegna l’icona al bottone
 
+            // Quando cliccato, apre un dialogo per salvare il file localmente
             downloadButton.setOnAction(e -> {
                 try {
                     FileChooser fileChooser = new FileChooser();
-                    fileChooser.setInitialFileName(file.getName());
-                    File destinazione = fileChooser.showSaveDialog(null);
+                    fileChooser.setInitialFileName(file.getName()); // Suggerisce il nome originale
+                    File destinazione = fileChooser.showSaveDialog(null); // Mostra il dialogo di salvataggio
+
                     if (destinazione != null) {
+                        // Copia il file originale nella destinazione scelta
                         Files.copy(file.toPath(), destinazione.toPath(), StandardCopyOption.REPLACE_EXISTING);
                     }
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    ex.printStackTrace(); // Logga eventuali eccezioni
                 }
             });
 
-            GridPane.setColumnIndex(downloadButton, 2);
-            GridPane.setRowIndex(downloadButton, row);
+            GridPane.setColumnIndex(downloadButton, 2); // Posiziona il bottone nella colonna 2
+            GridPane.setRowIndex(downloadButton, row);  // Alla riga corrente
+
+            // === Aggiunta dei nodi alla griglia ===
             gridPane.getChildren().addAll(mediaNameText, playButton, downloadButton);
 
+            // Passa alla riga successiva
             row++;
         }
     }
+
 }
