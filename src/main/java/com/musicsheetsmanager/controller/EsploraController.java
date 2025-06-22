@@ -12,15 +12,19 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelReader;
 import javafx.scene.layout.*;
 import javafx.geometry.Insets;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 
+import javax.imageio.ImageIO;
 import java.io.File;
 import java.lang.reflect.Type;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -35,7 +39,7 @@ public class EsploraController implements  Controller{
     @FXML private ToggleButton esploraBtn;
     @FXML private ToggleButton autoriBtn;
     @FXML private ToggleButton generiBtn;
-    // @FXML private ToggleButton esecutoriBtn;
+    @FXML private ToggleButton esecutoriBtn;
 
     @FXML private ToggleGroup catalogoGroup;
 
@@ -81,7 +85,7 @@ public class EsploraController implements  Controller{
         esploraBtn.setToggleGroup(catalogoGroup);
         autoriBtn.setToggleGroup(catalogoGroup);
         generiBtn.setToggleGroup(catalogoGroup);
-        //esecutoriBtn.setToggleGroup(catalogoGroup);
+        esecutoriBtn.setToggleGroup(catalogoGroup);
 
         // default
         esploraBtn.setSelected(true);
@@ -195,7 +199,6 @@ public class EsploraController implements  Controller{
     private GridPane creaCardGenere(List<Brano> listaBrani, String genere, String viewType) {
         GridPane gridPane = new GridPane();
         gridPane.setPrefSize(240.0, 150.0);
-        gridPane.setStyle("-fx-background-color: darkviolet; -fx-background-radius: 11;");
 
         // Column constraints
         ColumnConstraints col1 = new ColumnConstraints();
@@ -240,6 +243,10 @@ public class EsploraController implements  Controller{
             imageFile = new File("src/main/resources/com/musicsheetsmanager/ui/Cover.jpg");
         }
 
+        // Applico il colore come background
+        BackgroundFill bgFill = new BackgroundFill(estraiColoreDominante(new Image(imageFile.toURI().toString())), new CornerRadii(11), Insets.EMPTY);
+        gridPane.setBackground(new Background(bgFill));
+
         Image image = new Image(imageFile.toURI().toString());
 
         ImageView imageView = new ImageView(image);
@@ -257,5 +264,30 @@ public class EsploraController implements  Controller{
         gridPane.getChildren().add(imageView);
 
         return gridPane;
+    }
+
+    private Color estraiColoreDominante(Image image) {
+        PixelReader reader = image.getPixelReader();
+        int width = (int) image.getWidth();
+        int height = (int) image.getHeight();
+
+        long redSum = 0, greenSum = 0, blueSum = 0;
+        int count = 0;
+
+        for (int y = 0; y < height; y += 5) {
+            for (int x = 0; x < width; x += 5) {
+                javafx.scene.paint.Color c = reader.getColor(x, y);
+                redSum += (int)(c.getRed() * 255);
+                greenSum += (int)(c.getGreen() * 255);
+                blueSum += (int)(c.getBlue() * 255);
+                count++;
+            }
+        }
+
+        int r = (int)(redSum / count);
+        int g = (int)(greenSum / count);
+        int b = (int)(blueSum / count);
+
+        return Color.rgb(r, g, b, 1.0);
     }
 }

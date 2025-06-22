@@ -9,9 +9,11 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
 
 <ScrollPane hbarPolicy="NEVER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="1070.0" styleClass="brano-scroll-pane" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.musicsheetsmanager.controller.BranoController">
     <content>
@@ -142,6 +144,36 @@
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </padding>
                               </GridPane>
+                              <GridPane styleClass="brano-documento-row">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                    <ColumnConstraints hgrow="NEVER" />
+                                    <ColumnConstraints hgrow="NEVER" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Link Youtube">
+                                       <styleClass>
+                                          <String fx:value="font-light" />
+                                          <String fx:value="text-base" />
+                                       </styleClass>
+                                    </Text>
+                                    <Button mnemonicParsing="false" GridPane.columnIndex="2">
+                                       <graphic>
+                                          <ImageView fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../ui/icons/copy-bold.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </padding>
+                              </GridPane>
                            </children>
                               </VBox>
                      </children>
@@ -224,6 +256,105 @@
                                 <String fx:value="text-xl" />
                             </styleClass>
                         </Text>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <VBox styleClass="brano-allegati-container" HBox.hgrow="ALWAYS">
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                           <children>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="\@Fummi25">
+                                       <styleClass>
+                                          <String fx:value="text-white" />
+                                          <String fx:value="font-bold" />
+                                          <String fx:value="text-base" />
+                                       </styleClass>
+                                    </Text>
+                                    <Button mnemonicParsing="false" styleClass="delete-btn">
+                                       <graphic>
+                                          <ImageView fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../ui/icons/trash-bold.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                    <Button mnemonicParsing="false" styleClass="reply-btn" text="Rispondi" />
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="5.0" />
+                                 </padding>
+                              </HBox>
+                              <TextFlow prefHeight="200.0" prefWidth="200.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Questa canzone è davvero inascoltabile. Vorrei andare dall'autore per stringergli la mano per aver fatto una porcheria così grande. mai sentita musica peggiore">
+                                       <styleClass>
+                                          <String fx:value="text-white" />
+                                          <String fx:value="font-book" />
+                                          <String fx:value="text-base" />
+                                       </styleClass>
+                                    </Text>
+                                 </children>
+                              </TextFlow>
+                           </children>
+                        </VBox>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Region prefWidth="50.0" />
+                        <VBox styleClass="brano-allegati-container" HBox.hgrow="ALWAYS">
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                           <children>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="\@Fummi25">
+                                       <styleClass>
+                                          <String fx:value="text-white" />
+                                          <String fx:value="font-bold" />
+                                          <String fx:value="text-base" />
+                                       </styleClass>
+                                    </Text>
+                                    <Button mnemonicParsing="false" styleClass="delete-btn">
+                                       <graphic>
+                                          <ImageView fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../ui/icons/trash-bold.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                    <Button mnemonicParsing="false" styleClass="reply-btn" text="Rispondi" />
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="5.0" />
+                                 </padding>
+                              </HBox>
+                              <TextFlow prefHeight="200.0" prefWidth="200.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Questa canzone è davvero inascoltabile. Vorrei andare dall'autore per stringergli la mano per aver fatto una porcheria così grande. mai sentita musica peggiore">
+                                       <styleClass>
+                                          <String fx:value="text-white" />
+                                          <String fx:value="font-book" />
+                                          <String fx:value="text-base" />
+                                       </styleClass>
+                                    </Text>
+                                 </children>
+                              </TextFlow>
+                           </children>
+                        </VBox>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </HBox>
                   <HBox alignment="CENTER">
                      <children>
                         <TextArea fx:id="campoCommento" maxHeight="30.0" maxWidth="900.0" prefWidth="900.0" promptText="Lascia un commento" wrapText="true">
