@@ -1,10 +1,18 @@
 package com.musicsheetsmanager.controller;
 
+import com.google.gson.reflect.TypeToken;
+import com.musicsheetsmanager.config.JsonUtils;
+import com.musicsheetsmanager.model.Concerto;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+
+import java.lang.reflect.Type;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 
 public class CaricaConcertoController {
 
@@ -16,6 +24,9 @@ public class CaricaConcertoController {
 
     @FXML
     private Text errore;
+
+    private static final Path PATH_CONCERTI_JSON = Paths.get("src/main/resources/com/musicsheetsmanager/data/concerti.json");
+    private final Type tipoListaConcerti = new TypeToken<List<Concerto>>() {}.getType();
 
     @FXML
     public void initialize() {
@@ -79,8 +90,33 @@ public class CaricaConcertoController {
     }
 
     @FXML
-    private void onAddBranoClick() {
-        // Puoi gestire il bottone "Carica" se serve fare altro
-        System.out.println("Caricamento brano o salvataggio...");
+    private void onAddConcertoClick() {
+        String link = campoLinkYoutube.getText();
+        if (link == null || link.trim().isEmpty()) {
+            errore.setText("Link mancante");
+            errore.setVisible(true);
+            return;
+        }
+
+        try {
+            String id = java.util.UUID.randomUUID().toString();
+
+            Concerto nuovoConcerto = new Concerto(id, link);
+
+            List<Concerto> concerti = JsonUtils.leggiDaJson(PATH_CONCERTI_JSON, tipoListaConcerti);
+            concerti.add(nuovoConcerto);
+            JsonUtils.scriviSuJson(concerti, PATH_CONCERTI_JSON);
+
+            errore.setText("Concerto salvato con successo!");
+            errore.setVisible(true);
+
+            campoLinkYoutube.clear();
+            webView.setVisible(false);
+            webView.setManaged(false);
+
+        } catch (Exception e) {
+            errore.setText("Errore durante il salvataggio: " + e.getMessage());
+            errore.setVisible(true);
+        }
     }
 }
