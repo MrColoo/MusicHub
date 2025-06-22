@@ -1,6 +1,7 @@
 package com.musicsheetsmanager.controller;
 
 import com.musicsheetsmanager.config.JsonUtils;
+import javafx.scene.control.PasswordField;
 import javafx.scene.text.Text;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -21,7 +22,7 @@ import static com.musicsheetsmanager.config.SessionManager.login;
 public class LoginController implements Controller {
 
     @FXML private TextField loginUsernameField;   // campo testo per l'USERNAME
-    @FXML private TextField loginPasswordField;   // campo testo per la PASSWORD
+    @FXML private PasswordField loginPasswordField;   // campo testo per la PASSWORD
     @FXML private Button    loginButton;          // bottone per il login
     @FXML private Text      loginToRegisterButton;// testo che se cliccato porta alla registrazione
     @FXML private Text      feedbackText;         // testo di Feedback

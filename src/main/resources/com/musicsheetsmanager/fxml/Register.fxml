@@ -4,12 +4,14 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
+
 
 <AnchorPane prefHeight="740.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.musicsheetsmanager.controller.RegisterController">
     <children>
@@ -52,7 +54,7 @@
                         <String fx:value="text-base" />
                     </styleClass>
                 </TextField>
-                <TextField fx:id="registerPasswordField" maxWidth="423.0" prefHeight="50.0" promptText="Password">
+                <PasswordField fx:id="registerPasswordField" maxWidth="423.0" prefHeight="50.0" promptText="Password">
                     <styleClass>
                         <String fx:value="form-text-field" />
                         <String fx:value="text-base" />
@@ -60,7 +62,7 @@
                     <VBox.margin>
                         <Insets bottom="10.0" />
                     </VBox.margin>
-                </TextField>
+                </PasswordField>
                 <HBox alignment="TOP_CENTER">
                     <children>
                         <Text fx:id="feedbackText" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: RED;">
