@@ -418,7 +418,7 @@
                               <Insets />
                            </opaqueInsets>
                         </TextArea>
-                        <Button mnemonicParsing="false" onAction="#OnAddCommentoClick" prefWidth="60.0" text="Invia">
+                        <Button fx:id="inviaBtn" mnemonicParsing="false" onAction="#OnAddCommentoClick" prefWidth="60.0" text="Invia">
                            <HBox.margin>
                               <Insets left="20.0" />
                            </HBox.margin>

@@ -4,9 +4,13 @@ import com.google.gson.reflect.TypeToken;
 import com.musicsheetsmanager.config.JsonUtils;
 import com.musicsheetsmanager.config.SessionManager;
 import com.musicsheetsmanager.model.Commento;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
@@ -32,6 +36,9 @@ public class BranoController {
     private VBox fileListVBox;
 
     @FXML
+    private Button inviaBtn;
+
+    @FXML
     ImageView branoCover;
     @FXML
     Text branoTitolo;
@@ -50,10 +57,7 @@ public class BranoController {
 
     private Brano currentBrano;
 
-    @FXML
-    public void initialize() {
-        // errore.setVisible(false);
-    }
+    private Commento currentCommento; // commento a cui si sta rispondendo
 
     private static final Path COMMENTI_JSON_PATH = Paths.get( // percorso verso il file JSON
             "src", "main", "resources",
@@ -64,6 +68,47 @@ public class BranoController {
             "src", "main", "resources",
             "com", "musicsheetsmanager", "data", "brani.json"
     );
+
+    @FXML
+    public void initialize() {
+        // errore.setVisible(false);
+        Platform.runLater(this::checkReplyFocus);
+    }
+
+    // se l'utente deseleziona il textField(ignora reply, invia) non risponde più
+    private void checkReplyFocus() {
+        ChangeListener<Boolean> focusListener = (obs, oldVal, newVal) -> {
+            if (!newVal && currentCommento != null) { // focus perso su campoCommento o campoNota
+                Scene scene = campoCommento.getScene();
+                if (scene == null) return;
+
+                Node focusOwner = scene.getFocusOwner();
+                if (focusOwner == null) {
+                    currentCommento = null;
+                    System.out.println("Focus fuori dalla scena");
+                    return;
+                }
+
+                boolean focusOnValidNode = false;
+
+                if (focusOwner == campoCommento || focusOwner == campoNota || focusOwner == inviaBtn) {
+                    focusOnValidNode = true;
+                } else if (focusOwner instanceof Button btn && btn.getStyleClass().contains("reply-btn")) {
+                    // vedo se è replyButton
+                    focusOnValidNode = true;
+                }
+
+                if (!focusOnValidNode) {
+                    System.out.println("Non rispondi più");
+                    currentCommento = null;
+                }
+            }
+        };
+
+        campoCommento.focusedProperty().addListener(focusListener);
+        campoNota.focusedProperty().addListener(focusListener);
+    }
+
 
     // mostra i dati del brano(titolo, autore ecc...) quando l'utente interagisce con un brano in Esplora
     public void fetchBranoData(Brano brano) {
@@ -92,10 +137,7 @@ public class BranoController {
                 .toList();
 
         commentiContainer.getChildren().clear();
-        for(Commento commento: commentiBrano) {
-            VBox commentoBox = creaCommentoBox(commento);
-            commentiContainer.getChildren().add(commentoBox);
-        }
+        renderCommenti(commentiBrano, commentiContainer, 0);
     }
 
     //TODO AGGIUNGERE MESSAGGIO DI ERRORE COMMENTO VUOTO
@@ -114,15 +156,35 @@ public class BranoController {
         Type commentoType = new TypeToken<List<Commento>>() {}.getType();
         List<Commento> listaCommenti = JsonUtils.leggiDaJson(COMMENTI_JSON_PATH, commentoType);
 
-        listaCommenti.add(nuovoCommento);
+        if(currentCommento != null) { // sto rispondendo
+           if(aggiungiRisposta(listaCommenti, currentCommento.getIdCommento(), nuovoCommento)) {
+               System.out.println("Risposta aggiunta a " + currentCommento.toString());
+           }
+        } else { // commento nuovo
+            listaCommenti.add(nuovoCommento);
+            Commento.linkIdcommentoBrano(idBrano, nuovoCommento.getIdCommento(), BRANI_JSON_PATH);
+        }
 
         JsonUtils.scriviSuJson(listaCommenti, COMMENTI_JSON_PATH);
-
-        Commento.linkIdcommentoBrano(idBrano, nuovoCommento.getIdCommento(), BRANI_JSON_PATH);
+        currentCommento = null;
 
         return true;
     }
 
+    // funzione ricorsiva che trova il commento a cui si sta rispondendo nella struttura ad albero
+    private boolean aggiungiRisposta (List<Commento> commenti, String idCommentoPadre, Commento risposta) {
+        for (Commento commento: commenti) {
+            if (commento.getIdCommento().equals(idCommentoPadre)) {     // trovato commento padre
+                commento.aggiungiRisposta(risposta);
+                return true;
+            }
+            // vedo nelle risposte annidate
+            if(commento.getRisposte() != null && aggiungiRisposta(commento.getRisposte(), idCommentoPadre, risposta)){
+                return true;
+            }
+        }
+        return false;
+    }
     @FXML
     public void OnAddCommentoClick(){
         String testoCommento = campoCommento.getText().trim();
@@ -164,10 +226,11 @@ public class BranoController {
                 .orElse(null);
     }
 
-    public VBox creaCommentoBox(Commento commento) {
+    public VBox creaCommentoBox(Commento commento, int indentLevel) {
         // container esterno
         VBox commentBox = new VBox();
         commentBox.getStyleClass().add("brano-allegati-container");
+        commentBox.setTranslateX(indentLevel * 30);
         commentBox.setPadding(new Insets(15));
 
         // riga utente + bottoni
@@ -204,16 +267,20 @@ public class BranoController {
 
         deleteButton.setOnAction(e -> onDeleteBtnClick(commento));
 
-        // aggiunge le eventuali risposte
-        if (commento.getRisposte() != null) {
-            for (Commento risposta : commento.getRisposte()) {
-                VBox rispostaBox = creaCommentoBox(risposta);
-                rispostaBox.setPadding(new Insets(10, 0, 0, 30));
-                commentBox.getChildren().add(rispostaBox);
-            }
-        }
+        replyButton.setOnAction(e -> onReplyCommentoBtnClick(commento));
 
         return commentBox;
+    }
+
+    // renderizza i commenti in base al livello di annidamento
+    private void renderCommenti(List<Commento> commenti, VBox container, int indentLevel) {
+        for (Commento commento : commenti) {
+            VBox commentoBox = creaCommentoBox(commento, indentLevel);
+            container.getChildren().add(commentoBox);
+            if (commento.getRisposte() != null) {
+                renderCommenti(commento.getRisposte(), container, indentLevel + 1);
+            }
+        }
     }
 
     public void onDeleteBtnClick (Commento commento) {
@@ -238,5 +305,11 @@ public class BranoController {
                 + ", id brano: "
                 + idBrano
                 + ", username: " + commento.getUsername());
+    }
+
+    public void onReplyCommentoBtnClick (Commento commento) {
+        currentCommento = commento;
+        Platform.runLater(() -> campoCommento.requestFocus());
+        System.out.println("Risposta al commento: " + commento.getTesto());
     }
 }
