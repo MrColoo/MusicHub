@@ -196,7 +196,6 @@ public class BranoController {
         }
     }
 
-
     public void caricaAllegatiBrano(Brano brano, GridPane allegatiGridPane) {
         // Costruisce il percorso della cartella degli allegati del brano
         File folder = new File("src/main/resources/attachments/" + idBrano);
@@ -270,7 +269,6 @@ public class BranoController {
         }
     }
 
-
     private void aggiungiLinkYoutubeSingolo(String link, GridPane gridPane) {
         // Calcola la prossima riga disponibile basandosi solo sui nodi che hanno un RowIndex esplicito
         int row = gridPane.getChildren().stream()
@@ -333,12 +331,6 @@ public class BranoController {
         // Aggiunge i nodi alla griglia
         gridPane.getChildren().addAll(linkText, openButton, copyButton);
     }
-
-
-
-
-
-
 
     private void aggiungiMediaAllegati(List<File> files, GridPane gridPane) {
         // Pulisce la griglia rimuovendo eventuali contenuti precedenti
