@@ -14,7 +14,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class CaricaConcertoController {
+public class CaricaConcertoController implements Controller{
 
     @FXML
     private TextField campoLinkYoutube;
@@ -28,6 +28,13 @@ public class CaricaConcertoController {
     private static final Path PATH_CONCERTI_JSON = Paths.get("src/main/resources/com/musicsheetsmanager/data/concerti.json");
     private final Type tipoListaConcerti = new TypeToken<List<Concerto>>() {}.getType();
 
+
+    private MainController mainController;
+
+    @Override
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
+    }
     @FXML
     public void initialize() {
         errore.setVisible(false);
@@ -92,31 +99,21 @@ public class CaricaConcertoController {
     @FXML
     private void onAddConcertoClick() {
         String link = campoLinkYoutube.getText();
+
         if (link == null || link.trim().isEmpty()) {
             errore.setText("Link mancante");
             errore.setVisible(true);
             return;
         }
 
-        try {
-            String id = java.util.UUID.randomUUID().toString();
+        String id = java.util.UUID.randomUUID().toString();
+        Concerto nuovoConcerto = new Concerto(id, link);
 
-            Concerto nuovoConcerto = new Concerto(id, link);
+        List<Concerto> concerti = JsonUtils.leggiDaJson(PATH_CONCERTI_JSON, tipoListaConcerti);
+        concerti.add(nuovoConcerto);
+        JsonUtils.scriviSuJson(concerti, PATH_CONCERTI_JSON);
 
-            List<Concerto> concerti = JsonUtils.leggiDaJson(PATH_CONCERTI_JSON, tipoListaConcerti);
-            concerti.add(nuovoConcerto);
-            JsonUtils.scriviSuJson(concerti, PATH_CONCERTI_JSON);
-
-            errore.setText("Concerto salvato con successo!");
-            errore.setVisible(true);
-
-            campoLinkYoutube.clear();
-            webView.setVisible(false);
-            webView.setManaged(false);
-
-        } catch (Exception e) {
-            errore.setText("Errore durante il salvataggio: " + e.getMessage());
-            errore.setVisible(true);
-        }
+        mainController.show("Concerto");
     }
+
 }
