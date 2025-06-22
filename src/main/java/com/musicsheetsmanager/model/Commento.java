@@ -32,6 +32,10 @@ public class Commento {
 
     // Getter e Setter
 
+    public void setRisposte(List<Commento> risposte) {
+        this.risposte = risposte;
+    }
+
     public String getIdCommento() {
         return idCommento;
     }

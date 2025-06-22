@@ -4,6 +4,9 @@ import com.google.gson.reflect.TypeToken;
 import com.musicsheetsmanager.config.JsonUtils;
 import com.musicsheetsmanager.config.SessionManager;
 import com.musicsheetsmanager.model.Commento;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
@@ -12,10 +15,13 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
 import java.io.File;
@@ -29,14 +35,18 @@ import java.util.stream.Collectors;
 import com.musicsheetsmanager.model.Brano;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.util.Duration;
 
 public class BranoController {
+
+    @FXML
+    private ScrollPane branoScrollPane;
 
     @FXML
     private VBox fileListVBox;
 
     @FXML
-    private Button inviaBtn;
+    private Button inviaCommentoBtn;
 
     @FXML
     ImageView branoCover;
@@ -54,6 +64,9 @@ public class BranoController {
 
     @FXML
     private VBox commentiContainer;
+
+    @FXML
+    private VBox noteContainer;
 
     private Brano currentBrano;
 
@@ -91,7 +104,9 @@ public class BranoController {
 
                 boolean focusOnValidNode = false;
 
-                if (focusOwner == campoCommento || focusOwner == campoNota || focusOwner == inviaBtn) {
+                if ((focusOwner == campoCommento && !currentCommento.isNota())
+                        || (focusOwner == inviaCommentoBtn && !currentCommento.isNota())
+                ) {
                     focusOnValidNode = true;
                 } else if (focusOwner instanceof Button btn && btn.getStyleClass().contains("reply-btn")) {
                     // vedo se è replyButton
@@ -106,7 +121,6 @@ public class BranoController {
         };
 
         campoCommento.focusedProperty().addListener(focusListener);
-        campoNota.focusedProperty().addListener(focusListener);
     }
 
 
@@ -133,11 +147,36 @@ public class BranoController {
 
         // filtra i commenti appartenenti al brano
         List<Commento> commentiBrano = commenti.stream()
-                .filter(c -> brano.getIdCommenti().contains(c.getIdCommento()))
+                .filter(c ->
+                                (!c.isNota()) &&
+                                        (brano.getIdCommenti().contains(c.getIdCommento()))
+                )
                 .toList();
 
         commentiContainer.getChildren().clear();
         renderCommenti(commentiBrano, commentiContainer, 0);
+
+        // filtra le note appartenenti al brano
+        List<Commento> noteBrano = commenti.stream()
+                .filter(n ->
+                        (n.isNota()) &&
+                                (brano.getIdCommenti().contains(n.getIdCommento()))
+                )
+                .toList();
+
+        mostraNote(noteBrano);
+    }
+
+    public void mostraNote(List<Commento> noteBrano) {
+        noteContainer.getChildren().clear();
+
+        for (Commento nota : noteBrano) {
+            Text noteText = new Text("@" + nota.getUsername() + ": " + nota.getTesto());
+            noteText.getStyleClass().addAll("text-white", "font-book", "text-base");
+            noteText.setWrappingWidth(noteContainer.getMaxWidth() - 20);
+            VBox.setMargin(noteText, new Insets(10, 0, 0, 0));
+            noteContainer.getChildren().add(noteText);
+        }
     }
 
     //TODO AGGIUNGERE MESSAGGIO DI ERRORE COMMENTO VUOTO
@@ -185,6 +224,7 @@ public class BranoController {
         }
         return false;
     }
+
     @FXML
     public void OnAddCommentoClick(){
         String testoCommento = campoCommento.getText().trim();
@@ -226,18 +266,31 @@ public class BranoController {
                 .orElse(null);
     }
 
-    public VBox creaCommentoBox(Commento commento, int indentLevel) {
-        // container esterno
+    public HBox creaCommentoBox(Commento commento, int indentLevel) {
+        // HBox esterno per gestire l'allineamento e l'indentazione
+        HBox wrapper = new HBox();
+        wrapper.setAlignment(Pos.TOP_LEFT);
+        wrapper.setSpacing(0);
+        wrapper.setPrefHeight(Region.USE_COMPUTED_SIZE);
+
+        // indentazione
+        Region indent = new Region();
+        indent.setPrefWidth(indentLevel * 50);
+        wrapper.getChildren().add(indent);
+
         VBox commentBox = new VBox();
         commentBox.getStyleClass().add("brano-allegati-container");
-        commentBox.setTranslateX(indentLevel * 30);
         commentBox.setPadding(new Insets(15));
+        commentBox.setSpacing(5);
+
+        HBox.setHgrow(commentBox, Priority.ALWAYS);
+        commentBox.setMaxWidth(Double.MAX_VALUE);
 
         // riga utente + bottoni
         HBox topRow = new HBox();
         topRow.setAlignment(Pos.CENTER_LEFT);
-        topRow.setPadding(new Insets(0, 0, 5, 0));
         topRow.setSpacing(10);
+        topRow.setPadding(new Insets(0, 0, 5, 0));
 
         Text usernameText = new Text("@" + commento.getUsername());
         usernameText.getStyleClass().addAll("text-white", "font-bold", "text-base");
@@ -262,20 +315,22 @@ public class BranoController {
 
         TextFlow commentFlow = new TextFlow(commentText);
         commentFlow.setPrefWidth(600);
+        commentText.wrappingWidthProperty().bind(commentFlow.widthProperty().subtract(10));
 
         commentBox.getChildren().addAll(topRow, commentFlow);
+        wrapper.getChildren().add(commentBox);
 
         deleteButton.setOnAction(e -> onDeleteBtnClick(commento));
+        replyButton.setOnAction(e -> onReplyBtnClick(commento));
 
-        replyButton.setOnAction(e -> onReplyCommentoBtnClick(commento));
-
-        return commentBox;
+        return wrapper;
     }
+
 
     // renderizza i commenti in base al livello di annidamento
     private void renderCommenti(List<Commento> commenti, VBox container, int indentLevel) {
         for (Commento commento : commenti) {
-            VBox commentoBox = creaCommentoBox(commento, indentLevel);
+            HBox commentoBox = creaCommentoBox(commento, indentLevel);
             container.getChildren().add(commentoBox);
             if (commento.getRisposte() != null) {
                 renderCommenti(commento.getRisposte(), container, indentLevel + 1);
@@ -287,10 +342,7 @@ public class BranoController {
         Type commentoType = new TypeToken<List<Commento>>() {}.getType();
         List<Commento> listaCommenti = JsonUtils.leggiDaJson(COMMENTI_JSON_PATH, commentoType);
 
-        // elimina il commento
-        listaCommenti = listaCommenti.stream()
-                .filter(c -> !c.getIdCommento().equals(commento.getIdCommento()))
-                .collect(Collectors.toList());
+        listaCommenti = rimuoviCommentoRicorsivo(listaCommenti, commento.getIdCommento());
 
         // aggiorna json
         JsonUtils.scriviSuJson(listaCommenti, COMMENTI_JSON_PATH);
@@ -307,9 +359,29 @@ public class BranoController {
                 + ", username: " + commento.getUsername());
     }
 
-    public void onReplyCommentoBtnClick (Commento commento) {
+    // rimuove il commento/la nota/la risposta e le eventuali risposte annidate
+    private List<Commento> rimuoviCommentoRicorsivo(List<Commento> commenti, String idCommento) {
+        return commenti.stream()
+                .filter(c -> !c.getIdCommento().equals(idCommento))
+                .peek(c -> {
+                    if (c.getRisposte() != null) {
+                        c.setRisposte(rimuoviCommentoRicorsivo(c.getRisposte(), idCommento));
+                    }
+                })
+                .collect(Collectors.toList());
+    }
+
+    public void onReplyBtnClick (Commento commento) {
         currentCommento = commento;
-        Platform.runLater(() -> campoCommento.requestFocus());
+
+        campoCommento.requestFocus();
+        // scroll fino a fondo pagina dove si trova campoCommento
+        double targetVvalue = 1.0; // fondo pagina
+        Timeline timeline = new Timeline();
+        KeyValue kv = new KeyValue(branoScrollPane.vvalueProperty(), targetVvalue);
+        KeyFrame kf = new KeyFrame(Duration.millis(300), kv);   // 300ms animazione
+        timeline.getKeyFrames().add(kf);
+        timeline.play();
         System.out.println("Risposta al commento: " + commento.getTesto());
     }
 }
