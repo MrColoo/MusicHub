@@ -19,7 +19,7 @@
     <content>
         <VBox prefWidth="1070.0" styleClass="bra">
             <children>
-                <HBox alignment="CENTER_LEFT" prefWidth="1070.0" styleClass="brano-banner">
+                <HBox fx:id="branoBanner" alignment="CENTER_LEFT" prefWidth="1070.0" styleClass="brano-banner">
                     <children>
                         <ImageView fx:id="branoCover" fitHeight="170.0" fitWidth="170.0" pickOnBounds="true" preserveRatio="true" />
                         <VBox alignment="BOTTOM_LEFT">
