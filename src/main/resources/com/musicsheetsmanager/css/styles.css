@@ -194,12 +194,8 @@ previewBackground{
     -fx-background-radius: 20px;
 }
 
-.brano-banner {
-    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #d4a31c, #5e421e);
-}
-
 .brano-banner .image-view {
-        -fx-effect: dropshadow(gaussian, #5e421e, 60, .1, 0, 10);
+        -fx-effect: dropshadow(gaussian, -fx-secondary-gray, 60, .1, 0, 10);
 }
 
 .brano-allegati-container{

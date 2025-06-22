@@ -76,7 +76,7 @@ public class TopBarController implements Controller{
 
     // restituisce una lista con i brani trovati
     @FXML
-    public void onSearchBarEnter (){
+    private void onSearchBarEnter (){
         String viewTypeText = esploraController.getViewType();
         String chiave = campoRicerca.getText();
 
