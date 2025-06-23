@@ -25,6 +25,8 @@ public class CaricaConcertoController implements Controller{
     @FXML
     private Text errore;
 
+    private String idConcerto;
+
     private static final Path PATH_CONCERTI_JSON = Paths.get("src/main/resources/com/musicsheetsmanager/data/concerti.json");
     private final Type tipoListaConcerti = new TypeToken<List<Concerto>>() {}.getType();
 
@@ -112,8 +114,7 @@ public class CaricaConcertoController implements Controller{
         List<Concerto> concerti = JsonUtils.leggiDaJson(PATH_CONCERTI_JSON, tipoListaConcerti);
         concerti.add(nuovoConcerto);
         JsonUtils.scriviSuJson(concerti, PATH_CONCERTI_JSON);
-
+        idConcerto = id;
         mainController.show("Concerto");
     }
-
 }
