@@ -419,6 +419,7 @@ public class BranoController {
             // Passa alla riga successiva
             row++;
         }
+    }
 
     private LinearGradient estraiColoriDominanti(Image image) {
         PixelReader reader = image.getPixelReader();
