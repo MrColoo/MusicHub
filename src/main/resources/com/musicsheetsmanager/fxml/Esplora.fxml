@@ -30,7 +30,7 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Esplora">
+            <Text fx:id="esploraTitle" strokeType="OUTSIDE" strokeWidth="0.0" text="Esplora">
                <styleClass>
                   <String fx:value="font-black" />
                   <String fx:value="text-white" />
@@ -61,7 +61,7 @@
                   <String fx:value="font-medium" />
                </styleClass>
             </ToggleButton>
-            <ToggleButton fx:id="generiBtn1" mnemonicParsing="false" text="Esecutori" toggleGroup="$catalogoGroup" GridPane.columnIndex="5">
+            <ToggleButton fx:id="esecutoriBtn" mnemonicParsing="false" text="Esecutori" toggleGroup="$catalogoGroup" GridPane.columnIndex="5">
                <styleClass>
                   <String fx:value="explore-btn" />
                   <String fx:value="text-base" />
@@ -72,7 +72,7 @@
       </GridPane>
       <ScrollPane hbarPolicy="NEVER" layoutY="120.0" prefHeight="620.0" prefWidth="1070.0" styleClass="explore-scroll-pane">
          <content>
-            <FlowPane fx:id="container" hgap="20.0" prefWidth="1070.0" prefWrapLength="0.0">
+            <FlowPane fx:id="container" hgap="20.0" prefWidth="1070.0" prefWrapLength="0.0" vgap="20.0">
                <padding>
                   <Insets bottom="25.0" left="25.0" right="25.0" />
                </padding>

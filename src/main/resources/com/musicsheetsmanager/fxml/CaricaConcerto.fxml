@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.web.WebView?>
+
+<AnchorPane prefHeight="740.0" prefWidth="1070.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.musicsheetsmanager.controller.CaricaConcertoController">
+
+    <children>
+        <ImageView fitHeight="740.0" fitWidth="1091.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@../ui/Sfondo_carica_brano.png" />
+            </image>
+        </ImageView>
+      <VBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="1070.0">
+         <children>
+              <VBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" styleClass="form-container">
+                  <children>
+                      <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Carica un Concerto">
+                          <styleClass>
+                              <String fx:value="text-3xl" />
+                              <String fx:value="font-bold" />
+                          </styleClass>
+                          <VBox.margin>
+                              <Insets bottom="40.0" left="40.0" top="40.0" />
+                          </VBox.margin>
+                      </Text>
+                  <VBox>
+                     <children>
+                        <HBox alignment="CENTER_RIGHT">
+                           <children>
+                              <TextField fx:id="campoLinkYoutube" prefHeight="50.0" prefWidth="400.0" promptText="Link Youtube *">
+                                 <styleClass>
+                                    <String fx:value="form-text-field" />
+                                    <String fx:value="text-base" />
+                                 </styleClass>
+                              </TextField>
+                              <Button fx:id="caricaBottone" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#onAddBranoClick" prefHeight="33.0" text="Carica">
+                                 <styleClass>
+                                    <String fx:value="form-btn" />
+                                    <String fx:value="font-book" />
+                                 </styleClass>
+                                 <graphic>
+                                    <ImageView fitHeight="17.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../ui/icons/music-notes-plus.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <padding>
+                                    <Insets left="20.0" right="20.0" />
+                                 </padding>
+                                 <HBox.margin>
+                                    <Insets left="20.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                           <padding>
+                              <Insets left="40.0" right="40.0" />
+                           </padding>
+                           <VBox.margin>
+                              <Insets bottom="10.0" />
+                           </VBox.margin>
+                        </HBox>
+                            <HBox alignment="TOP_CENTER">
+                                <children>
+                                    <Text fx:id="errore" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: RED;" text="Errore">
+                                        <styleClass>
+                                            <String fx:value="font-book" />
+                                            <String fx:value="text-sm" />
+                                        </styleClass>
+                                    </Text>
+                                </children>
+                                <VBox.margin>
+                                    <Insets />
+                                </VBox.margin>
+                            </HBox>
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="20.0" left="40.0" right="40.0" />
+                     </VBox.margin>
+                  </VBox>
+                  <HBox alignment="CENTER">
+                     <children>
+                        <VBox maxHeight="-Infinity" maxWidth="-Infinity">
+                           <children>
+                              <WebView fx:id="webView" minHeight="-Infinity" minWidth="-Infinity" prefHeight="215.0" prefWidth="460.0" />
+                           </children>
+                           <HBox.margin>
+                              <Insets bottom="40.0" />
+                           </HBox.margin>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  </children>
+              </VBox>
+         </children>
+      </VBox>
+    </children>
+</AnchorPane>

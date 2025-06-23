@@ -34,6 +34,11 @@
       <artifactId>javafx-fxml</artifactId>
       <version>23.0.1</version>
     </dependency>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-web</artifactId>
+      <version>23.0.1</version> <!-- o la tua versione -->
+    </dependency>
 
 <dependency>
       <groupId>org.junit.jupiter</groupId>

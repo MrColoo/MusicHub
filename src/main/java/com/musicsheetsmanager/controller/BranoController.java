@@ -10,10 +10,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelReader;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.*;
 import java.awt.*;
+import javafx.geometry.Insets;
 import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Type;
@@ -26,6 +28,10 @@ import java.util.List;
 import java.util.Objects;
 
 import com.musicsheetsmanager.model.Brano;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 
@@ -41,7 +47,8 @@ public class BranoController {
     Text branoTitolo;
     @FXML
     Text branoAutori;
-
+    @FXML
+    private HBox branoBanner;
     @FXML
     private TextArea campoCommento;
     @FXML
@@ -51,7 +58,7 @@ public class BranoController {
 
     @FXML
     public void initialize() {
-        // errore.setVisible(false);
+
     }
 
     private static final Path COMMENTI_JSON_PATH = Paths.get( // percorso verso il file JSON
@@ -78,11 +85,18 @@ public class BranoController {
         if (!imageFile.exists()) {
             imageFile = new File("src/main/resources/com/musicsheetsmanager/ui/Cover.jpg");
         }
-        branoCover.setImage(new Image(imageFile.toURI().toString()));
 
         caricaAllegatiBrano(brano, allegatiGridPane);
 
         caricaMediaBrano(brano, mediaGridPane);
+      
+        Image albumCover = new Image(imageFile.toURI().toString());
+
+        // Applico il colore come background al banner
+        BackgroundFill bgFill = new BackgroundFill(estraiColoriDominanti(albumCover), CornerRadii.EMPTY, Insets.EMPTY);
+        branoBanner.setBackground(new Background(bgFill));
+
+        branoCover.setImage(albumCover);
     }
 
     //TODO AGGIUNGERE MESSAGGIO DI ERRORE COMMENTO VUOTO
@@ -405,6 +419,39 @@ public class BranoController {
             // Passa alla riga successiva
             row++;
         }
+
+    private LinearGradient estraiColoriDominanti(Image image) {
+        PixelReader reader = image.getPixelReader();
+        int width = (int) image.getWidth();
+        int height = (int) image.getHeight();
+
+        long redSum = 0, greenSum = 0, blueSum = 0;
+        int count = 0;
+
+        for (int y = 0; y < height; y += 5) {
+            for (int x = 0; x < width; x += 5) {
+                javafx.scene.paint.Color c = reader.getColor(x, y);
+                redSum += (int)(c.getRed() * 255);
+                greenSum += (int)(c.getGreen() * 255);
+                blueSum += (int)(c.getBlue() * 255);
+                count++;
+            }
+        }
+
+        int r = (int)(redSum / count);
+        int g = (int)(greenSum / count);
+        int b = (int)(blueSum / count);
+
+        javafx.scene.paint.Color colore1 = Color.rgb(r, g, b);
+        javafx.scene.paint.Color colore2 = colore1.darker();
+
+        // Crea nuovo gradiente
+        LinearGradient nuovoGradiente = new LinearGradient(
+                0, 0, 0, 1, true, CycleMethod.NO_CYCLE,
+                new Stop(0, colore1),
+                new Stop(1, colore2)
+        );
+        return nuovoGradiente;
     }
 
 }
