@@ -80,6 +80,16 @@
                                                     <String fx:value="text-xl" />
                                                 </styleClass>
                                             </Text>
+                                    <Region HBox.hgrow="ALWAYS" />
+                                    <Button mnemonicParsing="false" style="-fx-background-color: none;">
+                                       <graphic>
+                                          <ImageView fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../ui/icons/file-plus-bold.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
                                  </children>
                                  <padding>
                                     <Insets bottom="5.0" />
@@ -123,6 +133,16 @@
                                           <String fx:value="text-xl" />
                                        </styleClass>
                                     </Text>
+                                    <Region HBox.hgrow="ALWAYS" />
+                                    <Button mnemonicParsing="false" style="-fx-background-color: none;">
+                                       <graphic>
+                                          <ImageView fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../ui/icons/file-plus-bold.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
                                  </children>
                                  <padding>
                                     <Insets bottom="5.0" />
