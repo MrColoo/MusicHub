@@ -28,7 +28,7 @@
                   <String fx:value="text-4xl" />
                </styleClass>
             </Text>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Brani con cui hai interagito di recente:" GridPane.rowIndex="1">
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Brani in cui hai commentato di recente:" GridPane.rowIndex="1">
                <styleClass>
                   <String fx:value="font-bold" />
                   <String fx:value="text-white" />
@@ -37,7 +37,7 @@
             </Text>
          </children>
       </GridPane>
-      <ScrollPane hbarPolicy="NEVER" layoutY="120.0" prefHeight="620.0" prefWidth="1070.0" styleClass="explore-scroll-pane">
+      <ScrollPane hbarPolicy="NEVER" layoutY="160.0" prefHeight="580.0" prefWidth="1070.0" styleClass="explore-scroll-pane">
          <content>
             <FlowPane fx:id="container" hgap="20.0" prefWidth="1070.0" prefWrapLength="0.0">
                <padding>

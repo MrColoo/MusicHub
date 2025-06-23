@@ -5,6 +5,7 @@ import com.musicsheetsmanager.config.JsonUtils;
 import com.musicsheetsmanager.model.Utente;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -25,7 +26,7 @@ public class RegisterController implements Controller {
     @FXML
     private TextField registerUsernameField;  // input per USERNAME
     @FXML
-    private TextField registerPasswordField;  // input per PASSWORD
+    private PasswordField registerPasswordField;  // input per PASSWORD
     @FXML
     private Button registerButton;            // bottone per la registrazione
     @FXML
@@ -98,8 +99,7 @@ public class RegisterController implements Controller {
         }
 
         // Crea un nuovo utente con i dati inseriti
-        Utente newUser = new Utente(email, username, password, false, true); // TODO FARE ADMIN
-        newUser.setApproved(false); // setto l'approvazione direttamente a FALSE
+        Utente newUser = new Utente(email, username, password, false, false);
 
         // Provo a salvare l'utente nel JSON
         if (!salvaUtenteInJson(newUser)) {

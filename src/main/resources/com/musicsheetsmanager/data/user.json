@@ -3,6 +3,21 @@
     "email": "pota.pota@gmail.com",
     "username": "pota",
     "password": "pota",
-    "approved": true
+    "approved": true,
+    "admin": true
+  },
+  {
+    "email": "potone@gmail.com",
+    "username": "mammamia",
+    "password": "mammamia",
+    "approved": false,
+    "admin": false
+  },
+  {
+    "email": "potapota@gmail.com",
+    "username": "potone",
+    "password": "ahaha",
+    "approved": false,
+    "admin": false
   }
 ]
