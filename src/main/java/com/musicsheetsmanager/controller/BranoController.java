@@ -19,10 +19,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.image.PixelReader;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
@@ -180,6 +177,18 @@ public class BranoController {
                 .toList();
 
         mostraNote(noteBrano);
+
+        caricaAllegatiBrano(brano, allegatiGridPane);
+
+        caricaMediaBrano(brano, mediaGridPane);
+
+        Image albumCover = new Image(imageFile.toURI().toString());
+
+        // Applico il colore come background al banner
+        BackgroundFill bgFill = new BackgroundFill(estraiColoriDominanti(albumCover), CornerRadii.EMPTY, Insets.EMPTY);
+        branoBanner.setBackground(new Background(bgFill));
+
+        branoCover.setImage(albumCover);
     }
 
     public void mostraNote(List<Commento> noteBrano) {
@@ -192,18 +201,6 @@ public class BranoController {
             VBox.setMargin(noteText, new Insets(10, 0, 0, 0));
             noteContainer.getChildren().add(noteText);
         }
-
-        caricaAllegatiBrano(brano, allegatiGridPane);
-
-        caricaMediaBrano(brano, mediaGridPane);
-      
-        Image albumCover = new Image(imageFile.toURI().toString());
-
-        // Applico il colore come background al banner
-        BackgroundFill bgFill = new BackgroundFill(estraiColoriDominanti(albumCover), CornerRadii.EMPTY, Insets.EMPTY);
-        branoBanner.setBackground(new Background(bgFill));
-
-        branoCover.setImage(albumCover);
     }
 
     //TODO AGGIUNGERE MESSAGGIO DI ERRORE COMMENTO VUOTO
