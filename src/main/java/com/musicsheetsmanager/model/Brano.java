@@ -1,5 +1,10 @@
 package com.musicsheetsmanager.model;
 
+import com.google.gson.reflect.TypeToken;
+import com.musicsheetsmanager.config.JsonUtils;
+
+import java.lang.reflect.Type;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -138,6 +143,20 @@ public class Brano {
     public void aggiungiCommento(String idCommento) {
         if (idCommenti == null) idCommenti = new ArrayList<>();
         idCommenti.add(idCommento);
+    }
+
+    public static void rimuoviCommentoBrano(String idBrano, String idCommento, Path BRANI_JSON_PATH) {
+        Type branoType = new TypeToken<List<Brano>>() {}.getType();
+        List<Brano> listaBrani = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType);
+
+        for (Brano b : listaBrani) {
+            if (b.getIdBrano().equals(idBrano)) {
+                b.getIdCommenti().remove(idCommento);
+                break;
+            }
+        }
+
+        JsonUtils.scriviSuJson(listaBrani, BRANI_JSON_PATH);
     }
 
     @Override

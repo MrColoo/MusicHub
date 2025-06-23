@@ -32,6 +32,10 @@ public class Commento {
 
     // Getter e Setter
 
+    public void setRisposte(List<Commento> risposte) {
+        this.risposte = risposte;
+    }
+
     public String getIdCommento() {
         return idCommento;
     }
@@ -46,6 +50,10 @@ public class Commento {
 
     public List<Commento> getRisposte() {
         return risposte;
+    }
+
+    public boolean isNota() {
+        return isNota;
     }
 
     public String toString(){
