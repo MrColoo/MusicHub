@@ -206,10 +206,10 @@ public class BranoController {
             return;
         }
 
-        // Filtra i file: solo PDF, TXT e MIDI
+        // Filtra i file: solo PDF, TXT, JPG e PNG
         File[] fileArray = folder.listFiles(file -> {
             String name = file.getName().toLowerCase();
-            return (name.endsWith(".pdf") || name.endsWith(".txt") || name.endsWith(".midi")) && file.isFile();
+            return (name.endsWith(".pdf") || name.endsWith(".txt") || name.endsWith(".jpg") || name.endsWith(".png")) && file.isFile();
         });
 
         // Mostra i file validi nella griglia
@@ -230,10 +230,10 @@ public class BranoController {
             return;
         }
 
-        // Filtra i file: solo MP3 e MP4
+        // Filtra i file: solo MP3 e MP4 e MIDI
         File[] fileArray = folder.listFiles(file -> {
             String name = file.getName().toLowerCase();
-            return (name.endsWith(".mp3") || name.endsWith(".mp4")) && file.isFile();
+            return (name.endsWith(".mp3") || name.endsWith(".mp4") || name.endsWith(".midi")) && file.isFile();
         });
 
         // Mostra i file multimediali nella griglia
