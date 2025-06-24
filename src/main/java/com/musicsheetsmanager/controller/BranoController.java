@@ -338,7 +338,6 @@ public class BranoController {
                 || (SessionManager.getLoggedUser().getUsername().equals(commento.getUsername()))
                 || (SessionManager.getLoggedUser().getUsername().equals(branoOwner))
         ){
-            System.out.println(SessionManager.getLoggedUser().getUsername().equals(commento.getUsername()));
             deleteButton.setVisible(true);
             deleteButton.setManaged(true);
         } else {
