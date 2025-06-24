@@ -22,7 +22,7 @@
                     <children>
                   <VBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="315.0" prefWidth="560.0">
                      <children>
-                        <WebView minHeight="-Infinity" minWidth="-Infinity" prefHeight="515.0" prefWidth="760.0" />
+                        <WebView fx:id="webView" minHeight="-Infinity" minWidth="-Infinity" prefHeight="515.0" prefWidth="760.0" />
                      </children>
                   </VBox>
                         <VBox alignment="BOTTOM_LEFT">
