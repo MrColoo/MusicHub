@@ -414,7 +414,7 @@ public class CaricaBranoController implements Controller {
         System.out.println("Dizionari salvati con successo");
 
         mainController.goToBrano(caricaBottone, nuovoBrano, () -> {
-            BranoController controller = mainController.getBranoFileController();
+            BranoController controller = mainController.getBranoController();
             if (controller != null) {
                 controller.fetchBranoData(nuovoBrano);
             }

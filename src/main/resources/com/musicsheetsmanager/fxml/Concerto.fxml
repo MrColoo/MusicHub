@@ -22,22 +22,12 @@
                     <children>
                   <VBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="315.0" prefWidth="560.0">
                      <children>
-                        <WebView minHeight="-Infinity" minWidth="-Infinity" prefHeight="515.0" prefWidth="760.0" />
+                        <WebView fx:id="webView" minHeight="-Infinity" minWidth="-Infinity" prefHeight="515.0" prefWidth="760.0" />
                      </children>
                   </VBox>
                         <VBox alignment="BOTTOM_LEFT">
                             <children>
-                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Singolo">
-                                    <styleClass>
-                                        <String fx:value="text-white" />
-                                        <String fx:value="font-medium" />
-                                        <String fx:value="text-base" />
-                                    </styleClass>
-                                    <VBox.margin>
-                                        <Insets bottom="10.0" />
-                                    </VBox.margin>
-                                </Text>
-                                <Text fx:id="branoTitolo" strokeType="OUTSIDE" strokeWidth="0.0" text="Titolo" wrappingWidth="350.0">
+                                <Text fx:id="concertoTitolo" strokeType="OUTSIDE" strokeWidth="0.0" text="Titolo" wrappingWidth="350.0">
                                     <styleClass>
                                         <String fx:value="text-white" />
                                         <String fx:value="font-black" />
@@ -46,13 +36,6 @@
                                     <VBox.margin>
                                         <Insets bottom="5.0" />
                                     </VBox.margin>
-                                </Text>
-                                <Text fx:id="branoAutori" strokeType="OUTSIDE" strokeWidth="0.0" text="Sottotitolo">
-                                    <styleClass>
-                                        <String fx:value="text-white" />
-                                        <String fx:value="font-bold" />
-                                        <String fx:value="text-base" />
-                                    </styleClass>
                                 </Text>
                             </children>
                             <HBox.margin>

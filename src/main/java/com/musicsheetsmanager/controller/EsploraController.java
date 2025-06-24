@@ -177,7 +177,7 @@ public class EsploraController implements Controller {
         VBox card = creaCard(brano.getTitolo(), String.join(", ", brano.getAutori()), imageFile);
 
         card.setOnMouseClicked(e -> mainController.goToBrano(card, brano, () -> {
-            BranoController controller = mainController.getBranoFileController();
+            BranoController controller = mainController.getBranoController();
             if (controller != null) controller.fetchBranoData(brano);
         }));
 
