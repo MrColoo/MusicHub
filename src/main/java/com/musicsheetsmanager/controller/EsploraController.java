@@ -26,6 +26,8 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.function.Function;
 
+import com.musicsheetsmanager.config.StringUtils;
+
 public class EsploraController implements Controller {
 
     @FXML private FlowPane container;
@@ -38,6 +40,9 @@ public class EsploraController implements Controller {
     private static final Path BRANI_JSON_PATH = Paths.get("src", "main", "resources", "com", "musicsheetsmanager", "data", "brani.json");
     private static final String COVER_PATH = "src/main/resources/com/musicsheetsmanager/ui/covers/";
     private static final String DEFAULT_COVER = "src/main/resources/com/musicsheetsmanager/ui/Cover.jpg";
+    private static final String AUTORI_COVER_PATH = "src/main/resources/com/musicsheetsmanager/ui/autori/";
+    private static final String ESECUTORI_COVER_PATH = "src/main/resources/com/musicsheetsmanager/ui/esecutori/";
+
 
     @Override
     public void setMainController(MainController mainController) {
@@ -98,7 +103,7 @@ public class EsploraController implements Controller {
      * Carica e mostra il catalogo secondo la vista selezionata.
      */
     private void mostraCatalogo(String viewType) {
-        esploraTitle.setText(viewType.substring(0, 1).toUpperCase() + viewType.substring(1));
+        esploraTitle.setText(StringUtils.capitalizzaTesto(viewType));
 
         Type branoType = new TypeToken<List<Brano>>() {}.getType();
         List<Brano> brani = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType);
@@ -146,13 +151,15 @@ public class EsploraController implements Controller {
         cover.setPreserveRatio(true);
         cover.setPickOnBounds(true);
 
-        Text titoloText = new Text(titolo);
+        Text titoloText = new Text(StringUtils.capitalizzaTesto(titolo));
+        titoloText.setWrappingWidth(154);
+        titoloText.setTextAlignment(TextAlignment.CENTER);
         titoloText.getStyleClass().addAll("text-white", "font-bold", "text-base");
 
         card.getChildren().addAll(cover, titoloText);
 
         if (sottotitolo != null && !sottotitolo.isEmpty()) {
-            Text autoreText = new Text(sottotitolo);
+            Text autoreText = new Text(StringUtils.capitalizzaTesto(sottotitolo));
             autoreText.getStyleClass().addAll("text-white", "font-light", "text-sm");
             autoreText.setWrappingWidth(154);
             autoreText.setTextAlignment(TextAlignment.CENTER);
@@ -181,7 +188,40 @@ public class EsploraController implements Controller {
      * Crea una card per il catalogo generico (autori, esecutori).
      */
     public VBox creaCardCatalogo(String titoloCard) {
-        return creaCard(titoloCard, null, null);
+        String viewType = getViewType(); // "autori" o "esecutori"
+
+        File imageFile = null;
+
+        if ("autori".equals(viewType)) {
+            imageFile = new File(AUTORI_COVER_PATH + titoloCard.replaceAll("\\s+", "_") + ".jpg");
+        } else if ("esecutori".equals(viewType)) {
+            imageFile = new File(ESECUTORI_COVER_PATH + titoloCard.replaceAll("\\s+", "_") + ".png");
+        }
+
+        VBox card = creaCard(titoloCard, null, imageFile);
+
+        card.setOnMouseClicked(e -> {
+            Type branoType = new TypeToken<List<Brano>>() {}.getType();
+            List<Brano> brani = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType);
+
+            List<Brano> braniFiltrati;
+            if ("autori".equals(viewType)) {
+                braniFiltrati = brani.stream()
+                        .filter(b -> b.getAutori().contains(titoloCard))
+                        .toList();
+            } else if ("esecutori".equals(viewType)) {
+                braniFiltrati = brani.stream()
+                        .filter(b -> b.getEsecutori().contains(titoloCard))
+                        .toList();
+            } else {
+                braniFiltrati = List.of();
+            }
+
+            generaCatalogo(braniFiltrati, b -> creaCardBrano(b, b.getIdBrano()));
+            esploraTitle.setText(StringUtils.capitalizzaTesto(titoloCard));
+        });
+
+        return card;
     }
 
     /**
@@ -202,7 +242,7 @@ public class EsploraController implements Controller {
         card.setClip(clip);
 
         // Titolo del genere
-        Text titolo = new Text(genere);
+        Text titolo = new Text(StringUtils.capitalizzaTesto(genere));
         titolo.getStyleClass().addAll("text-white", "font-black", "text-2xl");
         GridPane.setMargin(titolo, new Insets(15));
         card.add(titolo, 0, 0);
@@ -234,7 +274,7 @@ public class EsploraController implements Controller {
             // Genera il catalogo solo con questi brani
             generaCatalogo(braniDelGenere, b -> creaCardBrano(b, b.getIdBrano()));
             // Imposta il titolo al genere selezionato
-            esploraTitle.setText(genere.substring(0, 1).toUpperCase() + genere.substring(1));
+            esploraTitle.setText(StringUtils.capitalizzaTesto(genere));
         });
 
         return card;
