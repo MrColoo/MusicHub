@@ -35,16 +35,17 @@ public class EsploraConcertiController implements Controller {
         if (mainController != null) {
             mainController.setEsploraConcertiController(this);
         }
-        mostraCardConcerti();
+
+        Type concertoType = new TypeToken<List<Concerto>>() {}.getType();
+        List<Concerto> concerti = JsonUtils.leggiDaJson(CONCERTI_JSON_PATH, concertoType);
+        mostraCardConcerti(concerti);
     }
 
     public void setConcertoController(ConcertoController concertoController) {
         // Metodo richiesto dall'interfaccia, ma non usato qui.
     }
 
-    public void mostraCardConcerti() {
-        Type concertoType = new TypeToken<List<Concerto>>() {}.getType();
-        List<Concerto> concerti = JsonUtils.leggiDaJson(CONCERTI_JSON_PATH, concertoType);
+    public void mostraCardConcerti(List<Concerto> concerti) {
 
         container.getChildren().clear();
         for (Concerto c : concerti) {

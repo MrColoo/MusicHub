@@ -23,6 +23,8 @@ public class MainController {
     @FXML private BranoController branoController;
     @FXML private ConcertoController concertoController;
     @FXML private EsploraConcertiController esploraConcertiController;
+    @FXML private NavBarController navBarController;
+
 
     private Utente currentUser;
 
@@ -35,6 +37,7 @@ public class MainController {
 
         topBarController.setMainController(this);
         topBarController.setEsploraController(esploraController);
+
 
         showNavBar();
     }
@@ -58,6 +61,13 @@ public class MainController {
         this.esploraConcertiController = esploraConcertiController;
         if (topBarController != null) {
             topBarController.setEsploraConcertiController(esploraConcertiController);
+        }
+    }
+
+    public void setNavBarController(NavBarController navBarController) {
+        this.navBarController = navBarController;
+        if (topBarController != null) {
+            topBarController.setNavBarController(navBarController);
         }
     }
 
@@ -89,6 +99,12 @@ public class MainController {
                 this.topBarController = topBar;
                 topBar.setMainController(this);
                 if (esploraController != null) topBar.setEsploraController(esploraController);
+                if(navBarController != null) topBarController.setNavBarController(navBarController);
+            }
+
+            if (controller instanceof NavBarController navBarController) {
+                this.navBarController = navBarController;
+                if (topBarController != null) topBarController.setNavBarController(navBarController);
             }
 
             if (controller instanceof BranoController branoController) {
