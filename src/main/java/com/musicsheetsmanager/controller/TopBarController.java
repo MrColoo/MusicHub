@@ -7,6 +7,8 @@ import java.lang.reflect.Type;
 import com.musicsheetsmanager.config.JsonUtils;
 import com.musicsheetsmanager.config.SessionManager;
 import com.musicsheetsmanager.model.Brano;
+import com.musicsheetsmanager.model.Concerto;
+
 import com.musicsheetsmanager.controller.NavBarController;
 
 import com.musicsheetsmanager.model.Concerto;
@@ -122,21 +124,22 @@ public class TopBarController implements Controller{
 
                     esploraController.generaCatalogo(risultatiRircercaCatalogo, esploraController::creaCardCatalogo);
                 }
+                break;
+
             case "concertiBtn":
                 Type concertoType = new TypeToken<List<Concerto>>() {}.getType();
                 List<Concerto> listaConcerti = JsonUtils.leggiDaJson(CONCERTI_JSON_PATH, concertoType);
 
-                if(chiave == null || chiave.isBlank()) {
-                    risultatiRicercaConcerti = listaConcerti;
-                } else {
-                    String key = chiave.toLowerCase();
-                    risultatiRicercaConcerti = listaConcerti.stream()
-                                                    .filter(b ->
-                                                    (b.getTitolo() != null && b.getTitolo().toLowerCase().contains(key)))
-                                                    .toList();
-                }
-                esploraConcertiController.mostraCardConcerti(risultatiRicercaConcerti);
+                risultatiRicercaConcerti = Concerto.cercaConcerti(listaConcerti, chiave);
 
+                if (esploraConcertiController != null) {
+                    esploraConcertiController.mostraCardConcerti(risultatiRicercaConcerti);
+                }
+
+                break;
+
+            default:
+                break;
         }
 
     }

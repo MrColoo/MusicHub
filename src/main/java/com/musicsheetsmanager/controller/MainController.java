@@ -49,7 +49,6 @@ public class MainController {
         return concertoController;
     }
 
-
     public void setEsploraController(EsploraController esploraController) {
         this.esploraController = esploraController;
         if (topBarController != null) {
@@ -64,13 +63,6 @@ public class MainController {
         }
     }
 
-    public void setNavBarController(NavBarController navBarController) {
-        this.navBarController = navBarController;
-        if (topBarController != null) {
-            topBarController.setNavBarController(navBarController);
-        }
-    }
-
     // Funzione generale per caricare una pagina FXML
     private void loadContent(String nomePagina, StackPane pane) {
         try {
@@ -82,44 +74,54 @@ public class MainController {
                 ((Controller) controller).setMainController(this);
             }
 
-            // controller specifici
+            // riferimenti controller specifici
             if (controller instanceof EsploraController esplora) {
                 this.esploraController = esplora;
-                if (topBarController != null) topBarController.setEsploraController(esplora);
-                this.esploraController.inizializzaBrani();
-            }
-
-            if (controller instanceof EsploraConcertiController esploraConcerti) {
+            } else if (controller instanceof EsploraConcertiController esploraConcerti) {
                 this.esploraConcertiController = esploraConcerti;
-                if (topBarController != null) topBarController.setEsploraConcertiController(esploraConcerti);
-                this.esploraConcertiController.inizializzaConcerti();
-            }
-
-            if (controller instanceof TopBarController topBar) {
+            } else if (controller instanceof TopBarController topBar) {
                 this.topBarController = topBar;
-                topBar.setMainController(this);
-                if (esploraController != null) topBar.setEsploraController(esploraController);
-                if(navBarController != null) topBarController.setNavBarController(navBarController);
-            }
-
-            if (controller instanceof NavBarController navBarController) {
-                this.navBarController = navBarController;
-                if (topBarController != null) topBarController.setNavBarController(navBarController);
-            }
-
-            if (controller instanceof BranoController branoController) {
+            } else if (controller instanceof NavBarController navBar) {
+                this.navBarController = navBar;
+            } else if (controller instanceof BranoController branoController) {
                 this.branoController = branoController;
-                if (esploraController != null) esploraController.setBranoController(branoController);
+            } else if (controller instanceof ConcertoController concertoController) {
+                this.concertoController = concertoController;
             }
 
-            if (controller instanceof ConcertoController concertoController) {
-                this.concertoController = concertoController;
-                if (esploraConcertiController != null) esploraConcertiController.setConcertoController(concertoController);
+            // collegamenti controller
+            if (topBarController != null) {
+                topBarController.setMainController(this);
+                if (esploraController != null) topBarController.setEsploraController(esploraController);
+                if (esploraConcertiController != null) topBarController.setEsploraConcertiController(esploraConcertiController);
+                if (navBarController != null) topBarController.setNavBarController(navBarController);
+            }
+
+            if (esploraController != null && branoController != null) {
+                esploraController.setBranoController(branoController);
+            }
+
+            if (esploraConcertiController != null && concertoController != null) {
+                esploraConcertiController.setConcertoController(concertoController);
+            }
+
+            if (navBarController != null) {
+                navBarController.setMainController(this);
             }
 
             pane.getChildren().setAll(content);
+
+            // iniziallizza brani e concerti di esplora
+            if (nomePagina.equals("Esplora") && esploraController != null) {
+                esploraController.inizializzaBrani();
+            }
+            if (nomePagina.equals("EsploraConcerti") && esploraConcertiController != null) {
+                esploraConcertiController.inizializzaConcerti();
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
+
         }
     }
 
