@@ -24,6 +24,7 @@ public class TopBarController implements Controller{
     @FXML private TextField campoRicerca;
 
     private EsploraController esploraController;
+    private EsploraConcertiController esploraConcertiController;
 
     private List<Brano> risultatiRircercaBrani;
     private List<String> risultatiRircercaCatalogo;
@@ -47,6 +48,10 @@ public class TopBarController implements Controller{
 
     public void setEsploraController(EsploraController esploraController) {
         this.esploraController = esploraController;
+    }
+
+    public void setEsploraConcertiController(EsploraConcertiController esploraConcertiController) {
+        this.esploraConcertiController = esploraConcertiController;
     }
 
     public void initialize(){

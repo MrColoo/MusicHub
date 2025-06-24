@@ -3,13 +3,18 @@ package com.musicsheetsmanager.controller;
 import com.google.gson.reflect.TypeToken;
 import com.musicsheetsmanager.config.JsonUtils;
 import com.musicsheetsmanager.model.Concerto;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
@@ -113,16 +118,23 @@ public class CaricaConcertoController implements Controller{
         }
 
         String titolo = estraiTitoloDaYoutube(link.trim());
-
         String id = java.util.UUID.randomUUID().toString();
-        Concerto nuovoConcerto = new Concerto(id, link, titolo); // Aggiunto titolo
+        Concerto nuovoConcerto = new Concerto(id, link, titolo);
 
         List<Concerto> concerti = JsonUtils.leggiDaJson(PATH_CONCERTI_JSON, tipoListaConcerti);
         concerti.add(nuovoConcerto);
         JsonUtils.scriviSuJson(concerti, PATH_CONCERTI_JSON);
         idConcerto = id;
-        mainController.show("Concerto");
+
+        // Cambia scena
+        mainController.goToConcerto(null, nuovoConcerto, () -> {
+            ConcertoController controller = mainController.getConcertoController();
+            if (controller != null) {
+                controller.fetchConcertoData(nuovoConcerto);
+            }
+        });
     }
+
 
 
     private String estraiTitoloDaYoutube(String videoUrl) {

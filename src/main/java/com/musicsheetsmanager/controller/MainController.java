@@ -1,6 +1,7 @@
 package com.musicsheetsmanager.controller;
 
 import com.musicsheetsmanager.model.Brano;
+import com.musicsheetsmanager.model.Concerto;
 import com.musicsheetsmanager.model.Utente;
 import com.musicsheetsmanager.config.SessionManager;
 import javafx.application.Platform;
@@ -20,6 +21,8 @@ public class MainController {
     @FXML private TopBarController topBarController;
     @FXML private EsploraController esploraController;
     @FXML private BranoController branoController;
+    @FXML private ConcertoController concertoController;
+    @FXML private EsploraConcertiController esploraConcertiController;
 
     private Utente currentUser;
 
@@ -36,14 +39,25 @@ public class MainController {
         showNavBar();
     }
 
-    public BranoController getBranoFileController() {
+    public BranoController getBranoController() {
         return branoController;
     }
+    public ConcertoController getConcertoController() {
+        return concertoController;
+    }
+
 
     public void setEsploraController(EsploraController esploraController) {
         this.esploraController = esploraController;
         if (topBarController != null) {
             topBarController.setEsploraController(esploraController);
+        }
+    }
+
+    public void setEsploraConcertiController(EsploraConcertiController esploraConcertiController) {
+        this.esploraConcertiController = esploraConcertiController;
+        if (topBarController != null) {
+            topBarController.setEsploraConcertiController(esploraConcertiController);
         }
     }
 
@@ -65,6 +79,12 @@ public class MainController {
                 this.esploraController.inizializzaBrani();
             }
 
+            if (controller instanceof EsploraConcertiController esploraConcerti) {
+                this.esploraConcertiController = esploraConcerti;
+                if (topBarController != null) topBarController.setEsploraConcertiController(esploraConcerti);
+                this.esploraConcertiController.inizializzaConcerti();
+            }
+
             if (controller instanceof TopBarController topBar) {
                 this.topBarController = topBar;
                 topBar.setMainController(this);
@@ -73,9 +93,13 @@ public class MainController {
 
             if (controller instanceof BranoController branoController) {
                 this.branoController = branoController;
-                if (esploraController != null) esploraController.setBranoFileController(branoController);
+                if (esploraController != null) esploraController.setBranoController(branoController);
             }
 
+            if (controller instanceof ConcertoController concertoController) {
+                this.concertoController = concertoController;
+                if (esploraConcertiController != null) esploraConcertiController.setConcertoController(concertoController);
+            }
 
             pane.getChildren().setAll(content);
         } catch (IOException e) {
@@ -88,6 +112,16 @@ public class MainController {
         node.setUserData(brano);    // associa brano alla card
 
         show("Brano");
+        Platform.runLater(onPageReady);
+    }
+
+    // vai alla pagina "Concerto"
+    public void goToConcerto(Node node, Concerto concerto, Runnable onPageReady) {
+        if (node != null) {
+            node.setUserData(concerto);
+        }
+
+        show("Concerto");
         Platform.runLater(onPageReady);
     }
 
