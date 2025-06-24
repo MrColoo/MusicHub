@@ -73,6 +73,10 @@ public class BranoController {
 
     private String idBrano;
 
+    private Button deleteButton;
+
+    private String branoOwner;
+
     @FXML
     private VBox commentiContainer;
 
@@ -139,6 +143,7 @@ public class BranoController {
     // mostra i dati del brano(titolo, autore ecc...) quando l'utente interagisce con un brano in Esplora
     public void fetchBranoData(Brano brano) {
         currentBrano = brano;
+        branoOwner = brano.getProprietario();
         idBrano = brano.getIdBrano();
         branoTitolo.setText(brano.getTitolo());
 
@@ -319,7 +324,7 @@ public class BranoController {
         Text usernameText = new Text("@" + commento.getUsername());
         usernameText.getStyleClass().addAll("text-white", "font-bold", "text-base");
 
-        Button deleteButton = new Button();
+        deleteButton = new Button();
         deleteButton.getStyleClass().add("delete-btn");
         ImageView deleteIcon = new ImageView(
                 new Image(Objects.requireNonNull(BranoController.class.getResource("/com/musicsheetsmanager/ui/icons/trash-bold.png")).toExternalForm())
@@ -327,6 +332,19 @@ public class BranoController {
         deleteIcon.setFitWidth(20);
         deleteIcon.setPreserveRatio(true);
         deleteButton.setGraphic(deleteIcon);
+
+        // se non sei admin, proprietario del brano o autore del commento non vedi il bottone elimina
+        if(SessionManager.getLoggedUser().isAdmin()
+                || (SessionManager.getLoggedUser().getUsername().equals(commento.getUsername()))
+                || (SessionManager.getLoggedUser().getUsername().equals(branoOwner))
+        ){
+            System.out.println(SessionManager.getLoggedUser().getUsername().equals(commento.getUsername()));
+            deleteButton.setVisible(true);
+            deleteButton.setManaged(true);
+        } else {
+            deleteButton.setVisible(false);
+            deleteButton.setManaged(false);
+        }
 
         Button replyButton = new Button("Rispondi");
         replyButton.getStyleClass().add("reply-btn");
