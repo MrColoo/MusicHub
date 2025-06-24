@@ -19,10 +19,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.image.PixelReader;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
@@ -75,6 +72,10 @@ public class BranoController {
     private TextArea campoNota;
 
     private String idBrano;
+
+    private Button deleteButton;
+
+    private String branoOwner;
 
     @FXML
     private VBox commentiContainer;
@@ -142,6 +143,7 @@ public class BranoController {
     // mostra i dati del brano(titolo, autore ecc...) quando l'utente interagisce con un brano in Esplora
     public void fetchBranoData(Brano brano) {
         currentBrano = brano;
+        branoOwner = brano.getProprietario();
         idBrano = brano.getIdBrano();
         branoTitolo.setText(brano.getTitolo());
 
@@ -180,6 +182,18 @@ public class BranoController {
                 .toList();
 
         mostraNote(noteBrano);
+
+        caricaAllegatiBrano(brano, allegatiGridPane);
+
+        caricaMediaBrano(brano, mediaGridPane);
+
+        Image albumCover = new Image(imageFile.toURI().toString());
+
+        // Applico il colore come background al banner
+        BackgroundFill bgFill = new BackgroundFill(estraiColoriDominanti(albumCover), CornerRadii.EMPTY, Insets.EMPTY);
+        branoBanner.setBackground(new Background(bgFill));
+
+        branoCover.setImage(albumCover);
     }
 
     public void mostraNote(List<Commento> noteBrano) {
@@ -192,18 +206,6 @@ public class BranoController {
             VBox.setMargin(noteText, new Insets(10, 0, 0, 0));
             noteContainer.getChildren().add(noteText);
         }
-
-        caricaAllegatiBrano(brano, allegatiGridPane);
-
-        caricaMediaBrano(brano, mediaGridPane);
-      
-        Image albumCover = new Image(imageFile.toURI().toString());
-
-        // Applico il colore come background al banner
-        BackgroundFill bgFill = new BackgroundFill(estraiColoriDominanti(albumCover), CornerRadii.EMPTY, Insets.EMPTY);
-        branoBanner.setBackground(new Background(bgFill));
-
-        branoCover.setImage(albumCover);
     }
 
     //TODO AGGIUNGERE MESSAGGIO DI ERRORE COMMENTO VUOTO
@@ -322,7 +324,7 @@ public class BranoController {
         Text usernameText = new Text("@" + commento.getUsername());
         usernameText.getStyleClass().addAll("text-white", "font-bold", "text-base");
 
-        Button deleteButton = new Button();
+        deleteButton = new Button();
         deleteButton.getStyleClass().add("delete-btn");
         ImageView deleteIcon = new ImageView(
                 new Image(Objects.requireNonNull(BranoController.class.getResource("/com/musicsheetsmanager/ui/icons/trash-bold.png")).toExternalForm())
@@ -330,6 +332,19 @@ public class BranoController {
         deleteIcon.setFitWidth(20);
         deleteIcon.setPreserveRatio(true);
         deleteButton.setGraphic(deleteIcon);
+
+        // se non sei admin, proprietario del brano o autore del commento non vedi il bottone elimina
+        if(SessionManager.getLoggedUser().isAdmin()
+                || (SessionManager.getLoggedUser().getUsername().equals(commento.getUsername()))
+                || (SessionManager.getLoggedUser().getUsername().equals(branoOwner))
+        ){
+            System.out.println(SessionManager.getLoggedUser().getUsername().equals(commento.getUsername()));
+            deleteButton.setVisible(true);
+            deleteButton.setManaged(true);
+        } else {
+            deleteButton.setVisible(false);
+            deleteButton.setManaged(false);
+        }
 
         Button replyButton = new Button("Rispondi");
         replyButton.getStyleClass().add("reply-btn");

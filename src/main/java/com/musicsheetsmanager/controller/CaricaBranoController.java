@@ -353,7 +353,7 @@ public class CaricaBranoController implements Controller {
             linkYoutube = "";
         }
 
-        Brano nuovoBrano = new Brano(idBrano, titolo, autori, generi, anno, esecutori, linkYoutube, strumentiMusicali);
+        Brano nuovoBrano = new Brano(SessionManager.getLoggedUser().getUsername(), idBrano, titolo, autori, generi, anno, esecutori, linkYoutube, strumentiMusicali);
 
         Type branoType = new TypeToken<List<Brano>>() {}.getType();
         List<Brano> listaBrani = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType); // brani letti dal json
