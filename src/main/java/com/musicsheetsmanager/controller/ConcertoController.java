@@ -1,14 +1,12 @@
 package com.musicsheetsmanager.controller;
 
-import com.google.gson.reflect.TypeToken;
-import com.musicsheetsmanager.config.JsonUtils;
 import com.musicsheetsmanager.model.Concerto;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.text.Text;
 import javafx.scene.web.WebView;
 
-import java.lang.reflect.Type;
-import java.nio.file.Paths;
-import java.util.List;
 
 public class ConcertoController {
 
@@ -16,23 +14,34 @@ public class ConcertoController {
     private WebView webView;
 
     @FXML
-    public void initialize() {
-        try {
-            Type listType = new TypeToken<List<Concerto>>() {}.getType();
-            List<Concerto> concerti = JsonUtils.leggiDaJson(
-                    Paths.get("src/main/resources/com/musicsheetsmanager/data/concerti.json"), listType
-            );
+    private Text concertoTitolo;
 
-            if (!concerti.isEmpty()) {
-                String link = concerti.get(0).getLink();
-                mostraVideo(link);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private String idConcerto;
+
+
+    @FXML
+    public void initialize() {
+
     }
 
-    public void mostraVideo(String linkYoutube) {
+
+    // mostra i dati del concerto(titolo, link ecc...) quando l'utente interagisce con un concerto
+
+    public void fetchConcertoData(Concerto concerto) {
+        idConcerto = concerto.getId();
+        String titolo = concerto.getTitolo();
+        if (titolo == null || titolo.isEmpty()) {
+            concertoTitolo.setText("Titolo non disponibile");
+        } else {
+            concertoTitolo.setText(titolo);
+        }
+
+        System.out.println("🎵 Caricato concerto: " + titolo);
+    }
+
+
+
+        public void mostraVideo(String linkYoutube) {
         if (webView == null) {
             return;
         }

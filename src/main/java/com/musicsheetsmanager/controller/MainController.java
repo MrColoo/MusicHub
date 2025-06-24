@@ -1,6 +1,7 @@
 package com.musicsheetsmanager.controller;
 
 import com.musicsheetsmanager.model.Brano;
+import com.musicsheetsmanager.model.Concerto;
 import com.musicsheetsmanager.model.Utente;
 import com.musicsheetsmanager.config.SessionManager;
 import javafx.application.Platform;
@@ -20,6 +21,7 @@ public class MainController {
     @FXML private TopBarController topBarController;
     @FXML private EsploraController esploraController;
     @FXML private BranoController branoController;
+    @FXML private ConcertoController concertoController;
 
     private Utente currentUser;
 
@@ -36,11 +38,16 @@ public class MainController {
         showNavBar();
     }
 
-    public BranoController getBranoFileController() {
+    public BranoController getBranoController() {
         return branoController;
     }
 
-    public void setEsploraController(EsploraController esploraController) {
+    public ConcertoController getConcertoController() {
+        return concertoController;
+    }
+
+
+        public void setEsploraController(EsploraController esploraController) {
         this.esploraController = esploraController;
         if (topBarController != null) {
             topBarController.setEsploraController(esploraController);
@@ -76,6 +83,10 @@ public class MainController {
                 if (esploraController != null) esploraController.setBranoFileController(branoController);
             }
 
+            if (controller instanceof ConcertoController concertoController) {
+                this.concertoController = concertoController;
+            }
+
 
             pane.getChildren().setAll(content);
         } catch (IOException e) {
@@ -88,6 +99,15 @@ public class MainController {
         node.setUserData(brano);    // associa brano alla card
 
         show("Brano");
+        Platform.runLater(onPageReady);
+    }
+
+    public void goToConcerto(Node node, Concerto concerto, Runnable onPageReady) {
+         if (node != null) {
+            node.setUserData(concerto);
+        }
+
+        show("Concerto");
         Platform.runLater(onPageReady);
     }
 
