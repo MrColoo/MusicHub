@@ -9,7 +9,11 @@ import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -108,13 +112,48 @@ public class CaricaConcertoController implements Controller{
             return;
         }
 
+        String titolo = estraiTitoloDaYoutube(link.trim());
+
         String id = java.util.UUID.randomUUID().toString();
-        Concerto nuovoConcerto = new Concerto(id, link);
+        Concerto nuovoConcerto = new Concerto(id, link, titolo); // Aggiunto titolo
 
         List<Concerto> concerti = JsonUtils.leggiDaJson(PATH_CONCERTI_JSON, tipoListaConcerti);
         concerti.add(nuovoConcerto);
         JsonUtils.scriviSuJson(concerti, PATH_CONCERTI_JSON);
         idConcerto = id;
         mainController.show("Concerto");
+    }
+
+
+    private String estraiTitoloDaYoutube(String videoUrl) {
+        try {
+            HttpURLConnection conn = (HttpURLConnection) new URL(videoUrl).openConnection();
+            conn.setRequestProperty("User-Agent", "Mozilla/5.0"); // Alcuni siti bloccano client Java se non lo imposti
+            conn.setConnectTimeout(5000);
+            conn.setReadTimeout(5000);
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            StringBuilder html = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                html.append(line);
+            }
+            reader.close();
+
+            // Cerca il contenuto del <title>...</title>
+            String htmlContent = html.toString();
+            int titleStart = htmlContent.indexOf("<title>");
+            int titleEnd = htmlContent.indexOf("</title>");
+
+            if (titleStart != -1 && titleEnd != -1 && titleEnd > titleStart) {
+                String title = htmlContent.substring(titleStart + 7, titleEnd);
+                return title.replace(" - YouTube", "").trim();
+            } else {
+                return "Titolo non trovato";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Errore caricamento titolo";
+        }
     }
 }
