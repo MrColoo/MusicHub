@@ -32,6 +32,7 @@ public class EsploraController implements Controller {
 
     @FXML private ToggleButton esploraBtn, autoriBtn, generiBtn, esecutoriBtn;
     @FXML private ToggleGroup catalogoGroup;
+    @FXML private Text esploraTitle;
 
     private MainController mainController;
     private static final Path BRANI_JSON_PATH = Paths.get("src", "main", "resources", "com", "musicsheetsmanager", "data", "brani.json");
@@ -50,6 +51,7 @@ public class EsploraController implements Controller {
     @FXML
     public void initialize() {
         inizializzaToggleGroup();
+        esploraTitle.setText("Esplora");
     }
 
     public void inizializzaBrani() {
@@ -96,6 +98,8 @@ public class EsploraController implements Controller {
      * Carica e mostra il catalogo secondo la vista selezionata.
      */
     private void mostraCatalogo(String viewType) {
+        esploraTitle.setText(viewType.substring(0, 1).toUpperCase() + viewType.substring(1));
+
         Type branoType = new TypeToken<List<Brano>>() {}.getType();
         List<Brano> brani = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType);
 
@@ -229,6 +233,8 @@ public class EsploraController implements Controller {
 
             // Genera il catalogo solo con questi brani
             generaCatalogo(braniDelGenere, b -> creaCardBrano(b, b.getIdBrano()));
+            // Imposta il titolo al genere selezionato
+            esploraTitle.setText(genere.substring(0, 1).toUpperCase() + genere.substring(1));
         });
 
         return card;
