@@ -2,20 +2,15 @@ package com.musicsheetsmanager.controller;
 
 import com.google.gson.reflect.TypeToken;
 import com.musicsheetsmanager.config.JsonUtils;
+import com.musicsheetsmanager.config.SessionManager;
 import com.musicsheetsmanager.model.Concerto;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
@@ -121,22 +116,41 @@ public class CaricaConcertoController implements Controller{
         }
 
         String titolo = estraiTitoloDaYoutube(link.trim());
+
+        // Ottieni utente loggato
+        var utente = SessionManager.getLoggedUser();
+        if (utente == null) {
+            errore.setText("Utente non loggato");
+            errore.setVisible(true);
+            return;
+        }
+
+        String nomeUtente = utente.getUsername(); // Usa il nome utente
+
         String id = java.util.UUID.randomUUID().toString();
-        Concerto nuovoConcerto = new Concerto(id, link, titolo);
+
+        // Nuovo costruttore con nome utente
+        Concerto nuovoConcerto = new Concerto(id, link, titolo, nomeUtente);
 
         List<Concerto> concerti = JsonUtils.leggiDaJson(PATH_CONCERTI_JSON, tipoListaConcerti);
+        if (concerti == null) {
+            concerti = new java.util.ArrayList<>();
+        }
+
         concerti.add(nuovoConcerto);
         JsonUtils.scriviSuJson(concerti, PATH_CONCERTI_JSON);
+
         idConcerto = id;
 
-        // Cambia scena
-        mainController.goToConcerto(caricaBtn, nuovoConcerto, () -> {
+        // Passaggio alla schermata concerto
+        mainController.goToConcerto(null, nuovoConcerto, () -> {
             ConcertoController controller = mainController.getConcertoController();
             if (controller != null) {
                 controller.fetchConcertoData(nuovoConcerto);
             }
         });
     }
+
 
 
 
