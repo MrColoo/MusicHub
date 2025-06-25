@@ -123,12 +123,12 @@ public class TopBarController implements Controller{
         switch (viewType) {
             case "esplora" -> {
                 List<Brano> risultati = Brano.cercaBrano(listaBrani, chiave);
-                esploraController.generaCatalogo(risultati, brano -> esploraController.creaCardBrano(brano, brano.getIdBrano()));
+                esploraController.generaCatalogo(risultati, brano -> esploraController.creaCardBrano(brano));
             }
             case "generi" -> {
                 List<String> dizionario = leggiDizionario(dizionarioPath);
                 List<String> risultati = Brano.cercaCatalogo(dizionario, chiave);
-                esploraController.generaCatalogo(risultati, genere -> esploraController.creaCardGenere(listaBrani, genere, viewType));
+                esploraController.generaCatalogo(risultati, genere -> esploraController.creaCardGenere(listaBrani, genere));
             }
             default -> {
                 List<String> dizionario = leggiDizionario(dizionarioPath);
