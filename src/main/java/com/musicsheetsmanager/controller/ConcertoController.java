@@ -1,13 +1,24 @@
 package com.musicsheetsmanager.controller;
 
+import com.google.gson.reflect.TypeToken;
+import com.musicsheetsmanager.config.JsonUtils;
+import com.musicsheetsmanager.model.Brano;
 import com.musicsheetsmanager.model.Concerto;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebView;
 
+import java.lang.reflect.Type;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+
 public class ConcertoController {
 
+    private static final Path PATH_BRANI_JSON = Paths.get("src/main/resources/com/musicsheetsmanager/data/brani.json");
+
+    private final Type tipoListaBrani = new TypeToken<List<Brano>>() {}.getType();
     @FXML
     private WebView webView;
 
@@ -17,9 +28,10 @@ public class ConcertoController {
     private String idConcerto;
 
     @FXML
+    private ComboBox selezionaBrani; // box per visualizzare i brani
+
+    @FXML
     public void initialize() {
-        // opzionalmente puoi loggare per verificare che l'inizializzazione avvenga
-        System.out.println("ConcertoController inizializzato");
     }
 
     // Mostra i dati del concerto (titolo + link YouTube se presente)
@@ -33,16 +45,16 @@ public class ConcertoController {
             concertoTitolo.setText(titolo);
         }
 
-        // ✅ Mostra il video se disponibile nel Concerto
+        // Mostra il video se disponibile nel Concerto
         String linkYoutube = concerto.getLink();
         if (linkYoutube != null && !linkYoutube.isEmpty()) {
-            System.out.println("🎬 Carico video da link: " + linkYoutube);
+            System.out.println("Carico video da link: " + linkYoutube);
             mostraVideo(linkYoutube);
         } else {
             System.out.println("Nessun link YouTube trovato per concerto con id: " + idConcerto);
         }
 
-        System.out.println("🎵 Caricato concerto: " + titolo);
+        System.out.println("Caricato concerto: " + titolo);
     }
 
     public void mostraVideo(String linkYoutube) {
@@ -65,5 +77,10 @@ public class ConcertoController {
 
     private String convertToEmbedUrl(String originalUrl) {
         return originalUrl.replace("watch?v=", "embed/");
+    }
+
+
+    private void caricaBrani(){
+        List<Concerto> brani = JsonUtils.leggiDaJson(PATH_BRANI_JSON, tipoListaBrani);
     }
 }

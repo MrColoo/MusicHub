@@ -85,7 +85,7 @@
                         <String fx:value="font-book" />
                      </styleClass>
                   </TextField>
-                  <ComboBox prefHeight="30.0" promptText="Aggiungi brano" GridPane.columnIndex="1">
+                  <ComboBox fx:id="selezionaBrani" prefHeight="30.0" promptText="Aggiungi brano" GridPane.columnIndex="1">
                      <styleClass>
                         <String fx:value="form-text-field" />
                         <String fx:value="font-book" />
