@@ -805,7 +805,7 @@ public class BranoController {
 
         // Estensioni supportate (più estesa rispetto ai media)
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Tutti i file supportati", "*.pdf", "*.jpg", "*.png", "*.txt", "*.mp3", "*.mp4", "*.midi"),
+                new FileChooser.ExtensionFilter("Tutti i file supportati", "*.pdf", "*.jpg", "*.png"),
                 new FileChooser.ExtensionFilter("Tutti i file", "*.*")
         );
 
