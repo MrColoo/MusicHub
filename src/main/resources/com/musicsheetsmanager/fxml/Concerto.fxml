@@ -84,7 +84,7 @@
                             </styleClass>
                         </TextField>
                         <TextField fx:id="inizioBranoConcerto" alignment="CENTER" prefHeight="30.0" prefWidth="70.0" promptText="Inizio" GridPane.columnIndex="2">
-                            <styleClass>    
+                            <styleClass>
                                 <String fx:value="form-text-field" />
                                 <String fx:value="font-book" />
                             </styleClass>
@@ -103,7 +103,7 @@
                         <Insets bottom="20.0" left="50.0" right="50.0" top="40.0" />
                     </padding>
                 </GridPane>
-            <FlowPane prefWidth="1070.0" />
+                <FlowPane fx:id="containerBrani" hgap="20.0" prefWidth="1070.0" vgap="20.0" />
             </children>
         </VBox>
     </content>
