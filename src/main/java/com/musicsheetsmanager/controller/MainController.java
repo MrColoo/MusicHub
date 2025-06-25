@@ -22,6 +22,11 @@ public class MainController {
     @FXML private EsploraController esploraController;
     @FXML private BranoController branoController;
     @FXML private ConcertoController concertoController;
+    @FXML private EsploraConcertiController esploraConcertiController;
+    @FXML private NavBarController navBarController;
+    @FXML private CronologiaController cronologiaController;
+
+
 
     private Utente currentUser;
 
@@ -35,22 +40,28 @@ public class MainController {
         topBarController.setMainController(this);
         topBarController.setEsploraController(esploraController);
 
+
         showNavBar();
     }
 
     public BranoController getBranoController() {
         return branoController;
     }
-
     public ConcertoController getConcertoController() {
         return concertoController;
     }
 
-
-        public void setEsploraController(EsploraController esploraController) {
+    public void setEsploraController(EsploraController esploraController) {
         this.esploraController = esploraController;
         if (topBarController != null) {
             topBarController.setEsploraController(esploraController);
+        }
+    }
+
+    public void setEsploraConcertiController(EsploraConcertiController esploraConcertiController) {
+        this.esploraConcertiController = esploraConcertiController;
+        if (topBarController != null) {
+            topBarController.setEsploraConcertiController(esploraConcertiController);
         }
     }
 
@@ -65,32 +76,57 @@ public class MainController {
                 ((Controller) controller).setMainController(this);
             }
 
-            // controller specifici
+            // riferimenti controller specifici
             if (controller instanceof EsploraController esplora) {
                 this.esploraController = esplora;
-                if (topBarController != null) topBarController.setEsploraController(esplora);
-                this.esploraController.inizializzaBrani();
-            }
-
-            if (controller instanceof TopBarController topBar) {
+            } else if (controller instanceof EsploraConcertiController esploraConcerti) {
+                this.esploraConcertiController = esploraConcerti;
+            } else if (controller instanceof TopBarController topBar) {
                 this.topBarController = topBar;
-                topBar.setMainController(this);
-                if (esploraController != null) topBar.setEsploraController(esploraController);
-            }
-
-            if (controller instanceof BranoController branoController) {
+            } else if (controller instanceof NavBarController navBar) {
+                this.navBarController = navBar;
+            } else if (controller instanceof BranoController branoController) {
                 this.branoController = branoController;
-                if (esploraController != null) esploraController.setBranoFileController(branoController);
-            }
-
-            if (controller instanceof ConcertoController concertoController) {
+            } else if (controller instanceof ConcertoController concertoController) {
                 this.concertoController = concertoController;
+            } else if (controller instanceof CronologiaController cronologiaController) {
+                this.cronologiaController = cronologiaController;
             }
 
+            // collegamenti controller
+            if (topBarController != null) {
+                topBarController.setMainController(this);
+                if (esploraController != null) topBarController.setEsploraController(esploraController);
+                if (esploraConcertiController != null) topBarController.setEsploraConcertiController(esploraConcertiController);
+                if (navBarController != null) topBarController.setNavBarController(navBarController);
+                if (cronologiaController != null) topBarController.setCronologiaController(cronologiaController);
+            }
+
+            if (esploraController != null && branoController != null) {
+                esploraController.setBranoController(branoController);
+            }
+
+            if (esploraConcertiController != null && concertoController != null) {
+                esploraConcertiController.setConcertoController(concertoController);
+            }
+
+            if (navBarController != null) {
+                navBarController.setMainController(this);
+            }
 
             pane.getChildren().setAll(content);
+
+            // iniziallizza brani e concerti di esplora
+            if (nomePagina.equals("Esplora") && esploraController != null) {
+                esploraController.inizializzaBrani();
+            }
+            if (nomePagina.equals("EsploraConcerti") && esploraConcertiController != null) {
+                esploraConcertiController.inizializzaConcerti();
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
+
         }
     }
 
@@ -102,10 +138,9 @@ public class MainController {
         Platform.runLater(onPageReady);
     }
 
+    // vai alla pagina "Concerto"
     public void goToConcerto(Node node, Concerto concerto, Runnable onPageReady) {
-         if (node != null) {
-            node.setUserData(concerto);
-        }
+        node.setUserData(concerto);
 
         show("Concerto");
         Platform.runLater(onPageReady);

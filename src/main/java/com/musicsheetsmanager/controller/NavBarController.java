@@ -3,6 +3,7 @@ package com.musicsheetsmanager.controller;
 import com.musicsheetsmanager.config.SessionManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 
 import static com.musicsheetsmanager.config.SessionManager.logout;
 
@@ -12,6 +13,9 @@ public class NavBarController implements Controller{
     @FXML private ToggleButton adminBtn;
 
     private MainController mainController;
+
+    @FXML
+    private ToggleGroup toggleGroup;
 
     @Override
     public void setMainController(MainController mainController) {
@@ -23,6 +27,13 @@ public class NavBarController implements Controller{
 
         changeNavBar(); // cambia aspetto navbar nel caso l'utente sia admin o meno
 
+    }
+
+    public String getCurrentPage () {
+        if(toggleGroup.getSelectedToggle() instanceof ToggleButton selectedBtn) {
+            return selectedBtn.getId();
+        }
+        return null;
     }
 
     private void changeNavBar() {
