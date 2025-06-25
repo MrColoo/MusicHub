@@ -9,7 +9,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
@@ -128,7 +127,7 @@ public class CaricaConcertoController implements Controller{
         String id = java.util.UUID.randomUUID().toString();
 
         // Nuovo costruttore con nome utente
-        Concerto nuovoConcerto = new Concerto(id, link, titolo, nomeUtente);
+        Concerto nuovoConcerto = new Concerto(id, link, titolo  , nomeUtente);
 
         List<Concerto> concerti = JsonUtils.leggiDaJson(PATH_CONCERTI_JSON, tipoListaConcerti);
         if (concerti == null) {
