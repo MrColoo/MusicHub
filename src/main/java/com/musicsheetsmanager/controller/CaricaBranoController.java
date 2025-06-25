@@ -13,7 +13,10 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.TextField;
+
+import javafx.geometry.Insets;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -36,6 +39,8 @@ import java.util.*;
 import com.google.gson.reflect.TypeToken;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelReader;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -73,6 +78,7 @@ public class CaricaBranoController implements Controller {
     @FXML private Rectangle previewBackground;
     @FXML private ImageView cover;
     @FXML private Button caricaBottone;
+    @FXML private FlowPane allegatiPane;
     private final Image defaultCover = new Image(getClass().getResource("/com/musicsheetsmanager/ui/Cover.jpg").toExternalForm());
     private String coverURL;
 
@@ -522,20 +528,43 @@ public class CaricaBranoController implements Controller {
                     .anyMatch(doc -> doc.getPercorso().equals(documento.getPercorso()));
             if(!exist) {
                 fileAllegati.add(documento);
-                //viewFile(documento);
+                viewFile(documento);
             }
         }
     }
 
-    // TODO implementare visualizzazione allegati caricati e relativa possibilità di eliminarli
-    // aggiunge il file alla Hbox
-    /*
+    // crea un bottone ogni volta che l'utente carica un allegato
     private void viewFile(Documento documento) {
-        Label nomeFile = new Label(documento.getNomeFile());
-        listaFileBox.getChildren().add(nomeFile);
-    }
-    */
+        Button btn = new Button(documento.getNomeFile());
+        btn.setContentDisplay(ContentDisplay.RIGHT);
+        btn.setPadding(new Insets(5, 5, 5, 15));
+        btn.getStyleClass().addAll("text-sm", "font-book", "allegato-btn");
 
+        ImageView icon = new ImageView(new Image(
+                getClass().getResourceAsStream("/com/musicsheetsmanager/ui/icons/x-circle_black.png")
+        ));
+
+        icon.setFitWidth(20);
+        icon.setPreserveRatio(true);
+        icon.setPickOnBounds(true);
+
+        btn.setOnMouseClicked((MouseEvent e) -> onEliminaAllegatoClick(btn, documento));
+
+        btn.setGraphic(icon);
+
+        allegatiPane.getChildren().add(btn);
+    }
+
+    // funzione per eliminare un documento prima di caricare il brano
+    public void onEliminaAllegatoClick (Button btn, Documento documento) {
+        // rimuove bottone
+        allegatiPane.getChildren().remove(btn);
+
+        // rimuove allegato
+        fileAllegati.remove(documento);
+
+        System.out.println("Documento: " + documento.toString() + " rimosso con successo");
+    }
 
     // salva i documenti nella cartella /attachments se l'utente carica il brano
     private void salvaFileAllegati(String idBrano) {
