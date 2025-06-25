@@ -5,10 +5,11 @@ import com.musicsheetsmanager.config.JsonUtils;
 import com.musicsheetsmanager.model.Brano;
 import com.musicsheetsmanager.model.Concerto;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebView;
-
 import java.lang.reflect.Type;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,8 +18,19 @@ import java.util.List;
 public class ConcertoController {
 
     private static final Path PATH_BRANI_JSON = Paths.get("src/main/resources/com/musicsheetsmanager/data/brani.json");
+    private static final Path PATH_BRANICONCERTO_JSON = Paths.get("src/main/resources/com/musicsheetsmanager/data/braniConcerto.json");
 
     private final Type tipoListaBrani = new TypeToken<List<Brano>>() {}.getType();
+
+    @FXML
+    private TextField inizioBranoConcerto;
+
+    @FXML
+    private TextField fineBranoConcerto;
+
+    @FXML
+    private Button aggiungiBrano;
+
     @FXML
     private WebView webView;
 
@@ -28,10 +40,11 @@ public class ConcertoController {
     private String idConcerto;
 
     @FXML
-    private ComboBox selezionaBrani; // box per visualizzare i brani
+    private ComboBox<Brano> selezionaBrani; // box per visualizzare i brani
 
     @FXML
     public void initialize() {
+        caricaBrani();
     }
 
     // Mostra i dati del concerto (titolo + link YouTube se presente)
@@ -101,8 +114,16 @@ public class ConcertoController {
         }
     }
 
-
     private void caricaBrani(){
-        List<Concerto> brani = JsonUtils.leggiDaJson(PATH_BRANI_JSON, tipoListaBrani);
+        List<Brano> brani = JsonUtils.leggiDaJson(PATH_BRANI_JSON, tipoListaBrani);
+        if(brani != null){
+            selezionaBrani.getItems().setAll(brani);
+        }else{
+            System.out.println(("Errore di lettura del JSON"));
+        }
+    }
+
+    private void creaBraniConcerto(){
+       // List<Brano> braniConcerti = JsonUtils.scriviSuJson(tipoListaBrani, PATH_BRANICONCERTO_JSON);
     }
 }
