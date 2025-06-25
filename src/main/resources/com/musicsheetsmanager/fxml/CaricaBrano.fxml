@@ -229,8 +229,9 @@
             <Insets left="56.0" right="56.0" />
          </padding>
       </HBox>
-      <FlowPane hgap="10.0" layoutX="61.0" layoutY="619.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="106.0" prefWidth="645.0" vgap="10.0">
+      <FlowPane fx:id="allegatiPane" hgap="10.0" layoutX="61.0" layoutY="619.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="106.0" prefWidth="645.0" vgap="10.0">
          <children>
+             <!--
             <Button contentDisplay="RIGHT" mnemonicParsing="false" text="Documento.PDF">
                <FlowPane.margin>
                   <Insets />
@@ -251,6 +252,7 @@
                   </ImageView>
                </graphic>
             </Button>
+            -->
          </children>
       </FlowPane>
     </children>

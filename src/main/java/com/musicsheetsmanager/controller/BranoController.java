@@ -24,8 +24,8 @@ import javafx.scene.image.PixelReader;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import java.awt.*;
-import javafx.geometry.Insets;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.net.URI;
@@ -33,6 +33,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -41,6 +42,7 @@ import com.musicsheetsmanager.model.Brano;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Paint;
 import javafx.scene.paint.Stop;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -147,7 +149,7 @@ public class BranoController {
         idBrano = brano.getIdBrano();
         branoTitolo.setText(brano.getTitolo());
 
-        String autori = String.join(" ,", brano.getAutori());
+        String autori = String.join(", ", brano.getAutori());
         branoAutori.setText(autori);
 
         // cover brano
@@ -318,11 +320,21 @@ public class BranoController {
         // riga utente + bottoni
         HBox topRow = new HBox();
         topRow.setAlignment(Pos.CENTER_LEFT);
-        topRow.setSpacing(10);
+        topRow.setSpacing(5);
         topRow.setPadding(new Insets(0, 0, 5, 0));
 
         Text usernameText = new Text("@" + commento.getUsername());
-        usernameText.getStyleClass().addAll("text-white", "font-bold", "text-base");
+        usernameText.getStyleClass().addAll("font-bold", "text-base");
+        ImageView verifiedIcon = new ImageView();
+        Image verifiedImage = new Image(Objects.requireNonNull(BranoController.class.getResource("/com/musicsheetsmanager/ui/icons/verified.png")).toExternalForm());
+        if(currentBrano.getAutori().contains(commento.getUsername())){
+            usernameText.setFill(Color.DODGERBLUE);
+            verifiedIcon.setImage(verifiedImage);
+            verifiedIcon.setFitWidth(20);
+            verifiedIcon.setPreserveRatio(true);
+        } else
+            usernameText.setFill(Color.WHITE);
+
 
         deleteButton = new Button();
         deleteButton.getStyleClass().add("delete-btn");
@@ -348,7 +360,7 @@ public class BranoController {
         Button replyButton = new Button("Rispondi");
         replyButton.getStyleClass().add("reply-btn");
 
-        topRow.getChildren().addAll(usernameText, deleteButton, replyButton);
+        topRow.getChildren().addAll(usernameText, verifiedIcon, deleteButton, replyButton);
 
         // testo commento
         Text commentText = new Text(commento.getTesto());
@@ -742,6 +754,138 @@ public class BranoController {
                 new Stop(1, colore2)
         );
         return nuovoGradiente;
+    }
+
+    @FXML
+    private void addMediaClicked() {
+        // Crea un FileChooser per selezionare i file
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Seleziona file da allegare");
+
+        // Imposta i tipi di file supportati
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Tutti i file supportati", "*.mp3", "*.mp4", "*.midi"),
+                new FileChooser.ExtensionFilter("Tutti i file", "*.*")
+        );
+
+        // Mostra la finestra per selezionare più file
+        List<File> selectedFiles = fileChooser.showOpenMultipleDialog(null);
+        if (selectedFiles == null || selectedFiles.isEmpty()) return;
+
+        for (File file : selectedFiles) {
+            try {
+                // Crea la cartella di destinazione basata sull'ID del brano
+                String destFolderPath = "src/main/resources/attachments/" + idBrano;
+                File destFolder = new File(destFolderPath);
+                if (!destFolder.exists()) destFolder.mkdirs();
+
+                // Crea il file di destinazione (nella cartella)
+                File destFile = new File(destFolder, file.getName());
+
+                // Copia il file nella cartella (sovrascrivendo se esiste già)
+                Files.copy(file.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+                // Crea il path relativo con doppie backslash (per JSON)
+                String relativePath = destFile.getPath().replace("\\", "\\\\");
+
+                // Aggiunge il path al brano solo se non è già presente
+                if (!currentBrano.getDocumenti().contains(relativePath)) {
+                    currentBrano.getDocumenti().add(relativePath);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Salva le modifiche nel file JSON
+        salvaJsonBranoAggiornato();
+
+        // Ricarica il brano aggiornato dal JSON (per coerenza)
+        currentBrano = reloadCurrentBrano();
+
+        // Aggiorna la sezione media nella UI
+        caricaMediaBrano(currentBrano, mediaGridPane);
+    }
+
+
+
+    @FXML
+    private void addAllegatiClicked() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Seleziona file da allegare");
+
+        // Estensioni supportate (più estesa rispetto ai media)
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Tutti i file supportati", "*.pdf", "*.jpg", "*.png"),
+                new FileChooser.ExtensionFilter("Tutti i file", "*.*")
+        );
+
+        List<File> selectedFiles = fileChooser.showOpenMultipleDialog(null);
+        if (selectedFiles == null || selectedFiles.isEmpty()) return;
+
+        for (File file : selectedFiles) {
+            try {
+                String destFolderPath = "src/main/resources/attachments/" + idBrano;
+                File destFolder = new File(destFolderPath);
+                if (!destFolder.exists()) destFolder.mkdirs();
+
+                File destFile = new File(destFolder, file.getName());
+
+                // Copia il file solo se NON esiste già (qui non si sovrascrive)
+                if (!destFile.exists()) {
+                    Files.copy(file.toPath(), destFile.toPath());
+                }
+
+                // Costruisce il path e lo aggiunge alla lista se non presente
+                String relativePath = destFile.getPath().replace("\\", "\\\\");
+                if (!currentBrano.getDocumenti().contains(relativePath)) {
+                    currentBrano.getDocumenti().add(relativePath);
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Salva modifiche su JSON
+        salvaJsonBranoAggiornato();
+
+        // Ricarica il brano aggiornato dal file
+        currentBrano = reloadCurrentBrano();
+
+        // Ricarica la UI per la sezione allegati
+        caricaAllegatiBrano(currentBrano, allegatiGridPane);
+    }
+
+    private void salvaJsonBranoAggiornato() {
+        // Legge tutti i brani dal file JSON
+        Type branoType = new TypeToken<List<Brano>>() {}.getType();
+        List<Brano> brani = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType);
+
+        for (int i = 0; i < brani.size(); i++) {
+            Brano b = brani.get(i);
+
+            // Trova il brano corrente
+            if (b.getIdBrano().equals(currentBrano.getIdBrano())) {
+                // Fai un merge: aggiungi solo i nuovi documenti
+                List<String> documentiEsistenti = new ArrayList<>(b.getDocumenti());
+                for (String nuovoDoc : currentBrano.getDocumenti()) {
+                    if (!documentiEsistenti.contains(nuovoDoc)) {
+                        documentiEsistenti.add(nuovoDoc);
+                    }
+                }
+
+                // Aggiorna la lista documenti del brano
+                b.setDocumenti(documentiEsistenti);
+
+                // Sovrascrive il brano aggiornato nella lista
+                brani.set(i, b);
+                break;
+            }
+        }
+
+        // Scrive l'intera lista aggiornata su JSON
+        JsonUtils.scriviSuJson(brani, BRANI_JSON_PATH);
     }
 
 }

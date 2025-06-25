@@ -303,11 +303,12 @@ previewBackground{
 }
 
 .combo-box > .text-field{
-      -fx-background-color: none;
+    -fx-background-color: none;
+    -fx-text-fill: -fx-secondary-white;
 }
 
 .combo-box > .arrow-button{
-      -fx-background-color: none;
+    -fx-background-color: none;
 }
 
 /* COMMENTI */

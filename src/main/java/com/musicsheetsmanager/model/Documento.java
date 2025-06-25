@@ -50,4 +50,8 @@ public class Documento {
     public void setPercorso(String percorso) {
         this.percorso = percorso;
     }
+
+    public String toString() {
+        return nomeFile + ", " + "path: " + percorso;
+    }
 }
