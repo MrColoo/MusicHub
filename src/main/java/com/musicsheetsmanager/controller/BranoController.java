@@ -41,6 +41,7 @@ import com.musicsheetsmanager.model.Brano;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Paint;
 import javafx.scene.paint.Stop;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -147,7 +148,7 @@ public class BranoController {
         idBrano = brano.getIdBrano();
         branoTitolo.setText(brano.getTitolo());
 
-        String autori = String.join(" ,", brano.getAutori());
+        String autori = String.join(", ", brano.getAutori());
         branoAutori.setText(autori);
 
         // cover brano
@@ -318,11 +319,21 @@ public class BranoController {
         // riga utente + bottoni
         HBox topRow = new HBox();
         topRow.setAlignment(Pos.CENTER_LEFT);
-        topRow.setSpacing(10);
+        topRow.setSpacing(5);
         topRow.setPadding(new Insets(0, 0, 5, 0));
 
         Text usernameText = new Text("@" + commento.getUsername());
-        usernameText.getStyleClass().addAll("text-white", "font-bold", "text-base");
+        usernameText.getStyleClass().addAll("font-bold", "text-base");
+        ImageView verifiedIcon = new ImageView();
+        Image verifiedImage = new Image(Objects.requireNonNull(BranoController.class.getResource("/com/musicsheetsmanager/ui/icons/verified.png")).toExternalForm());
+        if(currentBrano.getAutori().contains(commento.getUsername())){
+            usernameText.setFill(Color.DODGERBLUE);
+            verifiedIcon.setImage(verifiedImage);
+            verifiedIcon.setFitWidth(20);
+            verifiedIcon.setPreserveRatio(true);
+        } else
+            usernameText.setFill(Color.WHITE);
+
 
         deleteButton = new Button();
         deleteButton.getStyleClass().add("delete-btn");
@@ -348,7 +359,7 @@ public class BranoController {
         Button replyButton = new Button("Rispondi");
         replyButton.getStyleClass().add("reply-btn");
 
-        topRow.getChildren().addAll(usernameText, deleteButton, replyButton);
+        topRow.getChildren().addAll(usernameText, verifiedIcon, deleteButton, replyButton);
 
         // testo commento
         Text commentText = new Text(commento.getTesto());
