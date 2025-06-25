@@ -101,6 +101,8 @@ public class EsploraController implements Controller {
 
     /**
      * Carica e mostra il catalogo secondo la vista selezionata.
+     *
+     * @param viewType Toggle selezionato (Esplora, Autori, Generi, Esecutori)
      */
     private void mostraCatalogo(String viewType) {
         esploraTitle.setText(StringUtils.capitalizzaTesto(viewType));
@@ -109,14 +111,14 @@ public class EsploraController implements Controller {
         List<Brano> brani = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType);
 
         if ("esplora".equals(viewType)) {
-            generaCatalogo(brani, brano -> creaCardBrano(brano, brano.getIdBrano()));
+            generaCatalogo(brani, this::creaCardBrano);
         } else {
             Path dizionarioPath = Paths.get("src", "main", "resources", "com", "musicsheetsmanager", "data", viewType + ".json");
             Type stringListType = new TypeToken<List<String>>() {}.getType();
             List<String> dizionario = JsonUtils.leggiDaJson(dizionarioPath, stringListType);
 
             if ("generi".equals(viewType)) {
-                generaCatalogo(dizionario, genere -> creaCardGenere(brani, genere, viewType));
+                generaCatalogo(dizionario, genere -> creaCardGenere(brani, genere));
             } else {
                 generaCatalogo(dizionario, this::creaCardCatalogo);
             }
@@ -125,6 +127,9 @@ public class EsploraController implements Controller {
 
     /**
      * Genera un catalogo a partire da una lista e una funzione di creazione card.
+     *
+     * @param elements Lista di cui si vuole creare la card (brani o dizionari)
+     * @param creaCard Funzione per creare la card che si intende creare (default o genere)
      */
     public <T> void generaCatalogo(List<T> elements, Function<T, Node> creaCard) {
         container.getChildren().clear();
@@ -133,6 +138,10 @@ public class EsploraController implements Controller {
 
     /**
      * Crea una card generica per brani, autori, ecc.
+     *
+     * @param titolo Titolo della card (nome del brano o elemento del dizionario)
+     * @param sottotitolo Usato solo nelle card brano per l'autore del brano
+     * @param imageFile Cover della card
      */
     private VBox creaCard(String titolo, String sottotitolo, File imageFile) {
         VBox card = new VBox(7);
@@ -171,9 +180,11 @@ public class EsploraController implements Controller {
 
     /**
      * Crea una card specifica per un brano.
+     *
+     * @param brano Brano di cui si vuole creare la card
      */
-    public VBox creaCardBrano(Brano brano, String idBrano) {
-        File imageFile = new File(COVER_PATH + idBrano + ".jpg");
+    public VBox creaCardBrano(Brano brano) {
+        File imageFile = new File(COVER_PATH + brano.getIdBrano() + ".jpg");
         VBox card = creaCard(brano.getTitolo(), String.join(", ", brano.getAutori()), imageFile);
 
         card.setOnMouseClicked(e -> mainController.goToBrano(card, brano, () -> {
@@ -186,6 +197,8 @@ public class EsploraController implements Controller {
 
     /**
      * Crea una card per il catalogo generico (autori, esecutori).
+     *
+     * @param titoloCard Titolo della card
      */
     public VBox creaCardCatalogo(String titoloCard) {
         String viewType = getViewType(); // "autori" o "esecutori"
@@ -217,7 +230,7 @@ public class EsploraController implements Controller {
                 braniFiltrati = List.of();
             }
 
-            generaCatalogo(braniFiltrati, b -> creaCardBrano(b, b.getIdBrano()));
+            generaCatalogo(braniFiltrati, this::creaCardBrano);
             esploraTitle.setText(StringUtils.capitalizzaTesto(titoloCard));
         });
 
@@ -226,8 +239,11 @@ public class EsploraController implements Controller {
 
     /**
      * Crea una card personalizzata per un genere musicale.
+     *
+     * @param brani Lista dei brani letta da json
+     * @param genere Genere di cui si vuole creare la card
      */
-    public GridPane creaCardGenere(List<Brano> brani, String genere, String viewType) {
+    public GridPane creaCardGenere(List<Brano> brani, String genere) {
         GridPane card = new GridPane();
         card.setPrefSize(240, 150);
         card.getColumnConstraints().addAll(new ColumnConstraints(100), new ColumnConstraints(100));
@@ -248,7 +264,7 @@ public class EsploraController implements Controller {
         card.add(titolo, 0, 0);
 
         // Ottieni immagine del primo brano nel genere
-        String idBrano = Brano.cercaBranoConDizionario(brani, genere, viewType).getFirst().getIdBrano();
+        String idBrano = Brano.cercaBranoConDizionario(brani, genere, "generi").getFirst().getIdBrano();
         File imageFile = new File(COVER_PATH + idBrano + ".jpg");
         if (!imageFile.exists()) imageFile = new File(DEFAULT_COVER);
 
@@ -272,7 +288,7 @@ public class EsploraController implements Controller {
                     .toList();
 
             // Genera il catalogo solo con questi brani
-            generaCatalogo(braniDelGenere, b -> creaCardBrano(b, b.getIdBrano()));
+            generaCatalogo(braniDelGenere, this::creaCardBrano);
             // Imposta il titolo al genere selezionato
             esploraTitle.setText(StringUtils.capitalizzaTesto(genere));
         });
@@ -282,6 +298,8 @@ public class EsploraController implements Controller {
 
     /**
      * Estrae il colore dominante da un'immagine (campionamento 5x5 pixel).
+     *
+     * @param image Immagine di cui si vuole estrarre il colore
      */
     private Color estraiColoreDominante(Image image) {
         PixelReader reader = image.getPixelReader();
