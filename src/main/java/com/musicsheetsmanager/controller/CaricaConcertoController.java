@@ -31,8 +31,6 @@ public class CaricaConcertoController implements Controller{
 
     private String idConcerto;
 
-    @FXML private Button caricaBtn;
-
     private static final Path PATH_CONCERTI_JSON = Paths.get("src/main/resources/com/musicsheetsmanager/data/concerti.json");
     private final Type tipoListaConcerti = new TypeToken<List<Concerto>>() {}.getType();
 
