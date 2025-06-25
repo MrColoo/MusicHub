@@ -227,7 +227,7 @@ public class EsploraController implements Controller {
     /**
      * Crea una card personalizzata per un genere musicale.
      */
-    private GridPane creaCardGenere(List<Brano> brani, String genere, String viewType) {
+    public GridPane creaCardGenere(List<Brano> brani, String genere, String viewType) {
         GridPane card = new GridPane();
         card.setPrefSize(240, 150);
         card.getColumnConstraints().addAll(new ColumnConstraints(100), new ColumnConstraints(100));
