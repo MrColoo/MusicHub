@@ -14,10 +14,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+<<<<<<< concerto/inserimento-canzone
+=======
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+>>>>>>> main
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -142,7 +145,7 @@ public class CaricaConcertoController implements Controller{
         String id = java.util.UUID.randomUUID().toString();
 
         // Nuovo costruttore con nome utente
-        Concerto nuovoConcerto = new Concerto(id, link, titolo, nomeUtente);
+        Concerto nuovoConcerto = new Concerto(id, link, titolo  , nomeUtente);
 
         List<Concerto> concerti = JsonUtils.leggiDaJson(PATH_CONCERTI_JSON, tipoListaConcerti);
         if (concerti == null) {
