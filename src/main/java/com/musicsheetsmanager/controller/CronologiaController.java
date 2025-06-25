@@ -33,7 +33,7 @@ public class CronologiaController implements Controller{
 
     private List<Brano> braniCommentati;
 
-    private static final String USERNAME = SessionManager.getLoggedUser().getUsername();
+    private final String USERNAME = SessionManager.getLoggedUser().getUsername();
     private static final Path BRANI_JSON_PATH = Paths.get("src", "main", "resources", "com", "musicsheetsmanager", "data", "brani.json");
     private static final Path COMMENTI_JSON_PATH = Paths.get("src", "main", "resources", "com", "musicsheetsmanager", "data", "commenti.json");
     private static final String COVER_PATH = "src/main/resources/com/musicsheetsmanager/ui/covers/";
