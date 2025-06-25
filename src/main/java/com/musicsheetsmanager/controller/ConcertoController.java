@@ -65,9 +65,14 @@ public class ConcertoController {
 
         if (linkYoutube != null && linkYoutube.contains("youtube.com/watch?v=")) {
             String embedUrl = convertToEmbedUrl(linkYoutube);
-            String html = "<html><body style=\"margin:0;\">" +
-                    "<iframe width=\"100%\" height=\"100%\" src=\"" + embedUrl + "\" " +
-                    "frameborder=\"0\" allowfullscreen></iframe></body></html>";
+            String html = String.format("""
+                    <html>
+                        <body style="margin:0;">
+                            <iframe width="100%%" height="100%%" src="%s"
+                                frameborder="0" allowfullscreen></iframe>
+                        </body>
+                    </html>
+                """, embedUrl);
 
             webView.getEngine().loadContent(html, "text/html");
         } else {
@@ -75,8 +80,25 @@ public class ConcertoController {
         }
     }
 
-    private String convertToEmbedUrl(String originalUrl) {
-        return originalUrl.replace("watch?v=", "embed/");
+    private String convertToEmbedUrl(String url) {
+        // Supporta anche short URL
+        try {
+            if (url.contains("youtube.com/watch?v=")) {
+                String videoId = url.substring(url.indexOf("v=") + 2);
+                int amp = videoId.indexOf('&');
+                if (amp != -1) videoId = videoId.substring(0, amp);
+                return "https://www.youtube.com/embed/" + videoId;
+            } else if (url.contains("youtu.be/")) {
+                String videoId = url.substring(url.indexOf("youtu.be/") + 9);
+                int q = videoId.indexOf('?');
+                if (q != -1) videoId = videoId.substring(0, q);
+                return "https://www.youtube.com/embed/" + videoId;
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 

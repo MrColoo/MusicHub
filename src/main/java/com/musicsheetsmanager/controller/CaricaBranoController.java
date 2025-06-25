@@ -13,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import javafx.scene.image.Image;
 import java.io.BufferedReader;
@@ -28,9 +29,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.Year;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+
 import com.google.gson.reflect.TypeToken;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelReader;
@@ -48,8 +48,10 @@ import javafx.util.Duration;
 
 import javax.imageio.ImageIO;
 import java.lang.reflect.Type;
-import java.util.UUID;
+import java.util.List;
 import java.util.stream.Collectors;
+
+import com.musicsheetsmanager.config.StringUtils;
 
 public class CaricaBranoController implements Controller {
 
@@ -204,6 +206,8 @@ public class CaricaBranoController implements Controller {
                     //imposta automaticamente il valore dei campi anno di composizione e genere
                     campoAnnoDiComposizione.setText(firstResult.get("releaseDate").getAsString().substring(0, 4));
                     campoGeneri.setText(firstResult.get("primaryGenreName").getAsString());
+                    campoTitolo.setText(firstResult.get("trackName").getAsString());
+                    campoAutori.setText(firstResult.get("artistName").getAsString());
 
                 });
 
@@ -261,6 +265,31 @@ public class CaricaBranoController implements Controller {
             return;
         }
 
+        // Scarica automaticamente le immagini degli autori
+        List<String> autoriList = Arrays.stream(
+                        campoAutori.getText()
+                                .toLowerCase()
+                                .trim()
+                                .split("\\s*(,|&|/|feat\\.?|ft\\.?|con|e)\\s+"))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .toList();
+
+        scaricaFotoArtisti(autoriList);
+
+        if(!campoEsecutori.getText().isEmpty()){
+            // Genera automaticamente gli avatar degli esecutori
+            List<String> esecutoriList = Arrays.stream(
+                            campoEsecutori.getText()
+                                    .toLowerCase()
+                                    .trim()
+                                    .split("\\s*(,|&|/|feat\\.?|ft\\.?|con|e)\\s+"))
+                    .map(String::trim)
+                    .filter(s -> !s.isEmpty())
+                    .toList();
+            generaAvatarEsecutori(esecutoriList);
+        }
+
         salvaCover();
         salvaFileAllegati(idBrano);
 
@@ -309,13 +338,6 @@ public class CaricaBranoController implements Controller {
             return false;
         }
 
-        String esecutoriText = campoEsecutori.getText().trim().toLowerCase();
-        if(esecutoriText.isEmpty()) {
-            errore.setText("Campo esecutori obbligatorio");
-            errore.setVisible(true);
-            return false;
-        }
-
         // controlla che l'anno di composizione sia un numero intero valido
         int anno;
         try {
@@ -338,14 +360,25 @@ public class CaricaBranoController implements Controller {
             return false;
         }
 
-        List<String> autori = List.of(campoAutori.getText().trim().split(",\\s*"));
+        List<String> autori = Arrays.stream(
+                        campoAutori.getText()
+                                .toLowerCase()
+                                .trim()
+                                .split("\\s*(,|&|/|feat\\.?|ft\\.?|con|e)\\s+"))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .toList();
         List<String> generi = List.of(campoGeneri.getText().toLowerCase().trim().split(",\\s*"));
-        List<String> esecutori = List.of(campoEsecutori.getText().trim().split(",\\s*"));
 
         String strumentiText = campoStrumentiMusicali.getText().toLowerCase().trim();
         List<String> strumentiMusicali = strumentiText.isEmpty()
                 ? new ArrayList<>()
                 : List.of(strumentiText.split(",\\s*"));
+
+        String esecutoriText = campoEsecutori.getText().toLowerCase().trim();
+        List<String> esecutori = esecutoriText.isEmpty()
+                ? new ArrayList<>()
+                : List.of(esecutoriText.split(",\\s*"));
 
 
         String linkYoutube = campoLinkYoutube.getText().trim();
@@ -353,7 +386,7 @@ public class CaricaBranoController implements Controller {
             linkYoutube = "";
         }
 
-        Brano nuovoBrano = new Brano(idBrano, titolo, autori, generi, anno, esecutori, linkYoutube, strumentiMusicali);
+        Brano nuovoBrano = new Brano(SessionManager.getLoggedUser().getUsername(), idBrano, titolo, autori, generi, anno, esecutori, linkYoutube, strumentiMusicali);
 
         Type branoType = new TypeToken<List<Brano>>() {}.getType();
         List<Brano> listaBrani = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType); // brani letti dal json
@@ -537,4 +570,111 @@ public class CaricaBranoController implements Controller {
         });
         fade.play();
     }
+
+    private void scaricaFotoArtisti(List<String> autori) {
+        new Thread(() -> {
+            try {
+                String clientId = "470bf5e94cd54ba5bc116ee4818cc68c";
+                String clientSecret = "b0382e67026742f7ac4f607acaf4070e";
+
+                String auth = Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes());
+                URL url = new URL("https://accounts.spotify.com/api/token");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Authorization", "Basic " + auth);
+                conn.setDoOutput(true);
+                conn.getOutputStream().write("grant_type=client_credentials".getBytes());
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                JsonObject tokenResponse = JsonParser.parseReader(reader).getAsJsonObject();
+                reader.close();
+                String accessToken = tokenResponse.get("access_token").getAsString();
+
+                Path autoriDir = Paths.get("src", "main", "resources", "com", "musicsheetsmanager", "ui", "autori");
+                Files.createDirectories(autoriDir);
+
+                for (String autore : autori) {
+                    String filename = autore.replaceAll("[^a-zA-Z0-9]", "_") + ".jpg";
+                    File outputFile = autoriDir.resolve(filename).toFile();
+
+                    // Salta se l'immagine esiste già
+                    if (outputFile.exists()) {
+                        System.out.println("Foto già presente per: " + autore);
+                        continue;
+                    }
+
+                    String query = URLEncoder.encode(autore, StandardCharsets.UTF_8);
+                    String searchUrl = "https://api.spotify.com/v1/search?q=" + query + "&type=artist&limit=1";
+
+                    HttpURLConnection searchConn = (HttpURLConnection) new URL(searchUrl).openConnection();
+                    searchConn.setRequestMethod("GET");
+                    searchConn.setRequestProperty("Authorization", "Bearer " + accessToken);
+
+                    BufferedReader searchReader = new BufferedReader(new InputStreamReader(searchConn.getInputStream()));
+                    JsonObject searchResult = JsonParser.parseReader(searchReader).getAsJsonObject();
+                    searchReader.close();
+
+                    JsonArray items = searchResult.getAsJsonObject("artists").getAsJsonArray("items");
+                    if (items.size() == 0) continue;
+
+                    JsonObject artist = items.get(0).getAsJsonObject();
+                    JsonArray images = artist.getAsJsonArray("images");
+                    if (images.size() == 0) continue;
+
+                    String imageUrl = images.get(images.size() - 1).getAsJsonObject().get("url").getAsString();
+                    BufferedImage originalImage = ImageIO.read(new URL(imageUrl));
+
+                    BufferedImage resizedImage = new BufferedImage(154, 154, BufferedImage.TYPE_INT_RGB);
+                    Graphics2D g = resizedImage.createGraphics();
+                    g.drawImage(originalImage, 0, 0, 154, 154, null);
+                    g.dispose();
+
+                    ImageIO.write(resizedImage, "jpg", outputFile);
+                    System.out.println("Scaricata immagine per: " + autore);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+
+    private void generaAvatarEsecutori(List<String> esecutori) {
+        new Thread(() -> {
+            try {
+                Path esecutoriDir = Paths.get("src", "main", "resources", "com", "musicsheetsmanager", "ui", "esecutori");
+                Files.createDirectories(esecutoriDir);
+
+                for (String esecutore : esecutori) {
+                    String safeName = esecutore.trim().toLowerCase().replaceAll("[^a-z0-9]", "_");
+                    File outputFile = esecutoriDir.resolve(safeName + ".png").toFile();
+
+                    // Salta se l'immagine esiste già
+                    if (outputFile.exists()) {
+                        System.out.println("Avatar già presente per: " + esecutore);
+                        continue;
+                    }
+
+                    String avatarUrl = "https://api.dicebear.com/7.x/bottts-neutral/png?seed=" + URLEncoder.encode(esecutore, StandardCharsets.UTF_8);
+                    BufferedImage originalImage = ImageIO.read(new URL(avatarUrl));
+                    if (originalImage == null) continue;
+
+                    BufferedImage resizedImage = new BufferedImage(154, 154, BufferedImage.TYPE_INT_ARGB);
+                    Graphics2D g = resizedImage.createGraphics();
+                    g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                    g.drawImage(originalImage, 0, 0, 154, 154, null);
+                    g.dispose();
+
+                    ImageIO.write(resizedImage, "png", outputFile);
+                    System.out.println("Generato avatar per esecutore: " + esecutore);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+
 }

@@ -60,7 +60,7 @@ public class TopBarController implements Controller{
             searchBar.setVisible(false);
             searchBar.setManaged(false);
             mainButton.setText("Accedi");
-            mainButton.setOnAction(event -> mainController.show("Accedi"));
+            mainButton.setOnAction(event -> mainController.show("Login"));
             caricaConcertoBtn.setVisible(false);
             caricaConcertoBtn.setManaged(false);
         }else{
