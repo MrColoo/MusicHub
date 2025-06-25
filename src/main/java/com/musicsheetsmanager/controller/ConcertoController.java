@@ -33,9 +33,11 @@ import java.io.File;
 import java.lang.reflect.Type;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.List;
 
-public class ConcertoController {
+
+public class ConcertoController implements Controller{
 
     // Percorsi ai file JSON
     private static final Path PATH_BRANI_JSON = Paths.get("src/main/resources/com/musicsheetsmanager/data/brani.json");
@@ -45,6 +47,14 @@ public class ConcertoController {
 
     // Tipo generico per deserializzare una lista di Brano
     private final Type tipoListaBrani = new TypeToken<List<Brano>>() {}.getType();
+
+
+    private MainController mainController;
+
+    @Override
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
+    }
 
     // Riferimenti agli elementi dell'interfaccia utente
     @FXML private TextField inizioBranoConcerto;
@@ -368,6 +378,10 @@ public class ConcertoController {
                 branoSelezionato.getStrumentiMusicali()
         );
 
+        for(String idCommento: branoSelezionato.getIdCommenti()) {
+            assegnato.aggiungiCommento(idCommento);
+        }
+
         // Se la lista era nulla
         if (lista == null) {
             lista = new java.util.ArrayList<>();
@@ -419,6 +433,7 @@ public class ConcertoController {
 
     /**
      * Mostra le card dei brani del concerto
+     *
      * @param idConcerto Id del concerto
      */
     public void mostraCardBraniConcerto (String idConcerto) {
@@ -427,7 +442,13 @@ public class ConcertoController {
         Type branoConcertoType = new TypeToken<List<BranoAssegnatoAlConcerto>>() {}.getType();
         List<BranoAssegnatoAlConcerto> listaBraniConcerto = JsonUtils.leggiDaJson(PATH_BRANICONCERTO_JSON, branoConcertoType);
 
-        for(BranoAssegnatoAlConcerto brano: listaBraniConcerto) {
+        // Ordino i brani in base al tempo di inizio
+        List<BranoAssegnatoAlConcerto> ordinati = listaBraniConcerto.stream()
+                .sorted(Comparator.comparing(brano -> convertToSeconds(brano.getInizio())))
+                .toList();
+
+        // Creo le card per i brani appartenenti al concerto
+        for(BranoAssegnatoAlConcerto brano: ordinati) {
             if(brano.getIdConcerto().equals(idConcerto)) {
                 containerBrani.getChildren().add(creaCard(brano));
             }
@@ -436,6 +457,7 @@ public class ConcertoController {
 
     /**
      * Crea una card per il brano
+     *
      * @param brano Brano eseguito durante il concerto
      */
     private VBox creaCard(BranoAssegnatoAlConcerto brano) {
@@ -476,10 +498,10 @@ public class ConcertoController {
         timelineText.setTextAlignment(TextAlignment.CENTER);
         card.getChildren().add(timelineText);
 
-        //card.setOnMouseClicked(e -> mainController.goToBrano(card, brano, () -> {
-        //    BranoController controller = mainController.getBranoController();
-        //    if (controller != null) controller.fetchBranoData(brano);
-        //}));
+        card.setOnMouseClicked(e -> mainController.goToBrano(card, brano, () -> {
+            BranoController controller = mainController.getBranoController();
+            if (controller != null) controller.fetchBranoData(brano);
+        }));
 
         return card;
     }

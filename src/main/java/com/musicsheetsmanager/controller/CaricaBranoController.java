@@ -406,34 +406,9 @@ public class CaricaBranoController implements Controller {
             return false;
         }
 
-        String generiText = campoGeneri.getText().trim().toLowerCase();
-        if(generiText.isEmpty()) {
-            errore.setText("Campo generi obbligatorio");
-            errore.setVisible(true);
-            return false;
-        }
+        List<String> generi = List.of(campoGeneri.getText().toLowerCase().trim().split(",\\s*"));
 
-        // controlla che l'anno di composizione sia un numero intero valido
-        int anno;
-        try {
-            String annoText = campoAnnoDiComposizione.getText().trim();
-            if(annoText.isEmpty()) {
-                errore.setText("Campo anno di composizione obbligatorio");
-                errore.setVisible(true);
-                return false;
-            }
-            anno = Integer.parseInt(campoAnnoDiComposizione.getText().trim());
-            int annoCorrente = Year.now().getValue();
-            if(anno > annoCorrente) {
-                errore.setText("Siamo ancora nel " + annoCorrente);
-                errore.setVisible(true);
-                return false;
-            }
-        } catch (NumberFormatException e) {
-            errore.setText("Inserisci un numero intero");
-            errore.setVisible(true);
-            return false;
-        }
+        int anno = Integer.parseInt(campoAnnoDiComposizione.getText().trim());
 
         List<String> autori = Arrays.stream(
                         campoAutori.getText()
@@ -443,7 +418,6 @@ public class CaricaBranoController implements Controller {
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())
                 .toList();
-        List<String> generi = List.of(campoGeneri.getText().toLowerCase().trim().split(",\\s*"));
 
         String strumentiText = campoStrumentiMusicali.getText().toLowerCase().trim();
         List<String> strumentiMusicali = strumentiText.isEmpty()

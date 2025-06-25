@@ -39,25 +39,4 @@ public class BranoAssegnatoAlConcerto extends Brano {
     public String getFine() {
         return fine;
     }
-
-    // Getter per tutti i campi
-    public String getIdConcerto() {
-        return idConcerto;
-    }
-
-    public String getIdBrano() {
-        return idBrano;
-    }
-
-    public String getInizio() {
-        return inizio;
-    }
-
-    public String getFine() {
-        return fine;
-    }
-
-    public String getNomeUtente() {
-        return nomeUtente;
-    }
 }
