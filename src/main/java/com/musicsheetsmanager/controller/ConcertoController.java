@@ -51,7 +51,9 @@ public class ConcertoController {
     }
 
     /**
-     * Carica i dati di un Concerto e aggiorna l'interfaccia
+     * Carica i dati di un concerto selezionato e aggiorna l'interfaccia utente.
+     *
+     * @param concerto oggetto Concerto contenente le informazioni da visualizzare
      */
 
     public void fetchConcertoData(Concerto concerto) {
@@ -77,7 +79,10 @@ public class ConcertoController {
     }
 
     /**
-     * Carica il video in un WebView tramite URL convertito in formato embed
+     * Mostra un video di YouTube all'interno della WebView del concerto.
+     * Accetta link nel formato "https://www.youtube.com/watch?v=..."
+     *
+     * @param linkYoutube link diretto al video YouTube fornito dall'oggetto Concerto
      */
 
     public void mostraVideo(String linkYoutube) {
@@ -105,7 +110,11 @@ public class ConcertoController {
     }
 
     /**
-     * Converte un URL normale di YouTube in formato "embed"
+     * Converte un URL di YouTube in formato "embed" per l'inserimento in un iframe.
+     * Supporta sia link standard (youtube.com/watch?v=...) che link brevi (youtu.be/...).
+     *
+     * @param url l'URL originale del video YouTube
+     * @return l'URL convertito in formato embed, oppure null se non riconosciuto o in caso di errore
      */
 
     private String convertToEmbedUrl(String url) {
@@ -174,20 +183,23 @@ public class ConcertoController {
 
     /**
      * Abilita ricerca testuale all'interno della ComboBox dei brani
+     *
+     * @param listaBrani spieare cosa fa
      */
 
     private void abilitaRicercaComboBoxBrani(List<Brano> listaBrani) {
-        selezionaBrani.setEditable(true);
+        selezionaBrani.setEditable(true); // rende la ComboBox editabile
 
-        ObservableList<Brano> originalItems = FXCollections.observableArrayList(listaBrani);
-        FilteredList<Brano> filteredItems = new FilteredList<>(originalItems, p -> true);
+        ObservableList<Brano> originalItems = FXCollections.observableArrayList(listaBrani);  // Lista osservabile di tutti i brani originali
+        FilteredList<Brano> filteredItems = new FilteredList<>(originalItems, p -> true);  // Lista filtrata da aggiornare dinamicamente in base all'input dell’utente
         selezionaBrani.setItems(filteredItems);
 
-        TextField editor = selezionaBrani.getEditor();
+        TextField editor = selezionaBrani.getEditor();  // Ottiene l’editor testuale della ComboBox
 
         // Flag per evitare che l'auto-complete sovrascriva la selezione dell'utente
         final BooleanProperty skipAutoComplete = new SimpleBooleanProperty(false);
 
+        // Listener che filtra i risultati in base al testo digitato
         editor.textProperty().addListener((obs, oldText, newText) -> {
             if (skipAutoComplete.get()) {
                 return;
@@ -195,30 +207,64 @@ public class ConcertoController {
 
             String input = newText == null ? "" : newText.trim().toLowerCase();
 
+            // Applica il filtro: mostra solo i brani che contengono il testo digitato
+            filteredItems.setPredicate(brano -> {
+                // Se input è vuoto, resetta la selezione
+                if (input.isEmpty()) return true;
+                return brano.getTitolo().toLowerCase().contains(input);
+            });
+
+            // Mostra o nasconde il menu a tendina in base all’input
+            if (!selezionaBrani.isShowing() && !input.isEmpty()) {
+                selezionaBrani.show();
+            }
+
+        });
+
+        // serve per far resettare bene la grafica, e per resettare il focus
+        editor.textProperty().addListener((obs, oldText, newText) -> {
+            if (skipAutoComplete.get()) return;
+
+            String input = newText == null ? "" : newText.trim().toLowerCase();
+
+            // Filtro lista in base all'input
             filteredItems.setPredicate(brano -> {
                 if (input.isEmpty()) return true;
                 return brano.getTitolo().toLowerCase().contains(input);
             });
 
-            // Riapre la dropdown ad ogni cambio di testo
-            selezionaBrani.show();
+            // Se l'input è vuoto, resetta anche la selezione
+            if (input.isEmpty()) {
+                selezionaBrani.setValue(null);
+            }
+
+            // Mostra dropdown solo se ha senso
+            if (!input.isEmpty()) {
+                selezionaBrani.show();
+            } else {
+                selezionaBrani.hide();
+            }
         });
 
-        // Se viene selezionato un oggetto dalla lista
+
+        // Listener su selezione da lista dropdown
         selezionaBrani.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
+                // Impedisce l’autocompletamento forzato mentre aggiorniamo il camp
                 skipAutoComplete.set(true);
-                editor.setText(newVal.getTitolo());
+                editor.setText(newVal.getTitolo()); // mostra il titolo del brano selezionato
                 skipAutoComplete.set(false);
             }
         });
 
-        // Previene errori durante la selezione libera
+        // Listener per gestire quando il campo perde il focus
         editor.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
             if (!isNowFocused) {
+                // Se il testo corrisponde a un brano, lo seleziona
                 Brano match = filteredItems.stream()
                         .filter(b -> b.getTitolo().equalsIgnoreCase(editor.getText().trim()))
                         .findFirst().orElse(null);
+                // Se non c'è corrispondenza, resetta la selezione
                 selezionaBrani.setValue(match);
             }
         });
@@ -230,36 +276,64 @@ public class ConcertoController {
 
     @FXML
     private void addConcertoClicked() {
-        Brano branoSelezionato = selezionaBrani.getValue();
+        Brano branoSelezionato = selezionaBrani.getValue(); // il brano selezionata dalla ComboBox
+        // orari inseriti nel campo testo
         String inizio = inizioBranoConcerto.getText().trim();
         String fine = fineBranoConcerto.getText().trim();
 
-        // Controlli base
-        if (branoSelezionato == null || inizio.isEmpty() || fine.isEmpty()) { // controllo che tutti i campi sono compilati
+        // Controllo che tutti i campi siano compilati
+        if (branoSelezionato == null || inizio.isEmpty() || fine.isEmpty()) {
             System.out.println("Compila tutti i campi.");
             return;
         }
-
-        if (!isValidTimeFormat(inizio) || !isValidTimeFormat(fine)) { // controllo del formato
+        // Controllo formato orario
+        if (!isValidTimeFormat(inizio) || !isValidTimeFormat(fine)) {
             System.out.println("Formato orario non valido. Usa hh:mm:ss o mm:ss (es. 03:45 o 00:03:45).");
             return;
         }
 
-        if (convertToSeconds(fine) <= convertToSeconds(inizio)) { // controllo che il tempo di fine non sia < del tempo di inizio
+        // Converte gli orari in secondi
+        int nuovoInizio = convertToSeconds(inizio);
+        int nuovoFine = convertToSeconds(fine);
+
+        // Controllo orario fine non deve essere prima di inizio
+        if (nuovoFine <= nuovoInizio) {
             System.out.println("Il tempo di fine deve essere maggiore del tempo di inizio.");
             return;
         }
 
-        // Ottieni l'utente loggato
+        //Controllo delle sovrapposizioni degli orari tra brani
+        Type tipoLista = new TypeToken<List<BranoAssegnatoAlConcerto>>() {}.getType();
+        List<BranoAssegnatoAlConcerto> lista = JsonUtils.leggiDaJson(PATH_BRANICONCERTO_JSON, tipoLista);
+
+        if (lista != null) {
+            for (BranoAssegnatoAlConcerto b : lista) {
+                // Ignora i brani di altri concerti
+                if (!idConcerto.equals(b.getIdConcerto())) continue;
+
+                // Converte orari esistenti in secondi
+                int esistenteInizio = convertToSeconds(b.getInizio());
+                int esistenteFine = convertToSeconds(b.getFine());
+
+                // Verifica sovrapposizione
+                if (nuovoInizio < esistenteFine && nuovoFine > esistenteInizio) {
+                    System.out.println("Errore: sovrapposizione con brano " + b.getIdBrano() + " da " + b.getInizio() + " a " + b.getFine());
+                    return;
+                }
+            }
+        }
+
+        // Ottiene l'utente attualmente loggato
         Utente utente = SessionManager.getLoggedUser();
         if (utente == null) {
             System.out.println("Nessun utente loggato.");
             return;
         }
 
-        // Usa il nome utente
-        String nomeUtente = utente.getUsername(); // Assicurati che esista getUsername()
+        // Recupera il nome utente da salvare nel brano assegnato
+        String nomeUtente = utente.getUsername();
 
+        // Crea un nuovo oggetto da salvare nel JSON
         BranoAssegnatoAlConcerto assegnato = new BranoAssegnatoAlConcerto(
                 idConcerto,
                 branoSelezionato.getIdBrano(),
@@ -268,21 +342,25 @@ public class ConcertoController {
                 nomeUtente
         );
 
-        // Leggi lista e salva su file
-        Type tipoLista = new TypeToken<List<BranoAssegnatoAlConcerto>>() {}.getType();
-        List<BranoAssegnatoAlConcerto> lista = JsonUtils.leggiDaJson(PATH_BRANICONCERTO_JSON, tipoLista);
+        // Se la lista era nulla
         if (lista == null) {
             lista = new java.util.ArrayList<>();
         }
 
+        // Aggiunge un nuovo brano alla lista
         lista.add(assegnato);
+        // Scrive la lista aggiornata nel file JSON
         JsonUtils.scriviSuJson(lista, PATH_BRANICONCERTO_JSON);
 
         System.out.println("Brano collegato al concerto da utente: " + nomeUtente);
     }
 
+
     /**
-     * Converte un tempo nel formato hh:mm:ss o mm:ss in secondi totali
+     * Converte un orario in formato "hh:mm:ss" o "mm:ss" in secondi totali.
+     *
+     * @param time una stringa che rappresenta un orario, ad esempio "01:30:00" o "03:45"
+     * @return il numero totale di secondi corrispondente all'orario
      */
 
     private int convertToSeconds(String time) {
@@ -292,7 +370,7 @@ public class ConcertoController {
         if (parts.length == 2) {
             seconds = Integer.parseInt(parts[0]) * 60 + Integer.parseInt(parts[1]);
         } else if (parts.length == 3) {
-            seconds = Integer.parseInt(parts[0]) * 3600 + Integer.parseInt(parts[1]) * 60 + Integer.parseInt(parts[2]);
+            seconds = Integer.parseInt(parts[0]) * 3600 + Integer.parseInt(parts[1]) * 60 + Integer.parseInt(parts[2]); // fa prima ora -> secondi, minuti -> secondi
         }
 
         return seconds;
