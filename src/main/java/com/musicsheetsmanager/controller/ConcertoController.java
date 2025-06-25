@@ -8,6 +8,8 @@ import com.musicsheetsmanager.model.Brano;
 import com.musicsheetsmanager.model.BranoAssegnatoAlConcerto;
 import com.musicsheetsmanager.model.Concerto;
 import com.musicsheetsmanager.model.Utente;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -51,11 +53,12 @@ public class ConcertoController {
     /**
      * Carica i dati di un Concerto e aggiorna l'interfaccia
      */
+
     public void fetchConcertoData(Concerto concerto) {
         idConcerto = concerto.getId();
         String titolo = concerto.getTitolo();
 
-        if (titolo == null || titolo.isEmpty()) {
+        if (titolo == null || titolo.isEmpty()) { // controllo sul titolo
             concertoTitolo.setText("Titolo non disponibile");
         } else {
             concertoTitolo.setText(titolo);
@@ -63,7 +66,7 @@ public class ConcertoController {
 
         // Carica il video YouTube, se presente
         String linkYoutube = concerto.getLink();
-        if (linkYoutube != null && !linkYoutube.isEmpty()) {
+        if (linkYoutube != null && !linkYoutube.isEmpty()) { // controllo se c'e' qualcosa sul link YT
             System.out.println("Carico video da link: " + linkYoutube);
             mostraVideo(linkYoutube);
         } else {
@@ -76,13 +79,14 @@ public class ConcertoController {
     /**
      * Carica il video in un WebView tramite URL convertito in formato embed
      */
+
     public void mostraVideo(String linkYoutube) {
-        if (webView == null) {
+        if (webView == null) { // controllo se la Web view e' inizializzata
             System.out.println("WebView non inizializzata");
             return;
         }
 
-        if (linkYoutube != null && linkYoutube.contains("youtube.com/watch?v=")) {
+        if (linkYoutube != null && linkYoutube.contains("youtube.com/watch?v=")) { // CONTROLLI E FUNZIONI PER MOSTRARE IL VIDEO
             String embedUrl = convertToEmbedUrl(linkYoutube);
 
             String html = String.format("""
@@ -103,6 +107,7 @@ public class ConcertoController {
     /**
      * Converte un URL normale di YouTube in formato "embed"
      */
+
     private String convertToEmbedUrl(String url) {
         try {
             if (url.contains("youtube.com/watch?v=")) {
@@ -126,8 +131,9 @@ public class ConcertoController {
     /**
      * Carica i brani dal file JSON e imposta il comportamento della ComboBox
      */
+
     private void caricaBrani() {
-        List<Brano> brani = JsonUtils.leggiDaJson(PATH_BRANI_JSON, tipoListaBrani);
+        List<Brano> brani = JsonUtils.leggiDaJson(PATH_BRANI_JSON, tipoListaBrani); // brani letti dal JSON
         if (brani != null) {
             abilitaRicercaComboBoxBrani(brani); // Aggiunge filtro di ricerca
         } else {
@@ -136,19 +142,25 @@ public class ConcertoController {
 
         // Imposta il modo in cui i brani sono visualizzati nella ComboBox
         selezionaBrani.setConverter(new javafx.util.StringConverter<>() {
+
+            // Metodo chiamato per convertire un oggetto Brano in una stringa da visualizzare nella ComboBox
             @Override
             public String toString(Brano brano) {
+                // Se il brano non è nullo, restituisce il titolo del brano; altrimenti una stringa vuota
                 return (brano != null) ? brano.getTitolo() : "";
             }
 
+            // Metodo chiamato per convertire una stringa (selezionata o scritta) in un oggetto Brano
             @Override
             public Brano fromString(String string) {
+                // Cerca tra gli elementi della ComboBox quello con un titolo uguale alla stringa passata
                 return selezionaBrani.getItems().stream()
-                        .filter(b -> b.getTitolo().equals(string))
-                        .findFirst()
-                        .orElse(null);
+                        .filter(b -> b.getTitolo().equals(string)) // Filtra i brani con titolo uguale alla stringa
+                        .findFirst() // Prende il primo che corrisponde
+                        .orElse(null); // Se non trova nulla, restituisce null
             }
         });
+
 
         // Come ogni elemento è rappresentato nella lista dropdown
         selezionaBrani.setCellFactory(listView -> new javafx.scene.control.ListCell<>() {
@@ -163,44 +175,51 @@ public class ConcertoController {
     /**
      * Abilita ricerca testuale all'interno della ComboBox dei brani
      */
-    private void abilitaRicercaComboBoxBrani(List<Brano> listaBrani) {
-        ObservableList<Brano> braniOriginali = FXCollections.observableArrayList(listaBrani);
-        FilteredList<Brano> braniFiltrati = new FilteredList<>(braniOriginali, b -> true);
 
-        selezionaBrani.setItems(braniFiltrati);
+    private void abilitaRicercaComboBoxBrani(List<Brano> listaBrani) {
         selezionaBrani.setEditable(true);
 
-        selezionaBrani.setConverter(new javafx.util.StringConverter<>() {
-            @Override
-            public String toString(Brano brano) {
-                return brano != null ? brano.getTitolo() : "";
+        ObservableList<Brano> originalItems = FXCollections.observableArrayList(listaBrani);
+        FilteredList<Brano> filteredItems = new FilteredList<>(originalItems, p -> true);
+        selezionaBrani.setItems(filteredItems);
+
+        TextField editor = selezionaBrani.getEditor();
+
+        // Flag per evitare che l'auto-complete sovrascriva la selezione dell'utente
+        final BooleanProperty skipAutoComplete = new SimpleBooleanProperty(false);
+
+        editor.textProperty().addListener((obs, oldText, newText) -> {
+            if (skipAutoComplete.get()) {
+                return;
             }
 
-            @Override
-            public Brano fromString(String titolo) {
-                return braniOriginali.stream()
-                        .filter(b -> b.getTitolo().equalsIgnoreCase(titolo))
-                        .findFirst()
-                        .orElse(null);
-            }
-        });
+            String input = newText == null ? "" : newText.trim().toLowerCase();
 
-        // Filtro in tempo reale mentre si digita
-        selezionaBrani.getEditor().textProperty().addListener((obs, oldVal, newVal) -> {
-            String filtro = newVal.toLowerCase();
-
-            braniFiltrati.setPredicate(brano -> {
-                if (filtro == null || filtro.isEmpty()) return true;
-                return brano.getTitolo().toLowerCase().contains(filtro);
+            filteredItems.setPredicate(brano -> {
+                if (input.isEmpty()) return true;
+                return brano.getTitolo().toLowerCase().contains(input);
             });
 
-            selezionaBrani.show(); // Mostra la lista filtrata
+            // Riapre la dropdown ad ogni cambio di testo
+            selezionaBrani.show();
         });
 
-        // Aggiorna il testo nel campo di input dopo selezione
-        selezionaBrani.valueProperty().addListener((obs, oldVal, newVal) -> {
+        // Se viene selezionato un oggetto dalla lista
+        selezionaBrani.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
-                selezionaBrani.getEditor().setText(newVal.getTitolo());
+                skipAutoComplete.set(true);
+                editor.setText(newVal.getTitolo());
+                skipAutoComplete.set(false);
+            }
+        });
+
+        // Previene errori durante la selezione libera
+        editor.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+            if (!isNowFocused) {
+                Brano match = filteredItems.stream()
+                        .filter(b -> b.getTitolo().equalsIgnoreCase(editor.getText().trim()))
+                        .findFirst().orElse(null);
+                selezionaBrani.setValue(match);
             }
         });
     }
@@ -208,6 +227,7 @@ public class ConcertoController {
     /**
      * Aggiunge un brano al concerto corrente dopo aver validato i dati inseriti
      */
+
     @FXML
     private void addConcertoClicked() {
         Brano branoSelezionato = selezionaBrani.getValue();
@@ -215,13 +235,18 @@ public class ConcertoController {
         String fine = fineBranoConcerto.getText().trim();
 
         // Controlli base
-        if (branoSelezionato == null || inizio.isEmpty() || fine.isEmpty()) {
+        if (branoSelezionato == null || inizio.isEmpty() || fine.isEmpty()) { // controllo che tutti i campi sono compilati
             System.out.println("Compila tutti i campi.");
             return;
         }
 
-        if (!isValidTimeFormat(inizio) || !isValidTimeFormat(fine)) {
+        if (!isValidTimeFormat(inizio) || !isValidTimeFormat(fine)) { // controllo del formato
             System.out.println("Formato orario non valido. Usa hh:mm:ss o mm:ss (es. 03:45 o 00:03:45).");
+            return;
+        }
+
+        if (convertToSeconds(fine) <= convertToSeconds(inizio)) { // controllo che il tempo di fine non sia < del tempo di inizio
+            System.out.println("Il tempo di fine deve essere maggiore del tempo di inizio.");
             return;
         }
 
@@ -256,10 +281,27 @@ public class ConcertoController {
         System.out.println("Brano collegato al concerto da utente: " + nomeUtente);
     }
 
+    /**
+     * Converte un tempo nel formato hh:mm:ss o mm:ss in secondi totali
+     */
+
+    private int convertToSeconds(String time) {
+        String[] parts = time.split(":");
+        int seconds = 0;
+
+        if (parts.length == 2) {
+            seconds = Integer.parseInt(parts[0]) * 60 + Integer.parseInt(parts[1]);
+        } else if (parts.length == 3) {
+            seconds = Integer.parseInt(parts[0]) * 3600 + Integer.parseInt(parts[1]) * 60 + Integer.parseInt(parts[2]);
+        }
+
+        return seconds;
+    }
 
     /**
      * Verifica se una stringa rappresenta un tempo nel formato hh:mm:ss o mm:ss
      */
+
     private boolean isValidTimeFormat(String time) {
         return time.matches("^(\\d{1,2}:)?[0-5]?\\d:[0-5]\\d$");
     }

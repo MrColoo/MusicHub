@@ -148,9 +148,6 @@ public class CaricaConcertoController implements Controller{
         });
     }
 
-
-
-
     private String estraiTitoloDaYoutube(String videoUrl) {
         try {
             HttpURLConnection conn = (HttpURLConnection) new URL(videoUrl).openConnection();
