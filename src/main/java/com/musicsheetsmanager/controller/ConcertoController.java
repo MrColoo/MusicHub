@@ -1,9 +1,14 @@
 package com.musicsheetsmanager.controller;
 
+// Importazioni necessarie
 import com.google.gson.reflect.TypeToken;
 import com.musicsheetsmanager.config.JsonUtils;
 import com.musicsheetsmanager.model.Brano;
+import com.musicsheetsmanager.model.BranoAssegnatoAlConcerto;
 import com.musicsheetsmanager.model.Concerto;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -17,37 +22,33 @@ import java.util.List;
 
 public class ConcertoController {
 
+    // Percorsi ai file JSON
     private static final Path PATH_BRANI_JSON = Paths.get("src/main/resources/com/musicsheetsmanager/data/brani.json");
     private static final Path PATH_BRANICONCERTO_JSON = Paths.get("src/main/resources/com/musicsheetsmanager/data/braniConcerto.json");
 
+    // Tipo generico per deserializzare una lista di Brano
     private final Type tipoListaBrani = new TypeToken<List<Brano>>() {}.getType();
 
-    @FXML
-    private TextField inizioBranoConcerto;
+    // Riferimenti agli elementi dell'interfaccia utente
+    @FXML private TextField inizioBranoConcerto;
+    @FXML private TextField fineBranoConcerto;
+    @FXML private Button aggiungiBranoCanzone;
+    @FXML private WebView webView;
+    @FXML private Text concertoTitolo;
+    @FXML private ComboBox<Brano> selezionaBrani;
 
-    @FXML
-    private TextField fineBranoConcerto;
-
-    @FXML
-    private Button aggiungiBrano;
-
-    @FXML
-    private WebView webView;
-
-    @FXML
-    private Text concertoTitolo;
-
+    // ID del concerto attualmente visualizzato
     private String idConcerto;
 
-    @FXML
-    private ComboBox<Brano> selezionaBrani; // box per visualizzare i brani
-
+    // Metodo chiamato automaticamente all'inizializzazione del controller
     @FXML
     public void initialize() {
-        caricaBrani();
+        caricaBrani(); // Carica i brani dalla lista JSON e inizializza la ComboBox
     }
 
-    // Mostra i dati del concerto (titolo + link YouTube se presente)
+    /**
+     * Carica i dati di un Concerto e aggiorna l'interfaccia
+     */
     public void fetchConcertoData(Concerto concerto) {
         idConcerto = concerto.getId();
         String titolo = concerto.getTitolo();
@@ -58,7 +59,7 @@ public class ConcertoController {
             concertoTitolo.setText(titolo);
         }
 
-        // Mostra il video se disponibile nel Concerto
+        // Carica il video YouTube, se presente
         String linkYoutube = concerto.getLink();
         if (linkYoutube != null && !linkYoutube.isEmpty()) {
             System.out.println("Carico video da link: " + linkYoutube);
@@ -70,6 +71,9 @@ public class ConcertoController {
         System.out.println("Caricato concerto: " + titolo);
     }
 
+    /**
+     * Carica il video in un WebView tramite URL convertito in formato embed
+     */
     public void mostraVideo(String linkYoutube) {
         if (webView == null) {
             System.out.println("WebView non inizializzata");
@@ -78,14 +82,15 @@ public class ConcertoController {
 
         if (linkYoutube != null && linkYoutube.contains("youtube.com/watch?v=")) {
             String embedUrl = convertToEmbedUrl(linkYoutube);
+
             String html = String.format("""
-                    <html>
-                        <body style="margin:0;">
-                            <iframe width="100%%" height="100%%" src="%s"
-                                frameborder="0" allowfullscreen></iframe>
-                        </body>
-                    </html>
-                """, embedUrl);
+                <html>
+                    <body style="margin:0;">
+                        <iframe width="100%%" height="100%%" src="%s"
+                            frameborder="0" allowfullscreen></iframe>
+                    </body>
+                </html>
+            """, embedUrl);
 
             webView.getEngine().loadContent(html, "text/html");
         } else {
@@ -93,8 +98,10 @@ public class ConcertoController {
         }
     }
 
+    /**
+     * Converte un URL normale di YouTube in formato "embed"
+     */
     private String convertToEmbedUrl(String url) {
-        // Supporta anche short URL
         try {
             if (url.contains("youtube.com/watch?v=")) {
                 String videoId = url.substring(url.indexOf("v=") + 2);
@@ -114,16 +121,134 @@ public class ConcertoController {
         }
     }
 
-    private void caricaBrani(){
+    /**
+     * Carica i brani dal file JSON e imposta il comportamento della ComboBox
+     */
+    private void caricaBrani() {
         List<Brano> brani = JsonUtils.leggiDaJson(PATH_BRANI_JSON, tipoListaBrani);
-        if(brani != null){
-            selezionaBrani.getItems().setAll(brani);
-        }else{
-            System.out.println(("Errore di lettura del JSON"));
+        if (brani != null) {
+            abilitaRicercaComboBoxBrani(brani); // Aggiunge filtro di ricerca
+        } else {
+            System.out.println("Errore di lettura del JSON");
         }
+
+        // Imposta il modo in cui i brani sono visualizzati nella ComboBox
+        selezionaBrani.setConverter(new javafx.util.StringConverter<>() {
+            @Override
+            public String toString(Brano brano) {
+                return (brano != null) ? brano.getTitolo() : "";
+            }
+
+            @Override
+            public Brano fromString(String string) {
+                return selezionaBrani.getItems().stream()
+                        .filter(b -> b.getTitolo().equals(string))
+                        .findFirst()
+                        .orElse(null);
+            }
+        });
+
+        // Come ogni elemento è rappresentato nella lista dropdown
+        selezionaBrani.setCellFactory(listView -> new javafx.scene.control.ListCell<>() {
+            @Override
+            protected void updateItem(Brano brano, boolean empty) {
+                super.updateItem(brano, empty);
+                setText((brano == null || empty) ? null : brano.getTitolo());
+            }
+        });
     }
 
-    private void creaBraniConcerto(){
-       // List<Brano> braniConcerti = JsonUtils.scriviSuJson(tipoListaBrani, PATH_BRANICONCERTO_JSON);
+    /**
+     * Abilita ricerca testuale all'interno della ComboBox dei brani
+     */
+    private void abilitaRicercaComboBoxBrani(List<Brano> listaBrani) {
+        ObservableList<Brano> braniOriginali = FXCollections.observableArrayList(listaBrani);
+        FilteredList<Brano> braniFiltrati = new FilteredList<>(braniOriginali, b -> true);
+
+        selezionaBrani.setItems(braniFiltrati);
+        selezionaBrani.setEditable(true);
+
+        selezionaBrani.setConverter(new javafx.util.StringConverter<>() {
+            @Override
+            public String toString(Brano brano) {
+                return brano != null ? brano.getTitolo() : "";
+            }
+
+            @Override
+            public Brano fromString(String titolo) {
+                return braniOriginali.stream()
+                        .filter(b -> b.getTitolo().equalsIgnoreCase(titolo))
+                        .findFirst()
+                        .orElse(null);
+            }
+        });
+
+        // Filtro in tempo reale mentre si digita
+        selezionaBrani.getEditor().textProperty().addListener((obs, oldVal, newVal) -> {
+            String filtro = newVal.toLowerCase();
+
+            braniFiltrati.setPredicate(brano -> {
+                if (filtro == null || filtro.isEmpty()) return true;
+                return brano.getTitolo().toLowerCase().contains(filtro);
+            });
+
+            selezionaBrani.show(); // Mostra la lista filtrata
+        });
+
+        // Aggiorna il testo nel campo di input dopo selezione
+        selezionaBrani.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                selezionaBrani.getEditor().setText(newVal.getTitolo());
+            }
+        });
+    }
+
+    /**
+     * Aggiunge un brano al concerto corrente dopo aver validato i dati inseriti
+     */
+    @FXML
+    private void addConcertoClicked() {
+        Brano branoSelezionato = selezionaBrani.getValue();
+        String inizio = inizioBranoConcerto.getText().trim();
+        String fine = fineBranoConcerto.getText().trim();
+
+        // Controlla se tutti i campi sono stati riempiti
+        if (branoSelezionato == null || inizio.isEmpty() || fine.isEmpty()) {
+            System.out.println("Compila tutti i campi.");
+            return;
+        }
+
+        // Controllo formato orario
+        if (!isValidTimeFormat(inizio) || !isValidTimeFormat(fine)) {
+            System.out.println("Formato orario non valido. Usa hh:mm:ss o mm:ss (es. 03:45 o 00:03:45).");
+            return;
+        }
+
+        // Crea oggetto da salvare
+        BranoAssegnatoAlConcerto assegnato = new BranoAssegnatoAlConcerto(
+                idConcerto,
+                branoSelezionato.getIdBrano(),
+                inizio,
+                fine
+        );
+
+        // Aggiunge il brano alla lista esistente (o ne crea una nuova) e scrive su file
+        Type tipoLista = new TypeToken<List<BranoAssegnatoAlConcerto>>() {}.getType();
+        List<BranoAssegnatoAlConcerto> lista = JsonUtils.leggiDaJson(PATH_BRANICONCERTO_JSON, tipoLista);
+        if (lista == null) {
+            lista = new java.util.ArrayList<>();
+        }
+
+        lista.add(assegnato);
+        JsonUtils.scriviSuJson(lista, PATH_BRANICONCERTO_JSON);
+
+        System.out.println("Brano collegato al concerto.");
+    }
+
+    /**
+     * Verifica se una stringa rappresenta un tempo nel formato hh:mm:ss o mm:ss
+     */
+    private boolean isValidTimeFormat(String time) {
+        return time.matches("^(\\d{1,2}:)?[0-5]?\\d:[0-5]\\d$");
     }
 }
