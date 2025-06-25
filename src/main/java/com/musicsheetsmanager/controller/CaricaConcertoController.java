@@ -4,17 +4,15 @@ import com.google.gson.reflect.TypeToken;
 import com.musicsheetsmanager.config.JsonUtils;
 import com.musicsheetsmanager.config.SessionManager;
 import com.musicsheetsmanager.model.Concerto;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+<<<<<<< concerto/ottimizzazione
+=======
 
+>>>>>>> main
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -33,41 +31,56 @@ import java.util.List;
 public class CaricaConcertoController implements Controller{
 
     @FXML
-    private TextField campoLinkYoutube;
+    private TextField campoLinkYoutube; // Campo di input in cui l'utente può incollare un link YouTube
 
     @FXML
-    private WebView webView;
+    private WebView webView; // WebView che mostrerà il video YouTube all'interno dell'interfaccia
 
     @FXML
-    private Text errore;
+    private Text errore; // Etichetta testuale usata per mostrare eventuali messaggi di errore
 
-    private String idConcerto;
+    private String idConcerto; // ID del concerto attualmente selezionato o in fase di modifica
 
+
+    // Percorso al file JSON contenente la lista dei concerti
     private static final Path PATH_CONCERTI_JSON = Paths.get("src/main/resources/com/musicsheetsmanager/data/concerti.json");
+
+    // Percorso alla cartella contenente le immagini associate ai concerti
     private static final Path PATH_CONCERTI_IMAGE = Paths.get("src/main/resources/com/musicsheetsmanager/ui/concerti/");
+
+    // Tipo generico usato per deserializzare una lista di oggetti Concerto da JSON
     private final Type tipoListaConcerti = new TypeToken<List<Concerto>>() {}.getType();
 
-
+    // Riferimento al controller principale
     private MainController mainController;
 
+    // Metodo usato per iniettare il controller principale nella classe corrente
     @Override
     public void setMainController(MainController mainController) {
         this.mainController = mainController;
     }
+
+    /**
+     * Metodo chiamato automaticamente all'inizializzazione del controller.
+     * Gestisce la logica per la visualizzazione dinamica di un video YouTube nella WebView,
+     * mostrando o nascondendo messaggi di errore in base alla validità del link.
+     */
+
     @FXML
     public void initialize() {
-        errore.setVisible(false);
+        errore.setVisible(false); // Nasconde inizialmente il messaggio di error
 
-        webView.setVisible(false);
+        webView.setVisible(false); // Nasconde la WebView inizialmente e impedisce che occupi spazio nel layout
         webView.setManaged(false); // <-- non occupa spazio
-        errore.setVisible(false);
 
         campoLinkYoutube.textProperty().addListener((obs, oldVal, newVal) -> {
+            // Se il campo è vuoto o nullo, nasconde l'errore e non fa nulla
             if (newVal == null || newVal.isBlank()) {
                 errore.setVisible(false);
                 return;
             }
 
+            // Tenta di convertire il link in formato embed valido
             String embedUrl = convertToEmbedUrl(newVal.trim());
 
             if (embedUrl != null) {
@@ -89,6 +102,7 @@ public class CaricaConcertoController implements Controller{
                 System.out.println(estraiTitoloDaYoutube(campoLinkYoutube.getText().trim()));
             } else {
                 errore.setText("Link YouTube non valido");
+                // Aggiorna la GUI: mostra il video e nasconde l’errore
                 errore.setVisible(true);
                 webView.setVisible(false);
                 webView.setManaged(false);
@@ -117,47 +131,57 @@ public class CaricaConcertoController implements Controller{
         }
     }
 
+
+    /**
+     * Metodo chiamato quando l'utente clicca per aggiungere un nuovo concerto.
+     * Verifica il link, crea il concerto, lo salva nel JSON e passa alla schermata del concerto.
+     */
+
     @FXML
     private void onAddConcertoClick() {
-        String link = campoLinkYoutube.getText();
+        String link = campoLinkYoutube.getText(); // Recupera il link YouTube inserito dall'utente
 
+        // Se il campo è vuoto o nullo, mostra un messaggio di errore e interrompe l'azione
         if (link == null || link.trim().isEmpty()) {
             errore.setText("Link mancante");
             errore.setVisible(true);
             return;
         }
 
-        String titolo = estraiTitoloDaYoutube(link.trim());
+        String titolo = estraiTitoloDaYoutube(link.trim()); // Estrae il titolo del video
 
-        // Ottieni utente loggato
+        // Recuper l'utente attualmente loggato
         var utente = SessionManager.getLoggedUser();
         if (utente == null) {
             errore.setText("Utente non loggato");
             errore.setVisible(true);
             return;
         }
+        // Ottiene il nome dell'utente da salvare nel concerto
+        String nomeUtente = utente.getUsername();
 
-        String nomeUtente = utente.getUsername(); // Usa il nome utente
-
+        // Genera un id univoco per il nuovo concerto
         String id = java.util.UUID.randomUUID().toString();
 
-        // Nuovo costruttore con nome utente
+        // Crea un nuovo oggetto Concerto con i dati raccolti
         Concerto nuovoConcerto = new Concerto(id, link, titolo  , nomeUtente);
 
+        // Legge la lista dei concerti esistenti dal file JSON
         List<Concerto> concerti = JsonUtils.leggiDaJson(PATH_CONCERTI_JSON, tipoListaConcerti);
         if (concerti == null) {
-            concerti = new java.util.ArrayList<>();
+            concerti = new java.util.ArrayList<>(); // Se il file è vuoto o non esiste
         }
 
-        concerti.add(nuovoConcerto);
-        JsonUtils.scriviSuJson(concerti, PATH_CONCERTI_JSON);
+        concerti.add(nuovoConcerto); // Aggiunge il nuovo concerto alla lista
+        JsonUtils.scriviSuJson(concerti, PATH_CONCERTI_JSON); // Salva la lista aggiornata nel file JSON
 
-        idConcerto = id;
+        idConcerto = id; // Aggiorna l'ID del concerto corrente
 
-        scaricaCopertinaYoutube(nuovoConcerto);
+        scaricaCopertinaYoutube(nuovoConcerto); // Scarica automaticamente l'immagine di copertina dal video di YouTube
 
-        // Passaggio alla schermata concerto
+        // Passa alla schermata di dettaglio del concerto appena creato
         mainController.goToConcerto(null, nuovoConcerto, () -> {
+            // Una volta caricata la schermata, passa i dati al relativo controller
             ConcertoController controller = mainController.getConcertoController();
             if (controller != null) {
                 controller.fetchConcertoData(nuovoConcerto);
@@ -165,34 +189,51 @@ public class CaricaConcertoController implements Controller{
         });
     }
 
+
+    /**
+     * Estrae il titolo di un video YouTube dal suo URL accedendo direttamente alla pagina HTML.
+     * Attenzione: funziona solo se la pagina è pubblica e YouTube non blocca il client.
+     *
+     * @param videoUrl il link diretto al video di YouTube
+     * @return il titolo del video, oppure un messaggio di errore se non riuscito
+     */
+
     private String estraiTitoloDaYoutube(String videoUrl) {
         try {
+            // Apre una connessione HTTP all'URL del video
             HttpURLConnection conn = (HttpURLConnection) new URL(videoUrl).openConnection();
-            conn.setRequestProperty("User-Agent", "Mozilla/5.0"); // Alcuni siti bloccano client Java se non lo imposti
-            conn.setConnectTimeout(5000);
-            conn.setReadTimeout(5000);
 
+            // Alcuni server (come YouTube) bloccano richieste da client "sospetti":
+            // impostiamo uno user-agent di un normale browser
+            conn.setRequestProperty("User-Agent", "Mozilla/5.0");
+
+            // Imposta timeout per evitare blocchi in caso di problemi di rete
+            conn.setConnectTimeout(5000); // max 5 secondi per leggere
+            conn.setReadTimeout(5000); // max 5 secondi per leggere
+
+            // Legge il contenuto HTML della pagina
             BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             StringBuilder html = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
-                html.append(line);
+                html.append(line); // Accumula tutte le righe HTML in un'unica stringa
             }
             reader.close();
 
-            // Cerca il contenuto del <title>...</title>
+            // Cerca il contenuto all'interno dei tag <title>...</title>
             String htmlContent = html.toString();
             int titleStart = htmlContent.indexOf("<title>");
             int titleEnd = htmlContent.indexOf("</title>");
 
+            // Se trova entrambi i tag e sono nella posizione corretta
             if (titleStart != -1 && titleEnd != -1 && titleEnd > titleStart) {
-                String title = htmlContent.substring(titleStart + 7, titleEnd);
-                return title.replace(" - YouTube", "").trim();
+                String title = htmlContent.substring(titleStart + 7, titleEnd); // Estrae il contenuto tra <title> e </title>
+                return title.replace(" - YouTube", "").trim();// Rimuove la parte finale tipica " - YouTube"
             } else {
-                return "Titolo non trovato";
+                return "Titolo non trovato";  // Se i tag non sono trovati correttamente
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(); // In caso di errori di connessione/parsing restituisce un messaggio d’errore
             return "Errore caricamento titolo";
         }
     }
