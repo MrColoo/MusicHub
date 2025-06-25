@@ -66,12 +66,15 @@
                         <String fx:value="text-2xl" />
                      </styleClass>
                   </Text>
-                  <Button mnemonicParsing="false" text="Aggiungi" GridPane.columnIndex="4">
+                  <Button mnemonicParsing="false" prefHeight="30.0" text="Aggiungi" GridPane.columnIndex="4">
                      <styleClass>
                         <String fx:value="explore-btn" />
-                        <String fx:value="text-base" />
+                        <String fx:value="text-sm" />
                         <String fx:value="font-medium" />
                      </styleClass>
+                     <padding>
+                        <Insets left="10.0" right="10.0" />
+                     </padding>
                   </Button>
                   <TextField alignment="CENTER" prefHeight="30.0" prefWidth="70.0" promptText="Fine" GridPane.columnIndex="3">
                      <styleClass>
@@ -85,7 +88,7 @@
                         <String fx:value="font-book" />
                      </styleClass>
                   </TextField>
-                  <ComboBox fx:id="selezionaBrani" prefHeight="30.0" promptText="Aggiungi brano" GridPane.columnIndex="1">
+                  <ComboBox editable="true" prefHeight="30.0" promptText="Aggiungi brano" GridPane.columnIndex="1">
                      <styleClass>
                         <String fx:value="form-text-field" />
                         <String fx:value="font-book" />
