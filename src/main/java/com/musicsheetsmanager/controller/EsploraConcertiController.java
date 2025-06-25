@@ -99,7 +99,9 @@ public class EsploraConcertiController implements Controller {
         // click handler
         card.setOnMouseClicked(e -> mainController.goToConcerto(card, concerto, () -> {
             ConcertoController controller = mainController.getConcertoController();
-            if (controller != null) controller.fetchConcertoData(concerto);
+            if (controller != null){
+                controller.fetchConcertoData(concerto);
+            }
         }));
 
         return card;

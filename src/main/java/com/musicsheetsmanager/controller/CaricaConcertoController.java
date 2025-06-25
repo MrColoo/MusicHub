@@ -4,15 +4,13 @@ import com.google.gson.reflect.TypeToken;
 import com.musicsheetsmanager.config.JsonUtils;
 import com.musicsheetsmanager.config.SessionManager;
 import com.musicsheetsmanager.model.Concerto;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-<<<<<<< concerto/ottimizzazione
-=======
-
->>>>>>> main
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -38,6 +36,9 @@ public class CaricaConcertoController implements Controller{
 
     @FXML
     private Text errore; // Etichetta testuale usata per mostrare eventuali messaggi di errore
+
+    @FXML
+    private VBox webViewContainer;
 
     private String idConcerto; // ID del concerto attualmente selezionato o in fase di modifica
 
@@ -68,10 +69,15 @@ public class CaricaConcertoController implements Controller{
 
     @FXML
     public void initialize() {
+        errore.setVisible(false);
+        errore.setVisible(false);
         errore.setVisible(false); // Nasconde inizialmente il messaggio di error
 
-        webView.setVisible(false); // Nasconde la WebView inizialmente e impedisce che occupi spazio nel layout
-        webView.setManaged(false); // <-- non occupa spazio
+        Platform.runLater(() -> {
+            webView = new WebView();
+            webView.setPrefHeight(215);
+            webView.setPrefWidth(460);
+        });
 
         campoLinkYoutube.textProperty().addListener((obs, oldVal, newVal) -> {
             // Se il campo è vuoto o nullo, nasconde l'errore e non fa nulla
@@ -83,7 +89,7 @@ public class CaricaConcertoController implements Controller{
             // Tenta di convertire il link in formato embed valido
             String embedUrl = convertToEmbedUrl(newVal.trim());
 
-            if (embedUrl != null) {
+            if (embedUrl != null && !embedUrl.isEmpty()) {
                 String html = String.format("""
                     <html>
                         <body style="margin:0;">
@@ -93,13 +99,11 @@ public class CaricaConcertoController implements Controller{
                     </html>
                 """, embedUrl);
 
-                WebEngine engine = webView.getEngine();
-                engine.loadContent(html, "text/html");
-                errore.setVisible(false);
+                webView.getEngine().loadContent(html, "text/html");
+                webViewContainer.getChildren().setAll(webView);
                 webView.setVisible(true);
                 webView.setManaged(true);
-
-                System.out.println(estraiTitoloDaYoutube(campoLinkYoutube.getText().trim()));
+                errore.setVisible(false);
             } else {
                 errore.setText("Link YouTube non valido");
                 // Aggiorna la GUI: mostra il video e nasconde l’errore
@@ -136,15 +140,20 @@ public class CaricaConcertoController implements Controller{
      * Metodo chiamato quando l'utente clicca per aggiungere un nuovo concerto.
      * Verifica il link, crea il concerto, lo salva nel JSON e passa alla schermata del concerto.
      */
-
     @FXML
     private void onAddConcertoClick() {
         String link = campoLinkYoutube.getText(); // Recupera il link YouTube inserito dall'utente
+        // Tenta di convertire il link in formato embed valido
+        String embedUrl = convertToEmbedUrl(campoLinkYoutube.getText().trim());
 
         // Se il campo è vuoto o nullo, mostra un messaggio di errore e interrompe l'azione
         if (link == null || link.trim().isEmpty()) {
             errore.setText("Link mancante");
             errore.setVisible(true);
+            return;
+        }
+
+        if (embedUrl == null || embedUrl.isEmpty()) {
             return;
         }
 
@@ -177,7 +186,9 @@ public class CaricaConcertoController implements Controller{
 
         idConcerto = id; // Aggiorna l'ID del concerto corrente
 
-        scaricaCopertinaYoutube(nuovoConcerto); // Scarica automaticamente l'immagine di copertina dal video di YouTube
+        // Scarica automaticamente l'immagine di copertina dal video di YouTube
+
+        scaricaCopertinaYoutube(nuovoConcerto);
 
         // Passa alla schermata di dettaglio del concerto appena creato
         mainController.goToConcerto(null, nuovoConcerto, () -> {
@@ -197,7 +208,6 @@ public class CaricaConcertoController implements Controller{
      * @param videoUrl il link diretto al video di YouTube
      * @return il titolo del video, oppure un messaggio di errore se non riuscito
      */
-
     private String estraiTitoloDaYoutube(String videoUrl) {
         try {
             // Apre una connessione HTTP all'URL del video
@@ -263,49 +273,49 @@ public class CaricaConcertoController implements Controller{
     }
 
     private void scaricaCopertinaYoutube(Concerto concerto) {
-        new Thread(() -> {
-            try {
-                String imageUrl = getYoutubeThumbnail(concerto.getLink());
-                BufferedImage original = ImageIO.read(new URL(imageUrl));
-                if (original == null) throw new IOException("Immagine non trovata");
 
-                // Cropping: rimuove 10% sopra e sotto (per eliminare bande nere)
-                int cropPercent = 12;
-                int cropPixels = (original.getHeight() * cropPercent) / 100;
-                BufferedImage cropped = original.getSubimage(
-                        0,
-                        cropPixels,
-                        original.getWidth(),
-                        original.getHeight() - 2 * cropPixels
-                );
+        try {
+            String imageUrl = getYoutubeThumbnail(concerto.getLink());
+            BufferedImage original = ImageIO.read(new URL(imageUrl));
+            if (original == null) throw new IOException("Immagine non trovata");
 
-                // Crea un'immagine nuova con overlay nero
-                BufferedImage finalImage = new BufferedImage(
-                        cropped.getWidth(),
-                        cropped.getHeight(),
-                        BufferedImage.TYPE_INT_RGB
-                );
+            // Cropping: rimuove 10% sopra e sotto (per eliminare bande nere)
+            int cropPercent = 12;
+            int cropPixels = (original.getHeight() * cropPercent) / 100;
+            BufferedImage cropped = original.getSubimage(
+                    0,
+                    cropPixels,
+                    original.getWidth(),
+                    original.getHeight() - 2 * cropPixels
+            );
 
-                Graphics2D g = finalImage.createGraphics();
-                // Disegna l'immagine originale
-                g.drawImage(cropped, 0, 0, null);
+            // Crea un'immagine nuova con overlay nero
+            BufferedImage finalImage = new BufferedImage(
+                    cropped.getWidth(),
+                    cropped.getHeight(),
+                    BufferedImage.TYPE_INT_RGB
+            );
 
-                // Applica overlay nero semitrasparente (50%)
-                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
-                g.setColor(new java.awt.Color(0, 0, 0));
-                g.fillRect(0, 0, cropped.getWidth(), cropped.getHeight());
-                g.dispose();
+            Graphics2D g = finalImage.createGraphics();
+            // Disegna l'immagine originale
+            g.drawImage(cropped, 0, 0, null);
 
-                // Salvataggio su disco
-                Files.createDirectories(PATH_CONCERTI_IMAGE);
-                File outputFile = PATH_CONCERTI_IMAGE.resolve(concerto.getId() + ".jpg").toFile();
-                ImageIO.write(finalImage, "jpg", outputFile);
+            // Applica overlay nero semitrasparente (50%)
+            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
+            g.setColor(new java.awt.Color(0, 0, 0));
+            g.fillRect(0, 0, cropped.getWidth(), cropped.getHeight());
+            g.dispose();
 
-                System.out.println("Copertina salvata come: " + outputFile.getAbsolutePath());
+            // Salvataggio su disco
+            Files.createDirectories(PATH_CONCERTI_IMAGE);
+            File outputFile = PATH_CONCERTI_IMAGE.resolve(concerto.getId() + ".jpg").toFile();
+            ImageIO.write(finalImage, "jpg", outputFile);
 
-            } catch (Exception e) {
-                System.err.println("Errore nel caricamento immagine YouTube: " + e.getMessage());
-            }
-        }).start();
+            System.out.println("Copertina salvata come: " + outputFile.getAbsolutePath());
+
+        } catch (Exception e) {
+            System.err.println("Errore nel caricamento immagine YouTube: " + e.getMessage());
+        }
+
     }
 }

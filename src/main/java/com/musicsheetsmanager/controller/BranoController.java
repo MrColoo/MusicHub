@@ -750,7 +750,7 @@ public class BranoController {
 
         // === Colonna 1: Bottone per aprire il link ===
         Button openButton = new Button();
-        InputStream playStream = getClass().getResourceAsStream("/com/musicsheetsmanager/ui/icons/play-bold.png");
+        InputStream playStream = getClass().getResourceAsStream("/com/musicsheetsmanager/ui/icons/arrow-square-out-bold.png");
         if (playStream != null) {
             ImageView playIcon = new ImageView(new Image(playStream));
             playIcon.setFitWidth(20);

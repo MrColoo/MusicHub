@@ -90,10 +90,7 @@
                   </VBox>
                   <HBox alignment="CENTER">
                      <children>
-                        <VBox maxHeight="-Infinity" maxWidth="-Infinity">
-                           <children>
-                              <WebView fx:id="webView" minHeight="-Infinity" minWidth="-Infinity" prefHeight="215.0" prefWidth="460.0" />
-                           </children>
+                        <VBox fx:id="webViewContainer" maxHeight="-Infinity" maxWidth="-Infinity">
                            <HBox.margin>
                               <Insets bottom="40.0" />
                            </HBox.margin>
