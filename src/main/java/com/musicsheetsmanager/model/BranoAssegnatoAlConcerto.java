@@ -1,27 +1,35 @@
 package com.musicsheetsmanager.model;
 
-public class BranoAssegnatoAlConcerto {
+import java.util.List;
+
+public class BranoAssegnatoAlConcerto extends Brano {
     private String idConcerto;
-    private String idBrano;
     private String inizio;
     private String fine;
-    private String nomeUtente;
 
-    public BranoAssegnatoAlConcerto(String idConcerto, String idBrano, String inizio, String fine, String nomeUtente) {
+    public BranoAssegnatoAlConcerto(
+            String idConcerto,
+            String inizio,
+            String fine,
+            String proprietario,
+            String idBrano,
+            String titolo,
+            List<String> autori,
+            List<String> generi,
+            Integer annoComposizione,
+            List<String> esecutori,
+            String linkYoutube,
+            List<String> strumentiMusicali
+    ) {
+        super(proprietario, idBrano, titolo, autori, generi, annoComposizione, esecutori, linkYoutube, strumentiMusicali);
         this.idConcerto = idConcerto;
-        this.idBrano = idBrano;
         this.inizio = inizio;
         this.fine = fine;
-        this.nomeUtente = nomeUtente;
     }
 
-    // Getter per tutti i campi
+    // Getter specifici
     public String getIdConcerto() {
         return idConcerto;
-    }
-
-    public String getIdBrano() {
-        return idBrano;
     }
 
     public String getInizio() {
@@ -30,9 +38,5 @@ public class BranoAssegnatoAlConcerto {
 
     public String getFine() {
         return fine;
-    }
-
-    public String getNomeUtente() {
-        return nomeUtente;
     }
 }
