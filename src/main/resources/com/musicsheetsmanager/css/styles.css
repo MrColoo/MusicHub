@@ -302,6 +302,14 @@ previewBackground{
     -fx-text-fill: -fx-secondary-white;
 }
 
+.combo-box > .text-field{
+      -fx-background-color: none;
+}
+
+.combo-box > .arrow-button{
+      -fx-background-color: none;
+}
+
 /* COMMENTI */
 .delete-btn{
     -fx-background-color: none;
