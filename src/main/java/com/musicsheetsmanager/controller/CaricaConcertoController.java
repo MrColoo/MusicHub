@@ -2,6 +2,7 @@ package com.musicsheetsmanager.controller;
 
 import com.google.gson.reflect.TypeToken;
 import com.musicsheetsmanager.config.JsonUtils;
+import com.musicsheetsmanager.config.SessionManager;
 import com.musicsheetsmanager.model.Concerto;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
@@ -113,15 +114,33 @@ public class CaricaConcertoController implements Controller{
         }
 
         String titolo = estraiTitoloDaYoutube(link.trim());
+
+        // Ottieni utente loggato
+        var utente = SessionManager.getLoggedUser();
+        if (utente == null) {
+            errore.setText("Utente non loggato");
+            errore.setVisible(true);
+            return;
+        }
+
+        String nomeUtente = utente.getUsername(); // Usa il nome utente
+
         String id = java.util.UUID.randomUUID().toString();
-        Concerto nuovoConcerto = new Concerto(id, link, titolo);
+
+        // Nuovo costruttore con nome utente
+        Concerto nuovoConcerto = new Concerto(id, link, titolo, nomeUtente);
 
         List<Concerto> concerti = JsonUtils.leggiDaJson(PATH_CONCERTI_JSON, tipoListaConcerti);
+        if (concerti == null) {
+            concerti = new java.util.ArrayList<>();
+        }
+
         concerti.add(nuovoConcerto);
         JsonUtils.scriviSuJson(concerti, PATH_CONCERTI_JSON);
+
         idConcerto = id;
 
-        // Cambia scena
+        // Passaggio alla schermata concerto
         mainController.goToConcerto(null, nuovoConcerto, () -> {
             ConcertoController controller = mainController.getConcertoController();
             if (controller != null) {
@@ -129,6 +148,7 @@ public class CaricaConcertoController implements Controller{
             }
         });
     }
+
 
 
 
