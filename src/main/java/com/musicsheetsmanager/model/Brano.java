@@ -83,6 +83,14 @@ public class Brano {
         this.documenti = documenti;
     }
 
+    public List<String> getStrumentiMusicali() {
+        return strumentiMusicali;
+    }
+
+    public String getLinkYoutube() {
+        return linkYoutube;
+    }
+
     public String toString() {
         return titolo +
                 " - " +

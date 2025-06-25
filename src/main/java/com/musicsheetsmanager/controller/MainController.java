@@ -140,7 +140,9 @@ public class MainController {
 
     // vai alla pagina "Concerto"
     public void goToConcerto(Node node, Concerto concerto, Runnable onPageReady) {
-        node.setUserData(concerto);
+        if(node != null) {
+            node.setUserData(concerto);
+        }
 
         show("Concerto");
         Platform.runLater(onPageReady);

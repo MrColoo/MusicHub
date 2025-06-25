@@ -4,6 +4,7 @@ package com.musicsheetsmanager.controller;
 import com.google.gson.reflect.TypeToken;
 import com.musicsheetsmanager.config.JsonUtils;
 import com.musicsheetsmanager.config.SessionManager;
+import com.musicsheetsmanager.config.StringUtils;
 import com.musicsheetsmanager.model.Brano;
 import com.musicsheetsmanager.model.BranoAssegnatoAlConcerto;
 import com.musicsheetsmanager.model.Concerto;
@@ -12,11 +13,21 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.web.WebView;
+
+import java.io.File;
 import java.lang.reflect.Type;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,6 +38,8 @@ public class ConcertoController {
     // Percorsi ai file JSON
     private static final Path PATH_BRANI_JSON = Paths.get("src/main/resources/com/musicsheetsmanager/data/brani.json");
     private static final Path PATH_BRANICONCERTO_JSON = Paths.get("src/main/resources/com/musicsheetsmanager/data/braniConcerto.json");
+    private static final String DEFAULT_COVER = "src/main/resources/com/musicsheetsmanager/ui/Cover.jpg";
+    private static final String COVER_PATH = "src/main/resources/com/musicsheetsmanager/ui/covers/";
 
     // Tipo generico per deserializzare una lista di Brano
     private final Type tipoListaBrani = new TypeToken<List<Brano>>() {}.getType();
@@ -38,9 +51,12 @@ public class ConcertoController {
     @FXML private WebView webView;
     @FXML private Text concertoTitolo;
     @FXML private ComboBox<Brano> selezionaBrani;
+    @FXML private FlowPane containerBrani;
 
     // ID del concerto attualmente visualizzato
     private String idConcerto;
+
+    private Concerto currentConcerto;
 
     // Metodo chiamato automaticamente all'inizializzazione del controller
     @FXML
@@ -52,6 +68,7 @@ public class ConcertoController {
      * Carica i dati di un Concerto e aggiorna l'interfaccia
      */
     public void fetchConcertoData(Concerto concerto) {
+        currentConcerto = concerto;
         idConcerto = concerto.getId();
         String titolo = concerto.getTitolo();
 
@@ -71,6 +88,8 @@ public class ConcertoController {
         }
 
         System.out.println("Caricato concerto: " + titolo);
+
+        mostraCardBraniConcerto(idConcerto);
     }
 
     /**
@@ -237,10 +256,17 @@ public class ConcertoController {
 
         BranoAssegnatoAlConcerto assegnato = new BranoAssegnatoAlConcerto(
                 idConcerto,
-                branoSelezionato.getIdBrano(),
                 inizio,
                 fine,
-                nomeUtente
+                nomeUtente,
+                branoSelezionato.getIdBrano(),
+                branoSelezionato.getTitolo(),
+                branoSelezionato.getAutori(),
+                branoSelezionato.getGeneri(),
+                branoSelezionato.getAnnoComposizione(),
+                branoSelezionato.getEsecutori(),
+                branoSelezionato.getYoutubeLink(),
+                branoSelezionato.getStrumentiMusicali()
         );
 
         // Leggi lista e salva su file
@@ -254,6 +280,13 @@ public class ConcertoController {
         JsonUtils.scriviSuJson(lista, PATH_BRANICONCERTO_JSON);
 
         System.out.println("Brano collegato al concerto da utente: " + nomeUtente);
+
+        inizioBranoConcerto.clear();
+        fineBranoConcerto.clear();
+        selezionaBrani.getSelectionModel().clearSelection();
+        selezionaBrani.hide();
+
+        fetchConcertoData(currentConcerto);
     }
 
 
@@ -262,5 +295,72 @@ public class ConcertoController {
      */
     private boolean isValidTimeFormat(String time) {
         return time.matches("^(\\d{1,2}:)?[0-5]?\\d:[0-5]\\d$");
+    }
+
+    /**
+     * Mostra le card dei brani del concerto
+     * @param idConcerto Id del concerto
+     */
+    public void mostraCardBraniConcerto (String idConcerto) {
+        containerBrani.getChildren().clear();
+
+        Type branoConcertoType = new TypeToken<List<BranoAssegnatoAlConcerto>>() {}.getType();
+        List<BranoAssegnatoAlConcerto> listaBraniConcerto = JsonUtils.leggiDaJson(PATH_BRANICONCERTO_JSON, branoConcertoType);
+
+        for(BranoAssegnatoAlConcerto brano: listaBraniConcerto) {
+            if(brano.getIdConcerto().equals(idConcerto)) {
+                containerBrani.getChildren().add(creaCard(brano));
+            }
+        }
+    }
+
+    /**
+     * Crea una card per il brano
+     * @param brano Brano eseguito durante il concerto
+     */
+    private VBox creaCard(BranoAssegnatoAlConcerto brano) {
+        File imageFile = new File(COVER_PATH + brano.getIdBrano() + ".jpg");
+
+        VBox card = new VBox(7);
+        card.setAlignment(Pos.CENTER);
+        card.setMaxWidth(154);
+        card.getStyleClass().add("explore-card");
+        card.setPadding(new Insets(15));
+        card.setCursor(Cursor.HAND);
+
+        if (imageFile == null || !imageFile.exists()) {
+            imageFile = new File(DEFAULT_COVER);
+        }
+
+        ImageView cover = new ImageView(new Image(imageFile.toURI().toString()));
+        cover.setFitWidth(154);
+        cover.setPreserveRatio(true);
+        cover.setPickOnBounds(true);
+
+        Text titoloText = new Text(brano.getTitolo());
+        titoloText.setWrappingWidth(154);
+        titoloText.setTextAlignment(TextAlignment.CENTER);
+        titoloText.getStyleClass().addAll("text-white", "font-bold", "text-base");
+
+        card.getChildren().addAll(cover, titoloText);
+
+        Text autoreText = new Text(StringUtils.capitalizzaTesto(String.join(", ", brano.getAutori())));
+        autoreText.getStyleClass().addAll("text-white", "font-light", "text-sm");
+        autoreText.setWrappingWidth(154);
+        autoreText.setTextAlignment(TextAlignment.CENTER);
+        card.getChildren().add(autoreText);
+
+        Text timelineText = new Text(StringUtils.capitalizzaTesto(brano.getInizio() + "-" + brano.getFine()));
+        timelineText.getStyleClass().addAll("text-white", "font-light", "text-sm");
+        timelineText.setWrappingWidth(154);
+        timelineText.setTextAlignment(TextAlignment.CENTER);
+        card.getChildren().add(timelineText);
+
+        //card.setOnMouseClicked(e -> mainController.goToBrano(card, brano, () -> {
+        //    BranoController controller = mainController.getBranoController();
+        //    if (controller != null) controller.fetchBranoData(brano);
+        //}));
+
+        return card;
     }
 }
