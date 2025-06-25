@@ -3,9 +3,11 @@ package com.musicsheetsmanager.controller;
 // Importazioni necessarie
 import com.google.gson.reflect.TypeToken;
 import com.musicsheetsmanager.config.JsonUtils;
+import com.musicsheetsmanager.config.SessionManager;
 import com.musicsheetsmanager.model.Brano;
 import com.musicsheetsmanager.model.BranoAssegnatoAlConcerto;
 import com.musicsheetsmanager.model.Concerto;
+import com.musicsheetsmanager.model.Utente;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -212,27 +214,36 @@ public class ConcertoController {
         String inizio = inizioBranoConcerto.getText().trim();
         String fine = fineBranoConcerto.getText().trim();
 
-        // Controlla se tutti i campi sono stati riempiti
+        // Controlli base
         if (branoSelezionato == null || inizio.isEmpty() || fine.isEmpty()) {
             System.out.println("Compila tutti i campi.");
             return;
         }
 
-        // Controllo formato orario
         if (!isValidTimeFormat(inizio) || !isValidTimeFormat(fine)) {
             System.out.println("Formato orario non valido. Usa hh:mm:ss o mm:ss (es. 03:45 o 00:03:45).");
             return;
         }
 
-        // Crea oggetto da salvare
+        // Ottieni l'utente loggato
+        Utente utente = SessionManager.getLoggedUser();
+        if (utente == null) {
+            System.out.println("Nessun utente loggato.");
+            return;
+        }
+
+        // Usa il nome utente
+        String nomeUtente = utente.getUsername(); // Assicurati che esista getUsername()
+
         BranoAssegnatoAlConcerto assegnato = new BranoAssegnatoAlConcerto(
                 idConcerto,
                 branoSelezionato.getIdBrano(),
                 inizio,
-                fine
+                fine,
+                nomeUtente
         );
 
-        // Aggiunge il brano alla lista esistente (o ne crea una nuova) e scrive su file
+        // Leggi lista e salva su file
         Type tipoLista = new TypeToken<List<BranoAssegnatoAlConcerto>>() {}.getType();
         List<BranoAssegnatoAlConcerto> lista = JsonUtils.leggiDaJson(PATH_BRANICONCERTO_JSON, tipoLista);
         if (lista == null) {
@@ -242,8 +253,9 @@ public class ConcertoController {
         lista.add(assegnato);
         JsonUtils.scriviSuJson(lista, PATH_BRANICONCERTO_JSON);
 
-        System.out.println("Brano collegato al concerto.");
+        System.out.println("Brano collegato al concerto da utente: " + nomeUtente);
     }
+
 
     /**
      * Verifica se una stringa rappresenta un tempo nel formato hh:mm:ss o mm:ss
