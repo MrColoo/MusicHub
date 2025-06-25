@@ -115,6 +115,8 @@ public class CronologiaController implements Controller{
 
         Text titoloText = new Text(titolo);
         titoloText.getStyleClass().addAll("text-white", "font-bold", "text-base");
+        titoloText.setWrappingWidth(154);
+        titoloText.setTextAlignment(TextAlignment.CENTER);
 
         card.getChildren().addAll(cover, titoloText);
 
