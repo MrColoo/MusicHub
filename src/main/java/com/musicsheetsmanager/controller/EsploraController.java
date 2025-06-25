@@ -49,7 +49,7 @@ public class EsploraController implements Controller {
         this.mainController = mainController;
     }
 
-    public void setBranoFileController(BranoController branoController) {
+    public void setBranoController(BranoController branoController) {
         // Metodo richiesto dall'interfaccia, ma non usato qui.
     }
 

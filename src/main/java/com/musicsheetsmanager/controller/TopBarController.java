@@ -7,6 +7,11 @@ import java.lang.reflect.Type;
 import com.musicsheetsmanager.config.JsonUtils;
 import com.musicsheetsmanager.config.SessionManager;
 import com.musicsheetsmanager.model.Brano;
+import com.musicsheetsmanager.model.Concerto;
+
+import com.musicsheetsmanager.controller.NavBarController;
+
+import com.musicsheetsmanager.model.Concerto;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -15,6 +20,7 @@ import javafx.scene.layout.HBox;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TopBarController implements Controller{
 
@@ -24,18 +30,22 @@ public class TopBarController implements Controller{
     @FXML private TextField campoRicerca;
 
     private EsploraController esploraController;
+    private EsploraConcertiController esploraConcertiController;
+
+    private NavBarController navBarController;
 
     private List<Brano> risultatiRircercaBrani;
     private List<String> risultatiRircercaCatalogo;
+    private List<Concerto> risultatiRicercaConcerti;
 
     private static final Path BRANI_JSON_PATH = Paths.get( // percorso verso il file JSON
             "src", "main", "resources",
             "com", "musicsheetsmanager", "data", "brani.json"
     );
 
-    private static final Path DIZIONARIO_JSON_PATH = Paths.get( // percorso verso il file JSON
+    private static final Path CONCERTI_JSON_PATH = Paths.get( // percorso verso il file JSON
             "src", "main", "resources",
-            "com", "musicsheetsmanager", "data", "brani.json"
+            "com", "musicsheetsmanager", "data", "concerti.json"
     );
 
     private MainController mainController;
@@ -47,6 +57,14 @@ public class TopBarController implements Controller{
 
     public void setEsploraController(EsploraController esploraController) {
         this.esploraController = esploraController;
+    }
+
+    public void setNavBarController(NavBarController navBarController) {
+        this.navBarController = navBarController;
+    }
+
+    public void setEsploraConcertiController(EsploraConcertiController esploraConcertiController) {
+        this.esploraConcertiController = esploraConcertiController;
     }
 
     public void initialize(){
@@ -79,29 +97,51 @@ public class TopBarController implements Controller{
     // restituisce una lista con i brani trovati
     @FXML
     private void onSearchBarEnter (){
-        String viewTypeText = esploraController.getViewType();
+        String pagina = navBarController.getCurrentPage();
         String chiave = campoRicerca.getText();
 
-        if("esplora".equals(viewTypeText)) {        // se sono in esplora cerco i brani per nome e/o titolo
-            Type branoType = new TypeToken<List<Brano>>() {}.getType();
-            List<Brano> listaBrani = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType);
+        switch (pagina) {
+            case "esploraBtn":
+                String viewTypeText = esploraController.getViewType();
 
-            risultatiRircercaBrani = Brano.cercaBrano(listaBrani, chiave);
+                if("esplora".equals(viewTypeText)) {        // se sono in esplora cerco i brani per nome e/o titolo
+                    Type branoType = new TypeToken<List<Brano>>() {}.getType();
+                    List<Brano> listaBrani = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType);
 
-            esploraController.generaCatalogo(risultatiRircercaBrani, brano -> esploraController.creaCardBrano(brano, brano.getIdBrano()));
-        } else {
-            Path DIZIONARIO_JSON_PATH = Paths.get( // percorso verso il file JSON
-                    "src", "main", "resources",
-                    "com", "musicsheetsmanager", "data", viewTypeText + ".json"
-            );
+                    risultatiRircercaBrani = Brano.cercaBrano(listaBrani, chiave);
 
-            Type stringType = new TypeToken<List<String>>() {}.getType();
-            List<String> dizionario = JsonUtils.leggiDaJson(DIZIONARIO_JSON_PATH, stringType);
+                    esploraController.generaCatalogo(risultatiRircercaBrani, brano -> esploraController.creaCardBrano(brano, brano.getIdBrano()));
+                } else {
+                    Path DIZIONARIO_JSON_PATH = Paths.get( // percorso verso il file JSON
+                            "src", "main", "resources",
+                            "com", "musicsheetsmanager", "data", viewTypeText + ".json"
+                    );
 
-            risultatiRircercaCatalogo = Brano.cercaCatalogo(dizionario, chiave);
+                    Type stringType = new TypeToken<List<String>>() {}.getType();
+                    List<String> dizionario = JsonUtils.leggiDaJson(DIZIONARIO_JSON_PATH, stringType);
 
-            esploraController.generaCatalogo(risultatiRircercaCatalogo, esploraController::creaCardCatalogo);
+                    risultatiRircercaCatalogo = Brano.cercaCatalogo(dizionario, chiave);
+
+                    esploraController.generaCatalogo(risultatiRircercaCatalogo, esploraController::creaCardCatalogo);
+                }
+                break;
+
+            case "concertiBtn":
+                Type concertoType = new TypeToken<List<Concerto>>() {}.getType();
+                List<Concerto> listaConcerti = JsonUtils.leggiDaJson(CONCERTI_JSON_PATH, concertoType);
+
+                risultatiRicercaConcerti = Concerto.cercaConcerti(listaConcerti, chiave);
+
+                if (esploraConcertiController != null) {
+                    esploraConcertiController.mostraCardConcerti(risultatiRicercaConcerti);
+                }
+
+                break;
+
+            default:
+                break;
         }
+
     }
 }
 

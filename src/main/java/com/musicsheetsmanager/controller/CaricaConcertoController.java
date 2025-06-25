@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
@@ -35,6 +36,8 @@ public class CaricaConcertoController implements Controller{
     private Text errore;
 
     private String idConcerto;
+
+    @FXML private Button caricaBtn;
 
     private static final Path PATH_CONCERTI_JSON = Paths.get("src/main/resources/com/musicsheetsmanager/data/concerti.json");
     private final Type tipoListaConcerti = new TypeToken<List<Concerto>>() {}.getType();
@@ -127,7 +130,7 @@ public class CaricaConcertoController implements Controller{
         idConcerto = id;
 
         // Cambia scena
-        mainController.goToConcerto(null, nuovoConcerto, () -> {
+        mainController.goToConcerto(caricaBtn, nuovoConcerto, () -> {
             ConcertoController controller = mainController.getConcertoController();
             if (controller != null) {
                 controller.fetchConcertoData(nuovoConcerto);
