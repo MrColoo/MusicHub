@@ -49,7 +49,7 @@ public class EsploraController implements Controller {
         this.mainController = mainController;
     }
 
-    public void setBranoFileController(BranoController branoController) {
+    public void setBranoController(BranoController branoController) {
         // Metodo richiesto dall'interfaccia, ma non usato qui.
     }
 
@@ -151,7 +151,7 @@ public class EsploraController implements Controller {
         cover.setPreserveRatio(true);
         cover.setPickOnBounds(true);
 
-        Text titoloText = new Text(StringUtils.capitalizzaTesto(titolo));
+        Text titoloText = new Text(titolo);
         titoloText.setWrappingWidth(154);
         titoloText.setTextAlignment(TextAlignment.CENTER);
         titoloText.getStyleClass().addAll("text-white", "font-bold", "text-base");

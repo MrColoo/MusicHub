@@ -8,10 +8,15 @@ import com.musicsheetsmanager.config.SessionManager;
 import com.musicsheetsmanager.model.Brano;
 import com.musicsheetsmanager.model.Documento;
 import javafx.animation.FadeTransition;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.TextField;
+
+import javafx.geometry.Insets;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -34,6 +39,8 @@ import java.util.*;
 import com.google.gson.reflect.TypeToken;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelReader;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -71,6 +78,7 @@ public class CaricaBranoController implements Controller {
     @FXML private Rectangle previewBackground;
     @FXML private ImageView cover;
     @FXML private Button caricaBottone;
+    @FXML private FlowPane allegatiPane;
     private final Image defaultCover = new Image(getClass().getResource("/com/musicsheetsmanager/ui/Cover.jpg").toExternalForm());
     private String coverURL;
 
@@ -116,108 +124,175 @@ public class CaricaBranoController implements Controller {
         aggiornaSfondoGradiente(previewBackground, gradientColors);
     }
 
-    private void realtimeWriting(){
+    private String lastTitolo = "";
+    private String lastAutore = "";
 
-        // Listeners per aggiornamento automatico del nome inserito
+    private PauseTransition debounceTimer = new PauseTransition(Duration.millis(500));
+
+    private void realtimeWriting() {
+        // Aggiorna dinamicamente i testi nelle card
         campoTitolo.textProperty().addListener((obs, oldValue, newValue) -> {
-            if (newValue == null || newValue.trim().isEmpty()) {
-                cardTitolo.setText("Titolo");
-            } else {
-                cardTitolo.setText(newValue);
-            }
+            cardTitolo.setText((newValue == null || newValue.trim().isEmpty()) ? "Titolo" : newValue);
         });
 
         campoAutori.textProperty().addListener((obs, oldValue, newValue) -> {
-            if (newValue == null || newValue.trim().isEmpty()) {
-                cardAutore.setText("Autore");
-            } else {
-                cardAutore.setText(newValue);
-            }
+            cardAutore.setText((newValue == null || newValue.trim().isEmpty()) ? "Autore" : newValue);
         });
 
-        // Listeners per capire quando scaricare la cover
-        campoTitolo.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            if (!newVal) whenDownloadCover();
-        });
-        campoAutori.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            if (!newVal) whenDownloadCover();
-        });
+        // Avvia debounce solo quando entrambi i campi hanno perso il focus
+        ChangeListener<Boolean> focusListener = (obs, oldVal, newVal) -> {
+            if (!campoTitolo.isFocused() && !campoAutori.isFocused()) {
+                debounceTimer.stop();
+                debounceTimer.setOnFinished(e -> checkAndDownloadCover());
+                debounceTimer.playFromStart();
+            }
+        };
+
+        campoTitolo.focusedProperty().addListener(focusListener);
+        campoAutori.focusedProperty().addListener(focusListener);
+    }
+
+    private void checkAndDownloadCover() {
+        String titoloCorrente = campoTitolo.getText().trim();
+        String autoreCorrente = campoAutori.getText().trim();
+
+        if (!titoloCorrente.equals(lastTitolo) || !autoreCorrente.equals(lastAutore)) {
+            lastTitolo = titoloCorrente;
+            lastAutore = autoreCorrente;
+            whenDownloadCover();
+        }
     }
 
     private void whenDownloadCover() {
         String titolo = campoTitolo.getText().trim();
         String autore = campoAutori.getText().trim();
 
-        // Controllo input validi
-        if (titolo.isEmpty() || autore.isEmpty() ||
+        if (!isValidInput(titolo) || !isValidInput(autore)) {
+            Platform.runLater(() -> {
+                cambiaImmagineConFade(cover, defaultCover);
+                initializePreviewBackground();
+            });
+            return;
+        }
+
+        downloadCover();
+    }
+
+    private boolean isValidInput(String input) {
+        return input != null && !input.trim().isEmpty()
+                && input.matches(".*[\\p{L}\\p{N}].*");
+    }
+
+
+    public void downloadCover() {
+        String titolo = campoTitolo.getText().trim();
+        String autore = campoAutori.getText().trim();
+
+        if (titolo.isEmpty() ||
                 !titolo.matches("[\\w\\sÀ-ÿ’',.!?\\-]+") ||
                 !autore.matches("[\\w\\sÀ-ÿ’',.!?\\-]+")) {
             cambiaImmagineConFade(cover, defaultCover);
             return;
         }
-        downloadCover();
-    }
 
-    public void downloadCover(){
-        String titolo = campoTitolo.getText().trim();
-        String autore = campoAutori.getText().trim();
-        String query = URLEncoder.encode(titolo + " " + autore, StandardCharsets.UTF_8);
-        String apiUrl = "https://itunes.apple.com/search?term=" + query + "&media=music&limit=1";
         new Thread(() -> {
             try {
-                HttpURLConnection conn = (HttpURLConnection) new URL(apiUrl).openConnection();
-                conn.setRequestMethod("GET");
+                // 1. Access Token Spotify
+                String clientId = "470bf5e94cd54ba5bc116ee4818cc68c";
+                String clientSecret = "b0382e67026742f7ac4f607acaf4070e";
+                String auth = Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes());
 
-                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
-                StringBuilder responseBuilder = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null)
-                    responseBuilder.append(line);
-                reader.close();
+                HttpURLConnection tokenConn = (HttpURLConnection) new URL("https://accounts.spotify.com/api/token").openConnection();
+                tokenConn.setRequestMethod("POST");
+                tokenConn.setRequestProperty("Authorization", "Basic " + auth);
+                tokenConn.setDoOutput(true);
+                tokenConn.getOutputStream().write("grant_type=client_credentials".getBytes());
 
-                // Usa Gson per parse
-                JsonObject jsonObject = JsonParser.parseString(responseBuilder.toString()).getAsJsonObject();
-                JsonArray results = jsonObject.getAsJsonArray("results");
+                JsonObject tokenResponse = JsonParser.parseReader(new InputStreamReader(tokenConn.getInputStream())).getAsJsonObject();
+                String accessToken = tokenResponse.get("access_token").getAsString();
 
-                if (results.size() == 0) {
-                    System.out.println("Nessuna copertina trovata per: " + titolo + " - " + autore);
+                // 2. Cerca brano su Spotify
+                String query = URLEncoder.encode(titolo + " " + autore, StandardCharsets.UTF_8);
+                HttpURLConnection searchConn = (HttpURLConnection)
+                        new URL("https://api.spotify.com/v1/search?q=" + query + "&type=track&limit=1").openConnection();
+                searchConn.setRequestMethod("GET");
+                searchConn.setRequestProperty("Authorization", "Bearer " + accessToken);
+
+                JsonObject searchResult = JsonParser.parseReader(new InputStreamReader(searchConn.getInputStream())).getAsJsonObject();
+                JsonArray items = searchResult.getAsJsonObject("tracks").getAsJsonArray("items");
+                if (items.isEmpty()) {
                     Platform.runLater(() -> {
-                        Color[] gradientColors = estraiColoriDominanti(defaultCover);
-                        aggiornaSfondoGradiente(previewBackground, gradientColors);
+                        aggiornaSfondoGradiente(previewBackground, estraiColoriDominanti(defaultCover));
                         cambiaImmagineConFade(cover, defaultCover);
                     });
                     return;
                 }
 
-                JsonObject firstResult = results.get(0).getAsJsonObject();
+                JsonObject track = items.get(0).getAsJsonObject();
+                String trackName = track.get("name").getAsString();
+                JsonArray artistsArray = track.getAsJsonArray("artists");
+                List<String> artistNames = new ArrayList<>();
 
-                String artworkUrl = firstResult.get("artworkUrl100").getAsString();
-                coverURL = artworkUrl.replace("100x100", "300x300");
+                for (int i = 0; i < artistsArray.size(); i++) {
+                    JsonObject artistObj = artistsArray.get(i).getAsJsonObject();
+                    artistNames.add(artistObj.get("name").getAsString());
+                }
 
-                System.out.println(coverURL);
+                String artistName = String.join(", ", artistNames);
+                String releaseDate = track.getAsJsonObject("album").get("release_date").getAsString();
+                JsonArray images = track.getAsJsonObject("album").getAsJsonArray("images");
+                String imageUrl = images.get(images.size() - 2).getAsJsonObject().get("url").getAsString(); // medio formato
 
-                // Carica l'immagine nel componente ImageView
-                Image fxImage = new Image(coverURL);
+                coverURL = imageUrl;
+
+                // Scarica immagine
+                Image fxImage = new Image(imageUrl);
                 Color[] gradientColors = estraiColoriDominanti(fxImage);
+
+                // 🔄 Scarica genere da iTunes in un altro thread
+                new Thread(() -> {
+                    String finalGenre = "N/A";
+                    try {
+                        String queryItunes = URLEncoder.encode(trackName + " " + artistName, StandardCharsets.UTF_8);
+                        String apiUrl = "https://itunes.apple.com/search?term=" + queryItunes + "&media=music&limit=1";
+                        HttpURLConnection conn = (HttpURLConnection) new URL(apiUrl).openConnection();
+                        conn.setRequestMethod("GET");
+
+                        JsonObject json = JsonParser.parseReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8)).getAsJsonObject();
+                        JsonArray results = json.getAsJsonArray("results");
+                        if (results.size() > 0) {
+                            JsonObject first = results.get(0).getAsJsonObject();
+                            finalGenre = first.get("primaryGenreName").getAsString();
+                        }
+                    } catch (Exception e) {
+                        System.err.println("Errore durante recupero genere: " + e.getMessage());
+                    }
+
+                    String finalGenreCopy = finalGenre;
+                    Platform.runLater(() -> campoGeneri.setText(finalGenreCopy));
+                }).start();
+
+                lastAutore = artistName;
+                lastTitolo = trackName;
+                // Aggiorna UI principale
                 Platform.runLater(() -> {
                     aggiornaSfondoGradiente(previewBackground, gradientColors);
                     cambiaImmagineConFade(cover, fxImage);
-
-                    //imposta automaticamente il valore dei campi anno di composizione e genere
-                    campoAnnoDiComposizione.setText(firstResult.get("releaseDate").getAsString().substring(0, 4));
-                    campoGeneri.setText(firstResult.get("primaryGenreName").getAsString());
-                    campoTitolo.setText(firstResult.get("trackName").getAsString());
-                    campoAutori.setText(firstResult.get("artistName").getAsString());
-
+                    campoAutori.setText(artistName);
+                    campoAnnoDiComposizione.setText(releaseDate.substring(0, 4));
+                    campoTitolo.setText(trackName);
                 });
 
-            } catch (IOException e) {
-                System.err.println("Errore nel download della copertina: " + e.getMessage());
-                cambiaImmagineConFade(cover, defaultCover);
-                initializePreviewBackground();
+            } catch (Exception e) {
+                System.err.println("Errore nel download da Spotify: " + e.getMessage());
+                Platform.runLater(() -> {
+                    cambiaImmagineConFade(cover, defaultCover);
+                    initializePreviewBackground();
+                });
             }
         }).start();
     }
+
 
     private void cambiaImmagineConFade(ImageView imageView, Image nuovaImmagine) {
         Image attuale = imageView.getImage();
@@ -453,20 +528,43 @@ public class CaricaBranoController implements Controller {
                     .anyMatch(doc -> doc.getPercorso().equals(documento.getPercorso()));
             if(!exist) {
                 fileAllegati.add(documento);
-                //viewFile(documento);
+                viewFile(documento);
             }
         }
     }
 
-    // TODO implementare visualizzazione allegati caricati e relativa possibilità di eliminarli
-    // aggiunge il file alla Hbox
-    /*
+    // crea un bottone ogni volta che l'utente carica un allegato
     private void viewFile(Documento documento) {
-        Label nomeFile = new Label(documento.getNomeFile());
-        listaFileBox.getChildren().add(nomeFile);
-    }
-    */
+        Button btn = new Button(documento.getNomeFile());
+        btn.setContentDisplay(ContentDisplay.RIGHT);
+        btn.setPadding(new Insets(5, 5, 5, 15));
+        btn.getStyleClass().addAll("text-sm", "font-book", "allegato-btn");
 
+        ImageView icon = new ImageView(new Image(
+                getClass().getResourceAsStream("/com/musicsheetsmanager/ui/icons/x-circle_black.png")
+        ));
+
+        icon.setFitWidth(20);
+        icon.setPreserveRatio(true);
+        icon.setPickOnBounds(true);
+
+        btn.setOnMouseClicked((MouseEvent e) -> onEliminaAllegatoClick(btn, documento));
+
+        btn.setGraphic(icon);
+
+        allegatiPane.getChildren().add(btn);
+    }
+
+    // funzione per eliminare un documento prima di caricare il brano
+    public void onEliminaAllegatoClick (Button btn, Documento documento) {
+        // rimuove bottone
+        allegatiPane.getChildren().remove(btn);
+
+        // rimuove allegato
+        fileAllegati.remove(documento);
+
+        System.out.println("Documento: " + documento.toString() + " rimosso con successo");
+    }
 
     // salva i documenti nella cartella /attachments se l'utente carica il brano
     private void salvaFileAllegati(String idBrano) {

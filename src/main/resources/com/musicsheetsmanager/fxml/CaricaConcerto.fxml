@@ -43,7 +43,7 @@
                                     <String fx:value="text-base" />
                                  </styleClass>
                               </TextField>
-                              <Button fx:id="caricaBottone" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#onAddConcertoClick" prefHeight="33.0" text="Carica">
+                              <Button fx:id="caricaBtn" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#onAddConcertoClick" prefHeight="33.0" text="Carica">
                                  <styleClass>
                                     <String fx:value="form-btn" />
                                     <String fx:value="font-book" />
