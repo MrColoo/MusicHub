@@ -3,15 +3,19 @@ package com.musicsheetsmanager.controller;
 import com.google.gson.reflect.TypeToken;
 import com.musicsheetsmanager.config.JsonUtils;
 import com.musicsheetsmanager.model.Concerto;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.Cursor;
+import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.paint.Color;
+
+import java.io.File;
 import java.lang.reflect.Type;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -58,7 +62,7 @@ public class EsploraConcertiController implements Controller {
      */
     private GridPane creaCardConcerto(Concerto concerto) {
         GridPane card = new GridPane();
-        card.setPrefSize(240, 150);
+        card.setPrefSize(326, 183);
         card.getColumnConstraints().addAll(new ColumnConstraints(100), new ColumnConstraints(100));
         card.getRowConstraints().add(new RowConstraints(30, 30, 30, Priority.SOMETIMES, VPos.TOP, true));
         card.setCursor(Cursor.HAND);
@@ -73,18 +77,26 @@ public class EsploraConcertiController implements Controller {
         // Titolo del genere
         Text titolo = new Text(concerto.getTitolo());
         titolo.getStyleClass().addAll("text-white", "font-black", "text-2xl");
+        titolo.setWrappingWidth(316);
         GridPane.setMargin(titolo, new Insets(15));
         card.add(titolo, 0, 0);
 
-        // Ottieni immagine del primo brano nel genere
-        //String idBrano = Brano.cercaBranoConDizionario(brani, genere, viewType).getFirst().getIdBrano();
-        //File imageFile = new File(COVER_PATH + idBrano + ".jpg");
-        //if (!imageFile.exists()) imageFile = new File(DEFAULT_COVER);
+        // === Sfondo con immagine ===
+        Path imagePath = Paths.get("src", "main", "resources", "com", "musicsheetsmanager", "ui", "concerti", concerto.getId() + ".jpg");
+        File imageFile = imagePath.toFile();
 
-        // Colore dominante come background
-        Paint red = Color.RED;
-        card.setBackground(new Background(new BackgroundFill(red, new CornerRadii(11), Insets.EMPTY)));
+        if (imageFile.exists()) {
+            String url = imageFile.toURI().toString();
+            card.setBackground(new Background(new BackgroundImage(
+                    new Image(url, false), // no forced scaling at load
+                    BackgroundRepeat.NO_REPEAT,
+                    BackgroundRepeat.NO_REPEAT,
+                    BackgroundPosition.CENTER, // center the image
+                    new BackgroundSize(100, 100, true, true, false, true) // cover=true
+            )));
+        }
 
+        // click handler
         card.setOnMouseClicked(e -> mainController.goToConcerto(card, concerto, () -> {
             ConcertoController controller = mainController.getConcertoController();
             if (controller != null) controller.fetchConcertoData(concerto);
@@ -92,4 +104,7 @@ public class EsploraConcertiController implements Controller {
 
         return card;
     }
+
+
+
 }

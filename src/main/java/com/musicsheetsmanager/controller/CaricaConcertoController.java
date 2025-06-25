@@ -4,18 +4,28 @@ import com.google.gson.reflect.TypeToken;
 import com.musicsheetsmanager.config.JsonUtils;
 import com.musicsheetsmanager.config.SessionManager;
 import com.musicsheetsmanager.model.Concerto;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
+import javafx.geometry.Insets;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -33,9 +43,8 @@ public class CaricaConcertoController implements Controller{
 
     private String idConcerto;
 
-    @FXML private Button caricaBtn;
-
     private static final Path PATH_CONCERTI_JSON = Paths.get("src/main/resources/com/musicsheetsmanager/data/concerti.json");
+    private static final Path PATH_CONCERTI_IMAGE = Paths.get("src/main/resources/com/musicsheetsmanager/ui/concerti/");
     private final Type tipoListaConcerti = new TypeToken<List<Concerto>>() {}.getType();
 
 
@@ -76,6 +85,8 @@ public class CaricaConcertoController implements Controller{
                 errore.setVisible(false);
                 webView.setVisible(true);
                 webView.setManaged(true);
+
+                System.out.println(estraiTitoloDaYoutube(campoLinkYoutube.getText().trim()));
             } else {
                 errore.setText("Link YouTube non valido");
                 errore.setVisible(true);
@@ -143,6 +154,8 @@ public class CaricaConcertoController implements Controller{
 
         idConcerto = id;
 
+        scaricaCopertinaYoutube(nuovoConcerto);
+
         // Passaggio alla schermata concerto
         mainController.goToConcerto(null, nuovoConcerto, () -> {
             ConcertoController controller = mainController.getConcertoController();
@@ -151,9 +164,6 @@ public class CaricaConcertoController implements Controller{
             }
         });
     }
-
-
-
 
     private String estraiTitoloDaYoutube(String videoUrl) {
         try {
@@ -185,5 +195,76 @@ public class CaricaConcertoController implements Controller{
             e.printStackTrace();
             return "Errore caricamento titolo";
         }
+    }
+
+    private String getYoutubeThumbnail(String youtubeUrl) {
+        try {
+            String videoId = null;
+
+            if (youtubeUrl.contains("v=")) {
+                videoId = youtubeUrl.substring(youtubeUrl.indexOf("v=") + 2);
+                int ampIndex = videoId.indexOf('&');
+                if (ampIndex != -1) {
+                    videoId = videoId.substring(0, ampIndex);
+                }
+            } else if (youtubeUrl.contains("youtu.be/")) {
+                videoId = youtubeUrl.substring(youtubeUrl.lastIndexOf("/") + 1);
+            }
+
+            if (videoId == null || videoId.isEmpty()) return null;
+
+            return "https://img.youtube.com/vi/" + videoId + "/hqdefault.jpg";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private void scaricaCopertinaYoutube(Concerto concerto) {
+        new Thread(() -> {
+            try {
+                String imageUrl = getYoutubeThumbnail(concerto.getLink());
+                BufferedImage original = ImageIO.read(new URL(imageUrl));
+                if (original == null) throw new IOException("Immagine non trovata");
+
+                // Cropping: rimuove 10% sopra e sotto (per eliminare bande nere)
+                int cropPercent = 12;
+                int cropPixels = (original.getHeight() * cropPercent) / 100;
+                BufferedImage cropped = original.getSubimage(
+                        0,
+                        cropPixels,
+                        original.getWidth(),
+                        original.getHeight() - 2 * cropPixels
+                );
+
+                // Crea un'immagine nuova con overlay nero
+                BufferedImage finalImage = new BufferedImage(
+                        cropped.getWidth(),
+                        cropped.getHeight(),
+                        BufferedImage.TYPE_INT_RGB
+                );
+
+                Graphics2D g = finalImage.createGraphics();
+                // Disegna l'immagine originale
+                g.drawImage(cropped, 0, 0, null);
+
+                // Applica overlay nero semitrasparente (50%)
+                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
+                g.setColor(new java.awt.Color(0, 0, 0));
+                g.fillRect(0, 0, cropped.getWidth(), cropped.getHeight());
+                g.dispose();
+
+                // Salvataggio su disco
+                Files.createDirectories(PATH_CONCERTI_IMAGE);
+                File outputFile = PATH_CONCERTI_IMAGE.resolve(concerto.getId() + ".jpg").toFile();
+                ImageIO.write(finalImage, "jpg", outputFile);
+
+                System.out.println("Copertina salvata come: " + outputFile.getAbsolutePath());
+
+            } catch (Exception e) {
+                System.err.println("Errore nel caricamento immagine YouTube: " + e.getMessage());
+            }
+        }).start();
     }
 }
