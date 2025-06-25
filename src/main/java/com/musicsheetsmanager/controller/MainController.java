@@ -24,6 +24,8 @@ public class MainController {
     @FXML private ConcertoController concertoController;
     @FXML private EsploraConcertiController esploraConcertiController;
     @FXML private NavBarController navBarController;
+    @FXML private CronologiaController cronologiaController;
+
 
 
     private Utente currentUser;
@@ -87,6 +89,8 @@ public class MainController {
                 this.branoController = branoController;
             } else if (controller instanceof ConcertoController concertoController) {
                 this.concertoController = concertoController;
+            } else if (controller instanceof CronologiaController cronologiaController) {
+                this.cronologiaController = cronologiaController;
             }
 
             // collegamenti controller
@@ -95,6 +99,7 @@ public class MainController {
                 if (esploraController != null) topBarController.setEsploraController(esploraController);
                 if (esploraConcertiController != null) topBarController.setEsploraConcertiController(esploraConcertiController);
                 if (navBarController != null) topBarController.setNavBarController(navBarController);
+                if (cronologiaController != null) topBarController.setCronologiaController(cronologiaController);
             }
 
             if (esploraController != null && branoController != null) {

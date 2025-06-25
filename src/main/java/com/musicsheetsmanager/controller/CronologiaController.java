@@ -31,6 +31,8 @@ public class CronologiaController implements Controller{
 
     private MainController mainController;
 
+    private List<Brano> braniCommentati;
+
     private static final String USERNAME = SessionManager.getLoggedUser().getUsername();
     private static final Path BRANI_JSON_PATH = Paths.get("src", "main", "resources", "com", "musicsheetsmanager", "data", "brani.json");
     private static final Path COMMENTI_JSON_PATH = Paths.get("src", "main", "resources", "com", "musicsheetsmanager", "data", "commenti.json");
@@ -40,6 +42,10 @@ public class CronologiaController implements Controller{
     @Override
     public void setMainController(MainController mainController) {
         this.mainController = mainController;
+    }
+
+    public List<Brano> getBraniCommentati() {
+        return braniCommentati;
     }
 
     @FXML
@@ -71,7 +77,7 @@ public class CronologiaController implements Controller{
             }
         }
 
-        List<Brano> braniCommentati = commentiUtentePerBrano.keySet().stream()
+        braniCommentati = commentiUtentePerBrano.keySet().stream()
                 .map(id -> brani.stream().filter(b -> b.getIdBrano().equals(id)).findFirst().orElse(null))
                 .filter(Objects::nonNull)
                 .toList();
@@ -79,12 +85,12 @@ public class CronologiaController implements Controller{
         generaCatalogo(braniCommentati, b -> creaCardBrano(b, b.getIdBrano()));
     }
 
-    private <T> void generaCatalogo(List<T> elementi, Function<T, Node> creaCard) {
+    public <T> void generaCatalogo(List<T> elementi, Function<T, Node> creaCard) {
         container.getChildren().clear();
         elementi.stream().map(creaCard).forEach(container.getChildren()::add);
     }
 
-    private VBox creaCardBrano(Brano brano, String idBrano) {
+    public VBox creaCardBrano(Brano brano, String idBrano) {
         File imageFile = new File(COVER_PATH + idBrano + ".jpg");
         VBox card = creaCard(brano.getTitolo(), String.join(", ", brano.getAutori()), imageFile);
 

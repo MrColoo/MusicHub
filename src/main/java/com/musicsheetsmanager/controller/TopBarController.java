@@ -9,9 +9,6 @@ import com.musicsheetsmanager.config.SessionManager;
 import com.musicsheetsmanager.model.Brano;
 import com.musicsheetsmanager.model.Concerto;
 
-import com.musicsheetsmanager.controller.NavBarController;
-
-import com.musicsheetsmanager.model.Concerto;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -20,7 +17,6 @@ import javafx.scene.layout.HBox;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class TopBarController implements Controller{
 
@@ -31,6 +27,7 @@ public class TopBarController implements Controller{
 
     private EsploraController esploraController;
     private EsploraConcertiController esploraConcertiController;
+    private CronologiaController cronologiaController;
 
     private NavBarController navBarController;
 
@@ -67,6 +64,10 @@ public class TopBarController implements Controller{
         this.esploraConcertiController = esploraConcertiController;
     }
 
+    public void setCronologiaController(CronologiaController cronologiaController) {
+        this.cronologiaController = cronologiaController;
+    }
+
     public void initialize(){
         campoRicerca.setOnAction(event -> onSearchBarEnter());
 
@@ -94,15 +95,15 @@ public class TopBarController implements Controller{
         }
     }
 
-    // restituisce una lista con i brani trovati
+    // mostra i brani/cataloghi trovati inserendo una determinata chiave
     @FXML
     private void onSearchBarEnter (){
         String pagina = navBarController.getCurrentPage();
         String chiave = campoRicerca.getText();
 
-        switch (pagina) {
+        switch (pagina) {       // in base alla pagina della navbar esegue una ricerca diversa
             case "esploraBtn":
-                String viewTypeText = esploraController.getViewType();
+                String viewTypeText = esploraController.getViewType();      // toggle della pagina "esplora"
 
                 if("esplora".equals(viewTypeText)) {        // se sono in esplora cerco i brani per nome e/o titolo
                     Type branoType = new TypeToken<List<Brano>>() {}.getType();
@@ -117,6 +118,7 @@ public class TopBarController implements Controller{
                             "com", "musicsheetsmanager", "data", viewTypeText + ".json"
                     );
 
+                    // utilizzo i dizionari per la ricerca
                     Type stringType = new TypeToken<List<String>>() {}.getType();
                     List<String> dizionario = JsonUtils.leggiDaJson(DIZIONARIO_JSON_PATH, stringType);
 
@@ -135,6 +137,15 @@ public class TopBarController implements Controller{
                 if (esploraConcertiController != null) {
                     esploraConcertiController.mostraCardConcerti(risultatiRicercaConcerti);
                 }
+
+                break;
+
+            case "cronologiaBtn":
+                List<Brano> listaBrani = cronologiaController.getBraniCommentati();
+
+                risultatiRircercaBrani = Brano.cercaBrano(listaBrani, chiave);
+
+                cronologiaController.generaCatalogo(risultatiRircercaBrani, brano -> cronologiaController.creaCardBrano(brano, brano.getIdBrano()));
 
                 break;
 
