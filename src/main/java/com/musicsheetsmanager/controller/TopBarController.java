@@ -31,10 +31,6 @@ public class TopBarController implements Controller{
 
     private NavBarController navBarController;
 
-    private List<Brano> risultatiRircercaBrani;
-    private List<String> risultatiRircercaCatalogo;
-    private List<Concerto> risultatiRicercaConcerti;
-
     private static final Path BRANI_JSON_PATH = Paths.get( // percorso verso il file JSON
             "src", "main", "resources",
             "com", "musicsheetsmanager", "data", "brani.json"
@@ -95,64 +91,88 @@ public class TopBarController implements Controller{
         }
     }
 
-    // mostra i brani/cataloghi trovati inserendo una determinata chiave
+    /**
+     * Mostra i brani/cataloghi trovati inserendo una determinata chiave
+     */
     @FXML
-    private void onSearchBarEnter (){
+    private void onSearchBarEnter() {
         String pagina = navBarController.getCurrentPage();
         String chiave = campoRicerca.getText();
 
-        switch (pagina) {       // in base alla pagina della navbar esegue una ricerca diversa
-            case "esploraBtn":
-                String viewTypeText = esploraController.getViewType();      // toggle della pagina "esplora"
-
-                if("esplora".equals(viewTypeText)) {        // se sono in esplora cerco i brani per nome e/o titolo
-                    Type branoType = new TypeToken<List<Brano>>() {}.getType();
-                    List<Brano> listaBrani = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType);
-
-                    risultatiRircercaBrani = Brano.cercaBrano(listaBrani, chiave);
-
-                    esploraController.generaCatalogo(risultatiRircercaBrani, brano -> esploraController.creaCardBrano(brano, brano.getIdBrano()));
-                } else {
-                    Path DIZIONARIO_JSON_PATH = Paths.get( // percorso verso il file JSON
-                            "src", "main", "resources",
-                            "com", "musicsheetsmanager", "data", viewTypeText + ".json"
-                    );
-
-                    // utilizzo i dizionari per la ricerca
-                    Type stringType = new TypeToken<List<String>>() {}.getType();
-                    List<String> dizionario = JsonUtils.leggiDaJson(DIZIONARIO_JSON_PATH, stringType);
-
-                    risultatiRircercaCatalogo = Brano.cercaCatalogo(dizionario, chiave);
-
-                    esploraController.generaCatalogo(risultatiRircercaCatalogo, esploraController::creaCardCatalogo);
-                }
-                break;
-
-            case "concertiBtn":
-                Type concertoType = new TypeToken<List<Concerto>>() {}.getType();
-                List<Concerto> listaConcerti = JsonUtils.leggiDaJson(CONCERTI_JSON_PATH, concertoType);
-
-                risultatiRicercaConcerti = Concerto.cercaConcerti(listaConcerti, chiave);
-
-                if (esploraConcertiController != null) {
-                    esploraConcertiController.mostraCardConcerti(risultatiRicercaConcerti);
-                }
-
-                break;
-
-            case "cronologiaBtn":
-                List<Brano> listaBrani = cronologiaController.getBraniCommentati();
-
-                risultatiRircercaBrani = Brano.cercaBrano(listaBrani, chiave);
-
-                cronologiaController.generaCatalogo(risultatiRircercaBrani, brano -> cronologiaController.creaCardBrano(brano, brano.getIdBrano()));
-
-                break;
-
-            default:
-                break;
+        // toggle della navbar
+        switch (pagina) {
+            case "esploraBtn" -> gestisciRicercaEsplora(chiave);
+            case "concertiBtn" -> gestisciRicercaConcerti(chiave);
+            case "cronologiaBtn" -> gestisciRicercaCronologia(chiave);
         }
+    }
 
+    /**
+     * Mostra i brani/cataloghi trovati inserendo una determinata chiave
+     *
+     * @param chiave Chiave di ricerca inserita
+     */
+    private void gestisciRicercaEsplora(String chiave) {
+        String viewType = esploraController.getViewType();
+
+        Path dizionarioPath = Paths.get("src", "main", "resources", "com", "musicsheetsmanager", "data", viewType + ".json");
+        Type branoType = new TypeToken<List<Brano>>() {}.getType();
+        List<Brano> listaBrani = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType);
+
+        // controlla il tipo di toggle attivato
+        switch (viewType) {
+            case "esplora" -> {
+                List<Brano> risultati = Brano.cercaBrano(listaBrani, chiave);
+                esploraController.generaCatalogo(risultati, brano -> esploraController.creaCardBrano(brano, brano.getIdBrano()));
+            }
+            case "generi" -> {
+                List<String> dizionario = leggiDizionario(dizionarioPath);
+                List<String> risultati = Brano.cercaCatalogo(dizionario, chiave);
+                esploraController.generaCatalogo(risultati, genere -> esploraController.creaCardGenere(listaBrani, genere, viewType));
+            }
+            default -> {
+                List<String> dizionario = leggiDizionario(dizionarioPath);
+                List<String> risultati = Brano.cercaCatalogo(dizionario, chiave);
+                esploraController.generaCatalogo(risultati, esploraController::creaCardCatalogo);
+            }
+        }
+    }
+
+    /**
+     * Gestisce ricerca concerti tramite chiave
+     *
+     * @param chiave Chiave di ricerca inserita
+     */
+    private void gestisciRicercaConcerti(String chiave) {
+        Type concertoType = new TypeToken<List<Concerto>>() {}.getType();
+        List<Concerto> listaConcerti = JsonUtils.leggiDaJson(CONCERTI_JSON_PATH, concertoType);
+        List<Concerto> risultati = Concerto.cercaConcerti(listaConcerti, chiave);
+
+        // aspetta che il controller venga caricato
+        if (esploraConcertiController != null) {
+            esploraConcertiController.mostraCardConcerti(risultati);
+        }
+    }
+
+    /**
+     * Gestisce ricerca brani commentati dall'utente
+     *
+     * @param chiave Chiave di ricerca inserita
+     */
+    private void gestisciRicercaCronologia(String chiave) {
+        List<Brano> lista = cronologiaController.getBraniCommentati();
+        List<Brano> risultati = Brano.cercaBrano(lista, chiave);
+        cronologiaController.generaCatalogo(risultati, brano -> cronologiaController.creaCardBrano(brano, brano.getIdBrano()));
+    }
+
+    /**
+     * Funzione che restituisce gli elementi letti in un dizionario
+     *
+     * @param path Percorso del dizionario
+     */
+    private List<String> leggiDizionario(Path path) {
+        Type stringType = new TypeToken<List<String>>() {}.getType();
+        return JsonUtils.leggiDaJson(path, stringType);
     }
 }
 
