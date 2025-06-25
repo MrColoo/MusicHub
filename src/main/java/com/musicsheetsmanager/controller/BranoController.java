@@ -51,43 +51,69 @@ import javafx.stage.FileChooser;
 
 public class BranoController {
 
+    // ScrollPane che probabilmente contiene tutta la visualizzazione del brano (scrollabile)
     @FXML
     private ScrollPane branoScrollPane;
+
+    // GridPane usato per mostrare contenuti multimediali (es. audio, video, immagini)
     @FXML
     private GridPane mediaGridPane;
+
+    // GridPane usato per visualizzare eventuali allegati (es. PDF, immagini, spartiti)
     @FXML
     private GridPane allegatiGridPane;
+
+    // Pulsante per inviare un commento (ad esempio sotto un brano)
     @FXML
     private Button inviaCommentoBtn;
 
+    // Immagine di copertina del brano (tipicamente visibile nel banner o scheda)
     @FXML
     ImageView branoCover;
+
+    // Testo che mostra il titolo del brano
     @FXML
     Text branoTitolo;
+
+    // Testo che mostra gli autori del brano
     @FXML
     Text branoAutori;
+
+    // Barra/banner in alto che mostra info sintetiche del brano
     @FXML
     private HBox branoBanner;
+
+    // Area di testo dove l'utente può scrivere un commento
     @FXML
     private TextArea campoCommento;
+
+    // Area di testo dove l'utente può scrivere una nota (diversa da un commento, es. nota privata)
     @FXML
     private TextArea campoNota;
 
+    // ID univoco del brano attualmente visualizzato o modificato
     private String idBrano;
 
+    // Riferimento a un pulsante "Elimina" (forse creato dinamicamente)
     private Button deleteButton;
 
+    // Nome utente o ID del proprietario del brano
     private String branoOwner;
 
+    // Contenitore (VBox) per visualizzare tutti i commenti legati al brano
     @FXML
     private VBox commentiContainer;
 
+    // Contenitore (VBox) per visualizzare tutte le note associate al brano
     @FXML
     private VBox noteContainer;
 
+    // Oggetto che rappresenta il brano attualmente selezionato/visualizzato
     private Brano currentBrano;
 
-    private Commento currentCommento; // commento a cui si sta rispondendo
+    // Oggetto che rappresenta il commento attualmente selezionato (utile per risposte threadate)
+    private Commento currentCommento;
+
 
 
     private static final Path COMMENTI_JSON_PATH = Paths.get( // percorso verso il file JSON
@@ -106,13 +132,20 @@ public class BranoController {
         Platform.runLater(this::checkReplyFocus);
     }
 
-    // se l'utente deseleziona il textField(ignora reply, invia) non risponde più
+    /**
+     * Controlla se l'utente ha perso il focus dal campo commento in una risposta.
+     * Se il focus esce da tutti i componenti rilevanti (campo, bottone invia o bottone reply),
+     * viene annullato il riferimento al commento a cui si stava rispondendo (currentCommento).
+     */
     private void checkReplyFocus() {
-        ChangeListener<Boolean> focusListener = (obs, oldVal, newVal) -> {
+        ChangeListener<Boolean> focusListener = (obs, oldVal, newVal) -> { // Listener che si attiva quando cambia il focus sul campo commento
+
+            // Esegui la logica solo se si stava rispondendo a un commento
             if (!newVal && currentCommento != null) { // focus perso su campoCommento o campoNota
                 Scene scene = campoCommento.getScene();
                 if (scene == null) return;
 
+                // Ottiene il nodo attualmente in focus nella scena
                 Node focusOwner = scene.getFocusOwner();
                 if (focusOwner == null) {
                     currentCommento = null;
@@ -120,51 +153,59 @@ public class BranoController {
                     return;
                 }
 
+                // Flag che indica se il focus è ancora su un'area valida
                 boolean focusOnValidNode = false;
 
+                //Se il focus è ancora sul campo commento e non è una nota
                 if ((focusOwner == campoCommento && !currentCommento.isNota())
                         || (focusOwner == inviaCommentoBtn && !currentCommento.isNota())
                 ) {
                     focusOnValidNode = true;
-                } else if (focusOwner instanceof Button btn && btn.getStyleClass().contains("reply-btn")) {
-                    // vedo se è replyButton
+                } else if (focusOwner instanceof Button btn && btn.getStyleClass().contains("reply-btn")) { // Oppure se il focus è su un bottone risposta
                     focusOnValidNode = true;
                 }
 
-                if (!focusOnValidNode) {
+                if (!focusOnValidNode) {  // Se il focus non è su uno di questi elementi
                     System.out.println("Non rispondi più");
                     currentCommento = null;
                 }
             }
         };
 
-        campoCommento.focusedProperty().addListener(focusListener);
+        campoCommento.focusedProperty().addListener(focusListener); // Aggiunge il listener alla proprietà di focus del campo commento
     }
 
-
-    // mostra i dati del brano(titolo, autore ecc...) quando l'utente interagisce con un brano in Esplora
+    /**
+     * Mostra i dati del brano selezionato dall'utente nella schermata "Esplora".
+     * Carica titolo, autori, copertina, commenti, note, allegati, media e aggiorna la UI.
+     *
+     * @param brano il brano selezionato
+     */
     public void fetchBranoData(Brano brano) {
-        currentBrano = brano;
-        branoOwner = brano.getProprietario();
+        currentBrano = brano; // Salva il brano corrente per uso interno
+        branoOwner = brano.getProprietario();  // Memorizza il proprietario e l'ID del brano
         idBrano = brano.getIdBrano();
-        branoTitolo.setText(brano.getTitolo());
+        branoTitolo.setText(brano.getTitolo()); // Mostra il titolo del brano nell'interfaccia
 
+        // Mostra gli autori del brano, separati da virgole
         String autori = String.join(", ", brano.getAutori());
         branoAutori.setText(autori);
 
-        // cover brano
+        // Gestione dell'immagine di copertina del brano
         String idBrano = brano.getIdBrano();
         File imageFile = new File("src/main/resources/com/musicsheetsmanager/ui/covers/" + idBrano + ".jpg");
+
+        // Se la copertina specifica non esiste, usa un'immagine di default
         if (!imageFile.exists()) {
             imageFile = new File("src/main/resources/com/musicsheetsmanager/ui/Cover.jpg");
         }
         branoCover.setImage(new Image(imageFile.toURI().toString()));
 
-        // carica tutti i commenti da json per la ricerca
+        // Carica tutti i commenti da json per la ricerca
         Type commentoType = new TypeToken<List<Commento>>() {}.getType();
         List<Commento> commenti = JsonUtils.leggiDaJson(COMMENTI_JSON_PATH, commentoType);
 
-        // filtra i commenti appartenenti al brano
+        // Filtra solo i commenti legati a questo brano e che NON sono note
         List<Commento> commentiBrano = commenti.stream()
                 .filter(c ->
                                 (!c.isNota()) &&
@@ -172,10 +213,11 @@ public class BranoController {
                 )
                 .toList();
 
+        // Pulisce la sezione dei commenti e li reinserisce aggiornati
         commentiContainer.getChildren().clear();
         renderCommenti(commentiBrano, commentiContainer, 0);
 
-        // filtra le note appartenenti al brano
+        // Filtra le note appartenenti al brano
         List<Commento> noteBrano = commenti.stream()
                 .filter(n ->
                         (n.isNota()) &&
@@ -189,18 +231,25 @@ public class BranoController {
 
         caricaMediaBrano(brano, mediaGridPane);
 
-        Image albumCover = new Image(imageFile.toURI().toString());
+        Image albumCover = new Image(imageFile.toURI().toString()); // Crea oggetto immagine per calcolo colore dominante
 
-        // Applico il colore come background al banner
+        // Estrae il colore dominante e lo imposta come sfondo del banner del brano
         BackgroundFill bgFill = new BackgroundFill(estraiColoriDominanti(albumCover), CornerRadii.EMPTY, Insets.EMPTY);
         branoBanner.setBackground(new Background(bgFill));
 
-        branoCover.setImage(albumCover);
+        branoCover.setImage(albumCover); // Reimposta l'immagine di copertina per sicurezza/riferimento
     }
 
+    /**
+     * Visualizza le note associate a un brano nel contenitore `noteContainer`.
+     * Ogni nota è mostrata con l'autore e il contenuto.
+     *
+     * @param noteBrano lista di oggetti Commento che rappresentano le note del brano
+     */
     public void mostraNote(List<Commento> noteBrano) {
         noteContainer.getChildren().clear();
 
+        // Itera su ogni nota del brano e aggiunge al container
         for (Commento nota : noteBrano) {
             Text noteText = new Text("@" + nota.getUsername() + ": " + nota.getTesto());
             noteText.getStyleClass().addAll("text-white", "font-book", "text-base");
@@ -210,27 +259,29 @@ public class BranoController {
         }
     }
 
-    //TODO AGGIUNGERE MESSAGGIO DI ERRORE COMMENTO VUOTO
-
-    // funzione per salvare un commento generico
+    /**
+     * Salva un nuovo commento o una nota, oppure una risposta a un commento esistente.
+     *
+     * @param testo   il contenuto del commento o della nota
+     * @param isNota  true se si tratta di una nota, false se è un commento pubblico
+     * @return true se il commento è stato salvato con successo, false se il testo era vuoto
+     */
     private boolean aggiungiCommento(String testo, boolean isNota) {
-        // controllo se commento è vuoto
+        // Se il campo è vuoto o contiene solo spazi, non salvare nulla
         if(testo.isBlank()) {
-            //errore.setText("Il testo non può essere vuoto");
-            //errore.setVisible(true);
             return false;
         }
 
-        Commento nuovoCommento = new Commento(testo, SessionManager.getLoggedUser().getUsername(), isNota);
+        Commento nuovoCommento = new Commento(testo, SessionManager.getLoggedUser().getUsername(), isNota); // Crea un nuovo oggetto Commento con autore (utente loggato), testo e tipo
 
         Type commentoType = new TypeToken<List<Commento>>() {}.getType();
         List<Commento> listaCommenti = JsonUtils.leggiDaJson(COMMENTI_JSON_PATH, commentoType);
 
-        if(currentCommento != null) { // sto rispondendo
+        if(currentCommento != null) {  // Se si sta rispondendo a un commento esistente
            if(aggiungiRisposta(listaCommenti, currentCommento.getIdCommento(), nuovoCommento)) {
                System.out.println("Risposta aggiunta a " + currentCommento.toString());
            }
-        } else { // commento nuovo
+        } else {  // Altrimenti si tratta di un nuovo commento
             listaCommenti.add(nuovoCommento);
             Commento.linkIdcommentoBrano(idBrano, nuovoCommento.getIdCommento(), BRANI_JSON_PATH);
         }
@@ -241,24 +292,40 @@ public class BranoController {
         return true;
     }
 
-    // funzione ricorsiva che trova il commento a cui si sta rispondendo nella struttura ad albero
+    /**
+     * Funzione ricorsiva che cerca un commento all'interno di una struttura ad albero
+     * e aggiunge una risposta al commento padre, se trovato.
+     *
+     * @param commenti           la lista di commenti
+     * @param idCommentoPadre    l'ID del commento a cui si vuole rispondere
+     * @param risposta           il nuovo commento da inserire come risposta
+     * @return true se la risposta è stata aggiunta correttamente, false altrimenti
+     */
     private boolean aggiungiRisposta (List<Commento> commenti, String idCommentoPadre, Commento risposta) {
         for (Commento commento: commenti) {
-            if (commento.getIdCommento().equals(idCommentoPadre)) {     // trovato commento padre
+            // Controlla se il commento corrente è quello a cui si sta rispondendo
+            if (commento.getIdCommento().equals(idCommentoPadre)) {
                 commento.aggiungiRisposta(risposta);
                 return true;
             }
-            // vedo nelle risposte annidate
+            // In caso contrario, cerca ricorsivamente all'interno delle sue risposte
             if(commento.getRisposte() != null && aggiungiRisposta(commento.getRisposte(), idCommentoPadre, risposta)){
                 return true;
             }
         }
-        return false;
+        return false; // Se il commento padre non è stato trovato in nessun livello, restituisce false
     }
 
+    /**
+     * Metodo associato al pulsante per aggiunger un commento.
+     * Recupera il testo inserito dall'utente, prova ad aggiungerlo come commento
+     * e aggiorna l'interfaccia in caso di successo.
+     */
     @FXML
     public void OnAddCommentoClick(){
         String testoCommento = campoCommento.getText().trim();
+
+        // Prova ad aggiungere il commento
         if(aggiungiCommento(testoCommento, false)) {
             System.out.println("Commento salvato con successo: "
                     + testoCommento
@@ -271,9 +338,15 @@ public class BranoController {
         }
     }
 
+    /**
+     * Metodo associato al pulsante per aggiungere nota.
+     * Recupera il testo inserito nel campo nota, lo salva come commento
+     * marcato come nota e aggiorna la visualizzazione del brano.
+     */
     @FXML
     public void OnAddNotaClick(){
         String testoNota = campoNota.getText().trim();
+        // Prova ad aggiungere la nota
         if(aggiungiCommento(testoNota, true)) {
             System.out.println("Nota salvata con successo: "
                     + testoNota
@@ -286,17 +359,30 @@ public class BranoController {
         }
     }
 
-    // ricarica brano corrente con dati aggiornati
+    /**
+     * Ricarica dal file JSON il brano corrente (identificato da idBrano)
+     * per assicurarsi di lavorare con i dati più aggiornati.
+     *
+     * @return l'oggetto Brano aggiornato, oppure null se non trovato
+     */
     private Brano reloadCurrentBrano() {
         Type branoType = new TypeToken<List<Brano>>() {}.getType();
         List<Brano> brani = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType);
 
-        return brani.stream()
+        return brani.stream() // Cerca nella lista il brano con l'ID corrispondente a quello attualmente selezionato
                 .filter(b -> b.getIdBrano().equals(idBrano))
                 .findFirst()
                 .orElse(null);
     }
 
+    /**
+     * Crea dinamicamente una struttura grafica (HBox) per rappresentare un commento,
+     * con indentazione per visualizzare le risposte in forma gerarchica.
+     *
+     * @param commento    l'oggetto Commento da rappresentare
+     * @param indentLevel livello di indentazione (0 = commento principale, >0 = risposta)
+     * @return HBox che rappresenta il commento formattato
+     */
     public HBox creaCommentoBox(Commento commento, int indentLevel) {
         // HBox esterno per gestire l'allineamento e l'indentazione
         HBox wrapper = new HBox();
@@ -304,11 +390,12 @@ public class BranoController {
         wrapper.setSpacing(0);
         wrapper.setPrefHeight(Region.USE_COMPUTED_SIZE);
 
-        // indentazione
+        // Spazio di indentazione per le risposte annidate
         Region indent = new Region();
         indent.setPrefWidth(indentLevel * 50);
         wrapper.getChildren().add(indent);
 
+        // VBox che conterrà il commento, autore, bottoni, testo
         VBox commentBox = new VBox();
         commentBox.getStyleClass().add("brano-allegati-container");
         commentBox.setPadding(new Insets(15));
@@ -317,14 +404,17 @@ public class BranoController {
         HBox.setHgrow(commentBox, Priority.ALWAYS);
         commentBox.setMaxWidth(Double.MAX_VALUE);
 
-        // riga utente + bottoni
+        // Sezione superiore: nome utente, badge, pulsanti
         HBox topRow = new HBox();
         topRow.setAlignment(Pos.CENTER_LEFT);
         topRow.setSpacing(5);
         topRow.setPadding(new Insets(0, 0, 5, 0));
 
+        // Testo con il nome utente che ha scritto il commento
         Text usernameText = new Text("@" + commento.getUsername());
         usernameText.getStyleClass().addAll("font-bold", "text-base");
+
+        // Icona "verificato" se l'utente è uno degli autori del brano
         ImageView verifiedIcon = new ImageView();
         Image verifiedImage = new Image(Objects.requireNonNull(BranoController.class.getResource("/com/musicsheetsmanager/ui/icons/verified.png")).toExternalForm());
         if(currentBrano.getAutori().contains(commento.getUsername())){
@@ -335,7 +425,7 @@ public class BranoController {
         } else
             usernameText.setFill(Color.WHITE);
 
-
+        // Pulsante per eliminare il commento
         deleteButton = new Button();
         deleteButton.getStyleClass().add("delete-btn");
         ImageView deleteIcon = new ImageView(
@@ -345,7 +435,10 @@ public class BranoController {
         deleteIcon.setPreserveRatio(true);
         deleteButton.setGraphic(deleteIcon);
 
-        // se non sei admin, proprietario del brano o autore del commento non vedi il bottone elimina
+        // Mostra il pulsante elimina solo se:
+        // - l'utente è admin
+        // - è l'autore del commento
+        // - è il proprietario del brano
         if(SessionManager.getLoggedUser().isAdmin()
                 || (SessionManager.getLoggedUser().getUsername().equals(commento.getUsername()))
                 || (SessionManager.getLoggedUser().getUsername().equals(branoOwner))
@@ -357,22 +450,24 @@ public class BranoController {
             deleteButton.setManaged(false);
         }
 
+        // Pulsante per rispondere al commento
         Button replyButton = new Button("Rispondi");
         replyButton.getStyleClass().add("reply-btn");
 
         topRow.getChildren().addAll(usernameText, verifiedIcon, deleteButton, replyButton);
 
-        // testo commento
+        // Testo del commento
         Text commentText = new Text(commento.getTesto());
         commentText.getStyleClass().addAll("text-white", "font-book", "text-base");
 
-        TextFlow commentFlow = new TextFlow(commentText);
+        TextFlow commentFlow = new TextFlow(commentText); // TextFlow per gestire automaticamente il wrapping del testo
         commentFlow.setPrefWidth(600);
         commentText.wrappingWidthProperty().bind(commentFlow.widthProperty().subtract(10));
 
         commentBox.getChildren().addAll(topRow, commentFlow);
         wrapper.getChildren().add(commentBox);
 
+        // Assegna le azioni ai pulsanti
         deleteButton.setOnAction(e -> onDeleteBtnClick(commento));
         replyButton.setOnAction(e -> onReplyBtnClick(commento));
 
@@ -380,25 +475,39 @@ public class BranoController {
     }
 
 
-    // renderizza i commenti in base al livello di annidamento
+    /**
+     * Renderizza ricorsivamente una lista di commenti all'interno di un contenitore VBox.
+     * Ogni commento viene rappresentato graficamente con indentazione in base al livello.
+     *
+     * @param commenti     lista di commenti da visualizzare
+     * @param container    contenitore VBox dove inserire i commenti renderizzati
+     * @param indentLevel  livello di indentazione (0 = commenti principali, >0 = risposte)
+     */
     private void renderCommenti(List<Commento> commenti, VBox container, int indentLevel) {
         for (Commento commento : commenti) {
             HBox commentoBox = creaCommentoBox(commento, indentLevel);
             container.getChildren().add(commentoBox);
+
+            // Se il commento ha delle risposte, chiama ricorsivamente la funzione
+            // con indentLevel incrementato per aumentare il rientro visivo
             if (commento.getRisposte() != null) {
                 renderCommenti(commento.getRisposte(), container, indentLevel + 1);
             }
         }
     }
 
-
+    /**
+     * Gestisce la rimozione di un commento (o risposta) dal file JSON e aggiorna l'interfaccia.
+     *
+     * @param commento il commento da eliminare
+     */
     public void onDeleteBtnClick (Commento commento) {
         Type commentoType = new TypeToken<List<Commento>>() {}.getType();
         List<Commento> listaCommenti = JsonUtils.leggiDaJson(COMMENTI_JSON_PATH, commentoType);
 
-        listaCommenti = rimuoviCommentoRicorsivo(listaCommenti, commento.getIdCommento());
+        listaCommenti = rimuoviCommentoRicorsivo(listaCommenti, commento.getIdCommento()); // Rimuove ricorsivamente il commento (e sue eventuali risposte)
 
-        // aggiorna json
+        // Aggiorna JSON
         JsonUtils.scriviSuJson(listaCommenti, COMMENTI_JSON_PATH);
 
         Brano.rimuoviCommentoBrano(idBrano, commento.getIdCommento(), BRANI_JSON_PATH);
@@ -413,11 +522,18 @@ public class BranoController {
                 + ", username: " + commento.getUsername());
     }
 
-    // rimuove il commento/la nota/la risposta e le eventuali risposte annidate
+    /**
+     * Rimuove un commento (o nota o risposta) identificato da idCommento da una lista di commenti.
+     * Se il commento da rimuovere ha risposte annidate, queste vengono rimosse ricorsivamente.
+     *
+     * @param commenti    lista dei commenti da elaborare
+     * @param idCommento  ID del commento da rimuovere
+     * @return una nuova lista di commenti aggiornata, senza il commento (e relative risposte) specificato
+     */
     private List<Commento> rimuoviCommentoRicorsivo(List<Commento> commenti, String idCommento) {
         return commenti.stream()
-                .filter(c -> !c.getIdCommento().equals(idCommento))
-                .peek(c -> {
+                .filter(c -> !c.getIdCommento().equals(idCommento)) // Filtra i commenti: rimuove quello con ID corrispondente
+                .peek(c -> { // Per ogni commento ancora presente, controlla se ha risposte annidate
                     if (c.getRisposte() != null) {
                         c.setRisposte(rimuoviCommentoRicorsivo(c.getRisposte(), idCommento));
                     }
@@ -425,12 +541,19 @@ public class BranoController {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Gestisce il click sul pulsante "Rispondi" di un commento.
+     * Imposta il commento selezionato come destinatario della risposta,
+     * sposta il focus sul campo di inserimento e scrolla alla fine della pagina.
+     *
+     * @param commento il commento a cui si sta rispondendo
+     */
     public void onReplyBtnClick (Commento commento) {
         currentCommento = commento;
 
         campoCommento.requestFocus();
-        // scroll fino a fondo pagina dove si trova campoCommento
-        double targetVvalue = 1.0; // fondo pagina
+        // Scrolla dolcemente fino in fondo allo ScrollPane
+        double targetVvalue = 1.0;
         Timeline timeline = new Timeline();
         KeyValue kv = new KeyValue(branoScrollPane.vvalueProperty(), targetVvalue);
         KeyFrame kf = new KeyFrame(Duration.millis(300), kv);   // 300ms animazione
@@ -438,7 +561,14 @@ public class BranoController {
         timeline.play();
         System.out.println("Risposta al commento: " + commento.getTesto());
     }
-    
+
+    /**
+     * Aggiunge una lista di file come allegati visivi all'interno di un GridPane.
+     * Ogni file viene visualizzato in una cella, si adatta dinamicamente.
+     *
+     * @param files    lista di file selezionati dall'utente
+     * @param gridPane il contenitore grafico dove mostrare i file
+     */
     private void aggiungiFileAllegati(List<File> files, GridPane gridPane) {
         // Pulisce la griglia rimuovendo ogni contenuto precedente
         gridPane.getChildren().clear();
@@ -511,6 +641,13 @@ public class BranoController {
         }
     }
 
+    /**
+     * Carica e visualizza gli allegati associati a un brano all'interno di un GridPane.
+     * Gli allegati sono file che il brano ha collegati e vengono mostrati con nome e icona.
+     *
+     * @param brano             il brano da cui leggere gli allegati
+     * @param allegatiGridPane  il GridPane in cui visualizzare gli allegati
+     */
     public void caricaAllegatiBrano(Brano brano, GridPane allegatiGridPane) {
         // Costruisce il percorso della cartella degli allegati del brano
         File folder = new File("src/main/resources/attachments/" + idBrano);
@@ -535,6 +672,12 @@ public class BranoController {
         }
     }
 
+    /**
+     * Carica e visualizza i media (es. immagini, video, ecc.) collegati al brano nel GridPane specificato.
+     *
+     * @param brano         il brano da cui leggere i media
+     * @param mediaGridPane il contenitore GridPane in cui visualizzare i media
+     */
     public void caricaMediaBrano(Brano brano, GridPane mediaGridPane) {
         // Costruisce il percorso della cartella degli allegati multimediali del brano
         File folder = new File("src/main/resources/attachments/" + idBrano);
@@ -584,6 +727,13 @@ public class BranoController {
         }
     }
 
+    /**
+     * Aggiunge un singolo link YouTube come anteprima embeddabile all'interno del GridPane.
+     * Se il link è valido, viene mostrato il video con un iframe YouTube.
+     *
+     * @param link     link YouTube da visualizzare (deve essere nel formato valido)
+     * @param gridPane il contenitore in cui verrà visualizzato il video
+     */
     private void aggiungiLinkYoutubeSingolo(String link, GridPane gridPane) {
         // Calcola la prossima riga disponibile basandosi solo sui nodi che hanno un RowIndex esplicito
         int row = gridPane.getChildren().stream()
@@ -647,6 +797,13 @@ public class BranoController {
         gridPane.getChildren().addAll(linkText, openButton, copyButton);
     }
 
+    /**
+     * Aggiunge una lista di file media al GridPane fornito, creando un layout a griglia
+     * con anteprime per immagini e icone generiche per altri tipi di file.
+     *
+     * @param files     lista dei file multimediali da aggiungere (es. immagini, audio, video)
+     * @param gridPane  contenitore GridPane in cui visualizzare i media
+     */
     private void aggiungiMediaAllegati(List<File> files, GridPane gridPane) {
         // Pulisce la griglia rimuovendo eventuali contenuti precedenti
         gridPane.getChildren().clear();
@@ -756,6 +913,10 @@ public class BranoController {
         return nuovoGradiente;
     }
 
+    /**
+     * Metodo chiamato al click del pulsante "Aggiungi Media".
+     * Permette di selezionare file dal filesystem e li aggiunge visivamente a un GridPane.
+     */
     @FXML
     private void addMediaClicked() {
         // Crea un FileChooser per selezionare i file
@@ -807,8 +968,10 @@ public class BranoController {
         caricaMediaBrano(currentBrano, mediaGridPane);
     }
 
-
-
+    /**
+     * Metodo chiamato al click del pulsante "Aggiungi Allegati".
+     * Apre un selettore file, consente la selezione multipla e mostra i file nella griglia.
+     */
     @FXML
     private void addAllegatiClicked() {
         FileChooser fileChooser = new FileChooser();
@@ -857,6 +1020,10 @@ public class BranoController {
         caricaAllegatiBrano(currentBrano, allegatiGridPane);
     }
 
+    /**
+     * Sovrascrive il brano corrente nel file JSON con i suoi dati aggiornati.
+     * Assicura che le modifiche (commenti, allegati, media, ecc.) siano persistenti.
+     */
     private void salvaJsonBranoAggiornato() {
         // Legge tutti i brani dal file JSON
         Type branoType = new TypeToken<List<Brano>>() {}.getType();
