@@ -32,6 +32,14 @@ public class Concerto {
         return link;
     }
 
+    /**
+     *  Ricerca dei concerti data una chiave
+     *
+     * @param concerti Lista dei concerti
+     * @param chiave Chiave di ricerca
+     *
+     * @return Lista di concerti trovati
+     */
     public static List<Concerto> cercaConcerti (List<Concerto> concerti, String chiave) {
         if(chiave == null || chiave.isBlank()) return concerti;
 

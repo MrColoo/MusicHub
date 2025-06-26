@@ -3,18 +3,14 @@ package com.musicsheetsmanager.controller;
 import com.google.gson.reflect.TypeToken;
 import com.musicsheetsmanager.config.JsonUtils;
 import com.musicsheetsmanager.model.Concerto;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.Cursor;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import javafx.scene.paint.Color;
-
 import java.io.File;
 import java.lang.reflect.Type;
 import java.nio.file.Path;
@@ -35,6 +31,9 @@ public class EsploraConcertiController implements Controller {
         this.mainController = mainController;
     }
 
+    /**
+     * Inizializza i concerti nella pagina EsploraConcerti
+     */
     public void inizializzaConcerti() {
         if (mainController != null) {
             mainController.setEsploraConcertiController(this);
@@ -49,8 +48,12 @@ public class EsploraConcertiController implements Controller {
         // Metodo richiesto dall'interfaccia, ma non usato qui.
     }
 
+    /**
+     * Renderizza le card create
+     *
+     * @param concerti Lista dei concerti
+     */
     public void mostraCardConcerti(List<Concerto> concerti) {
-
         container.getChildren().clear();
         for (Concerto c : concerti) {
             container.getChildren().add(creaCardConcerto(c));
@@ -59,6 +62,10 @@ public class EsploraConcertiController implements Controller {
 
     /**
      * Crea una card personalizzata per un genere musicale.
+     *
+     * @param concerto Concerto di cui si vuole creare la card
+     *
+     * @return Card del concerto
      */
     private GridPane creaCardConcerto(Concerto concerto) {
         GridPane card = new GridPane();
@@ -81,7 +88,7 @@ public class EsploraConcertiController implements Controller {
         GridPane.setMargin(titolo, new Insets(15));
         card.add(titolo, 0, 0);
 
-        // === Sfondo con immagine ===
+        // Sfondo con immagine
         Path imagePath = Paths.get("src", "main", "resources", "com", "musicsheetsmanager", "ui", "concerti", concerto.getId() + ".jpg");
         File imageFile = imagePath.toFile();
 
@@ -96,7 +103,7 @@ public class EsploraConcertiController implements Controller {
             )));
         }
 
-        // click handler
+        // Se si clicca sulla card del concerto si viene reinderizzati alla relativa pagina
         card.setOnMouseClicked(e -> mainController.goToConcerto(card, concerto, () -> {
             ConcertoController controller = mainController.getConcertoController();
             if (controller != null){

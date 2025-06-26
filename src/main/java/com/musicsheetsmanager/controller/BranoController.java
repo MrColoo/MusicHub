@@ -42,7 +42,6 @@ import com.musicsheetsmanager.model.Brano;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.Paint;
 import javafx.scene.paint.Stop;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -222,8 +221,8 @@ public class BranoController {
         // Filtra solo i commenti legati a questo brano e che NON sono note
         List<Commento> commentiBrano = commenti.stream()
                 .filter(c ->
-                                (!c.isNota()) &&
-                                        (brano.getIdCommenti().contains(c.getIdCommento()))
+                        (!c.isNota()) &&
+                                (brano.getIdCommenti().contains(c.getIdCommento()))
                 )
                 .toList();
 
@@ -292,9 +291,9 @@ public class BranoController {
         List<Commento> listaCommenti = JsonUtils.leggiDaJson(COMMENTI_JSON_PATH, commentoType);
 
         if(currentCommento != null) {  // Se si sta rispondendo a un commento esistente
-           if(aggiungiRisposta(listaCommenti, currentCommento.getIdCommento(), nuovoCommento)) {
-               System.out.println("Risposta aggiunta a " + currentCommento.toString());
-           }
+            if(aggiungiRisposta(listaCommenti, currentCommento.getIdCommento(), nuovoCommento)) {
+                System.out.println("Risposta aggiunta a " + currentCommento.toString());
+            }
         } else {  // Altrimenti si tratta di un nuovo commento
             listaCommenti.add(nuovoCommento);
             Commento.linkIdcommentoBrano(idBrano, nuovoCommento.getIdCommento(), BRANI_JSON_PATH);
@@ -749,6 +748,8 @@ public class BranoController {
      * @param gridPane il contenitore in cui verrà visualizzato il video
      */
     private void aggiungiLinkYoutubeSingolo(String link, GridPane gridPane) {
+        // Pulisce la gridpane
+        gridPane.getChildren().clear();
         // Calcola la prossima riga disponibile basandosi solo sui nodi che hanno un RowIndex esplicito
         int row = gridPane.getChildren().stream()
                 .map(GridPane::getRowIndex)

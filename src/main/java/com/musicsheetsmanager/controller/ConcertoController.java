@@ -19,25 +19,17 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
-import javafx.geometry.Insets;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.web.WebView;
-
-import java.io.File;
-import javafx.scene.Node;
-
 import java.io.File;
 import java.lang.reflect.Type;
 import java.nio.file.Path;
@@ -59,7 +51,6 @@ public class ConcertoController implements Controller{
     // Tipo generico per deserializzare una lista di Brano
     private final Type tipoListaBrani = new TypeToken<List<Brano>>() {}.getType();
 
-
     private MainController mainController;
 
     @Override
@@ -70,7 +61,6 @@ public class ConcertoController implements Controller{
     // Riferimenti agli elementi dell'interfaccia utente
     @FXML private TextField inizioBranoConcerto;
     @FXML private TextField fineBranoConcerto;
-    @FXML private Button aggiungiBranoCanzone;
     @FXML private WebView webView;
     @FXML private Text concertoTitolo;
     @FXML private ComboBox<Brano> selezionaBrani;
@@ -80,8 +70,6 @@ public class ConcertoController implements Controller{
 
     // ID del concerto attualmente visualizzato
     private String idConcerto;
-
-    private Concerto currentConcerto;
 
     // Metodo chiamato automaticamente all'inizializzazione del controller
     @FXML
@@ -95,7 +83,6 @@ public class ConcertoController implements Controller{
      * @param concerto oggetto Concerto contenente le informazioni da visualizzare
      */
     public void fetchConcertoData(Concerto concerto) {
-        currentConcerto = concerto;
         idConcerto = concerto.getId();
         String titolo = concerto.getTitolo();
 

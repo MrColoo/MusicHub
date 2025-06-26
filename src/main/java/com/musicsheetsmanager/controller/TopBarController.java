@@ -29,7 +29,6 @@ public class TopBarController implements Controller{
     private EsploraController esploraController;
     private EsploraConcertiController esploraConcertiController;
     private CronologiaController cronologiaController;
-
     private NavBarController navBarController;
 
     private static final Path BRANI_JSON_PATH = Paths.get( // percorso verso il file JSON
@@ -100,7 +99,7 @@ public class TopBarController implements Controller{
         String pagina = navBarController.getCurrentPage();
         String chiave = campoRicerca.getText();
 
-        // toggle della navbar
+        // Toggle della navbar
         switch (pagina) {
             case "esploraBtn" -> gestisciRicercaEsplora(chiave);
             case "concertiBtn" -> gestisciRicercaConcerti(chiave);
@@ -178,7 +177,7 @@ public class TopBarController implements Controller{
     private void gestisciRicercaCronologia(String chiave) {
         List<Brano> lista = cronologiaController.getBraniCommentati();
         List<Brano> risultati = Brano.cercaBrano(lista, chiave);
-        cronologiaController.generaCatalogo(risultati, brano -> cronologiaController.creaCardBrano(brano, brano.getIdBrano()));
+        cronologiaController.generaCatalogo(risultati, brano -> cronologiaController.creaCardBrano(brano));
     }
 
     /**

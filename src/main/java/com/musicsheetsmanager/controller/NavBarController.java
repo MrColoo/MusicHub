@@ -29,6 +29,11 @@ public class NavBarController implements Controller{
 
     }
 
+    /**
+     *  Ottiene la pagina corrente dal toggle della NavBar
+     *
+     * @return Nome pagina corrente (in stringa)
+     */
     public String getCurrentPage () {
         if(toggleGroup.getSelectedToggle() instanceof ToggleButton selectedBtn) {
             return selectedBtn.getId();
@@ -37,7 +42,7 @@ public class NavBarController implements Controller{
     }
 
     private void changeNavBar() {
-        if (!SessionManager.getLoggedUser().isAdmin()) { // da cambiare e mettere admin
+        if (!SessionManager.getLoggedUser().isAdmin()) {
             adminBtn.setVisible(false);
         }else{
             adminBtn.setVisible(true);
@@ -68,7 +73,7 @@ public class NavBarController implements Controller{
             case "logoutBtn":
                 alreadySelected(btn);
                 mainController.hideNavBar();
-                logout(); // imposta a null l'utente loggato in SessionManager
+                logout(); // Imposta a null l'utente loggato in SessionManager
                 mainController.reloadTopBar();
                 mainController.show("Login");
                 break;

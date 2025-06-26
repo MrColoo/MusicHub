@@ -9,7 +9,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -39,9 +38,6 @@ public class CaricaConcertoController implements Controller{
 
     @FXML
     private VBox webViewContainer;
-
-    private String idConcerto; // ID del concerto attualmente selezionato o in fase di modifica
-
 
     // Percorso al file JSON contenente la lista dei concerti
     private static final Path PATH_CONCERTI_JSON = Paths.get("src/main/resources/com/musicsheetsmanager/data/concerti.json");
@@ -186,8 +182,6 @@ public class CaricaConcertoController implements Controller{
 
         concerti.add(nuovoConcerto); // Aggiunge il nuovo concerto alla lista
         JsonUtils.scriviSuJson(concerti, PATH_CONCERTI_JSON); // Salva la lista aggiornata nel file JSON
-
-        idConcerto = id; // Aggiorna l'ID del concerto corrente
 
         // Scarica automaticamente l'immagine di copertina dal video di YouTube
 

@@ -102,7 +102,14 @@ public class Brano {
                 .orElse(null);
     }
 
-    // ricerca per titolo-autori-esecutori
+    /**
+     * Ricerca per titolo e autori
+     *
+     * @param brani Lista di brani in cui cercare
+     * @param chiave Chiave di ricerca
+     *
+     * @return Lista di brani trovati
+     */
     public static List<Brano> cercaBrano (List<Brano> brani, String chiave){
         if(chiave == null || chiave.isBlank()) return brani;
 
@@ -116,6 +123,14 @@ public class Brano {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Mostra i brani/cataloghi trovati inserendo una determinata chiave e un dizionario
+     * @param brani Lista di brani in cui cercare
+     * @param chiave Chiave di ricerca
+     * @param tipoDizionario Dizionario con cui si cerca
+     *
+     * @return Lista di brani trovati
+     */
     public static List<Brano> cercaBranoConDizionario(List<Brano> brani, String chiave, String tipoDizionario) {
         if (chiave == null || chiave.isBlank() || tipoDizionario == null) return brani;
 
@@ -138,11 +153,21 @@ public class Brano {
         }).collect(Collectors.toList());
     }
 
+    /**
+     * Aggiunge l'id del commento all'oggetto di tipo Brano
+     *
+     * @param idCommento Id del commento da aggiungere
+     */
     public void aggiungiCommento(String idCommento) {
         if (idCommenti == null) idCommenti = new ArrayList<>();
         idCommenti.add(idCommento);
     }
 
+    /**
+     * Rimuove l'id del commento dall'oggetto di tipo Brano
+     *
+     * @param idCommento Id del commento da rimuovere
+     */
     public static void rimuoviCommentoBrano(String idBrano, String idCommento, Path BRANI_JSON_PATH) {
         Type branoType = new TypeToken<List<Brano>>() {}.getType();
         List<Brano> listaBrani = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType);
@@ -168,7 +193,9 @@ public class Brano {
         );
     }
 
-    // due brani sono uguali se hanno stesso titolo, autori, anno di composizione, esecutori e strumenti musicali
+    /**
+     *  Due brani sono uguali se hanno stesso titolo, autori, anno di composizione, esecutori e strumenti musicali
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -179,9 +206,9 @@ public class Brano {
         return Objects.equals(titolo, other.titolo)
                 && Objects.equals(autori, other.autori)
                 && Objects.equals(annoComposizione, other.annoComposizione)
-                // non mi importa l'ordine degli esecutori e degli strumenti musicali
+                // Non mi importa l'ordine degli esecutori e degli strumenti musicali
                 //
-                // dato che non sono campi obbligatori possono anche essere vuoti
+                // Dato che non sono campi obbligatori possono anche essere vuoti
                 && (esecutori == null ? Collections.emptySet() : new HashSet<>(esecutori))
                 .equals(other.esecutori == null ? Collections.emptySet() : new HashSet<>(other.esecutori))
                 && (strumentiMusicali == null ? Collections.emptySet() : new HashSet<>(strumentiMusicali))

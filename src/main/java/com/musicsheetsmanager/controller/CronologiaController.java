@@ -53,6 +53,9 @@ public class CronologiaController implements Controller{
         mostraCronologiaCommenti();
     }
 
+    /**
+     * Renderizza le card dei brani in cui l'utente ha commentato
+     */
     private void mostraCronologiaCommenti() {
         Type branoType = new TypeToken<List<Brano>>() {}.getType();
         Type commentoType = new TypeToken<List<Commento>>() {}.getType();
@@ -82,18 +85,32 @@ public class CronologiaController implements Controller{
                 .filter(Objects::nonNull)
                 .toList();
 
-        generaCatalogo(braniCommentati, b -> creaCardBrano(b, b.getIdBrano()));
+        generaCatalogo(braniCommentati, this::creaCardBrano);
     }
 
+    /**
+     * Aggiunge al container le card generate
+     *
+     * @param elementi Lista di cui si vuole creare le card
+     * @param creaCard Funzione di creazione card utilizzata
+     */
     public <T> void generaCatalogo(List<T> elementi, Function<T, Node> creaCard) {
         container.getChildren().clear();
         elementi.stream().map(creaCard).forEach(container.getChildren()::add);
     }
 
-    public VBox creaCardBrano(Brano brano, String idBrano) {
-        File imageFile = new File(COVER_PATH + idBrano + ".jpg");
+    /**
+     * Crea una card personalizzata per il brano
+     *
+     * @param brano Brano di cui si vuole creare la card
+     *
+     * @return Card creata a partire dal brano
+     */
+    public VBox creaCardBrano(Brano brano) {
+        File imageFile = new File(COVER_PATH + brano.getIdBrano() + ".jpg");
         VBox card = creaCard(brano.getTitolo(), String.join(", ", brano.getAutori()), imageFile);
 
+        // Funzione per andare alla pagina del brano quando si clicca la card
         card.setOnMouseClicked(e -> mainController.goToBrano(card, brano, () -> {
             BranoController controller = mainController.getBranoController();
             if (controller != null) controller.fetchBranoData(brano);
@@ -102,6 +119,15 @@ public class CronologiaController implements Controller{
         return card;
     }
 
+    /**
+     * Funzione generica per creare una card
+     *
+     * @param titolo Titolo del brano
+     * @param sottotitolo Nome dell'autore
+     * @param imageFile Cover da assegnare alla card
+     *
+     * @return Card creata
+     */
     private VBox creaCard(String titolo, String sottotitolo, File imageFile) {
         VBox card = new VBox(7);
         card.setAlignment(Pos.CENTER);

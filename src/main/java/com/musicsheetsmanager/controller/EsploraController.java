@@ -12,13 +12,10 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.PixelReader;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-
 import java.io.File;
 import java.lang.reflect.Type;
 import java.nio.file.Path;
@@ -60,11 +57,15 @@ public class EsploraController implements Controller {
         esploraTitle.setText("Esplora");
     }
 
+    /**
+     * Inizializza i brani nella pagina Esplora
+     */
     public void inizializzaBrani() {
         if (mainController != null) {
             mainController.setEsploraController(this);
         }
 
+        // Restituisce il tipo di toggle selezionato
         String viewType = getViewType();
         if (viewType != null) {
             mostraCatalogo(viewType);
@@ -81,8 +82,9 @@ public class EsploraController implements Controller {
             btn.setToggleGroup(catalogoGroup);
         }
 
-        esploraBtn.setSelected(true); // selezione di default
+        esploraBtn.setSelected(true); // Selezione di default
 
+        // Listener per la selezione del toggle
         catalogoGroup.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> {
             if (newToggle != null) {
                 mostraCatalogo(((ToggleButton) newToggle).getText().toLowerCase());
@@ -94,6 +96,8 @@ public class EsploraController implements Controller {
 
     /**
      * Restituisce il tipo di vista selezionata (esplora, generi, ecc.).
+     *
+     * @return Tipo di vista del toggle selezionato
      */
     public String getViewType() {
         ToggleButton selectedBtn = (ToggleButton) catalogoGroup.getSelectedToggle();
@@ -143,6 +147,8 @@ public class EsploraController implements Controller {
      * @param titolo Titolo della card (nome del brano o elemento del dizionario)
      * @param sottotitolo Usato solo nelle card brano per l'autore del brano
      * @param imageFile Cover della card
+     *
+     * @return Card creata
      */
     private VBox creaCard(String titolo, String sottotitolo, File imageFile) {
         VBox card = new VBox(7);
@@ -183,11 +189,14 @@ public class EsploraController implements Controller {
      * Crea una card specifica per un brano.
      *
      * @param brano Brano di cui si vuole creare la card
+     *
+     * @return Card del brano
      */
     public VBox creaCardBrano(Brano brano) {
         File imageFile = new File(COVER_PATH + brano.getIdBrano() + ".jpg");
         VBox card = creaCard(brano.getTitolo(), String.join(", ", brano.getAutori()), imageFile);
 
+        // Cliccando sul brano si viene reinderizzati alla relativa pagina
         card.setOnMouseClicked(e -> mainController.goToBrano(card, brano, () -> {
             BranoController controller = mainController.getBranoController();
             if (controller != null) controller.fetchBranoData(brano);
@@ -200,6 +209,8 @@ public class EsploraController implements Controller {
      * Crea una card per il catalogo generico (autori, esecutori).
      *
      * @param titoloCard Titolo della card
+     *
+     * @return Card del catalogo
      */
     public VBox creaCardCatalogo(String titoloCard) {
         String viewType = getViewType(); // "autori" o "esecutori"
@@ -214,6 +225,7 @@ public class EsploraController implements Controller {
 
         VBox card = creaCard(titoloCard, null, imageFile);
 
+        // Cliccando sul catalogo si ottiene una lista dei brani appartenenti a quel catalogo
         card.setOnMouseClicked(e -> {
             Type branoType = new TypeToken<List<Brano>>() {}.getType();
             List<Brano> brani = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType);
@@ -243,6 +255,8 @@ public class EsploraController implements Controller {
      *
      * @param brani Lista dei brani letta da json
      * @param genere Genere di cui si vuole creare la card
+     *
+     * @return Card del genere
      */
     public GridPane creaCardGenere(List<Brano> brani, String genere) {
         GridPane card = new GridPane();
@@ -283,6 +297,7 @@ public class EsploraController implements Controller {
         GridPane.setConstraints(imageView, 1, 1, 1, 1, HPos.LEFT, VPos.BOTTOM, Priority.NEVER, Priority.ALWAYS, new Insets(0, 0, 0, 45));
         card.getChildren().add(imageView);
 
+        // Renderizza i brani appartenenti a quel genere
         card.setOnMouseClicked(e -> {
             // Filtra i brani che contengono il genere selezionato
             List<Brano> braniDelGenere = brani.stream()

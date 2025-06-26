@@ -33,7 +33,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.time.Year;
 import java.util.*;
 
 import com.google.gson.reflect.TypeToken;
@@ -57,8 +56,6 @@ import javax.imageio.ImageIO;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import com.musicsheetsmanager.config.StringUtils;
 
 public class CaricaBranoController implements Controller {
 
@@ -121,7 +118,7 @@ public class CaricaBranoController implements Controller {
     }
 
     /**
-     *  inizializza lo sfondo della card di preview
+     *  Inizializza lo sfondo della card di preview
      */
     private void initializePreviewBackground(){
         // 1. Rectangle che funge da sfondo
@@ -318,7 +315,7 @@ public class CaricaBranoController implements Controller {
     }
 
     /**
-     *  Cambia l'immagine di sfondo della preview con una dissolvenza
+     * Cambia l'immagine di sfondo della preview con una dissolvenza
      *
      * @param imageView la imageView da modificare
      * @param nuovaImmagine Immagine da mettere come sfondo
@@ -366,7 +363,7 @@ public class CaricaBranoController implements Controller {
     }
 
     /**
-     * form per l'aggiunta di un nuovo brano da parte dell'utente
+     * Form per l'aggiunta di un nuovo brano da parte dell'utente
      */
     @FXML
     public void onAddBranoClick() throws IOException {
@@ -406,29 +403,33 @@ public class CaricaBranoController implements Controller {
         List<Brano> listaBrani = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType); // brani letti dal json
         Brano nuovoBrano = Brano.getBranoById(listaBrani, idBrano);
 
-        // aggiorna path allegati del brano
+        // Aggiorna path allegati del brano
         List<String> pathAllegati = fileAllegati.stream()
                 .map(Documento::getPercorso)
                 .collect(Collectors.toList());
 
         nuovoBrano.setDocumenti(pathAllegati);
 
-        // aggiorna file json contenente tutti i brani
+        // Aggiorna file json contenente tutti i brani
         JsonUtils.scriviSuJson(listaBrani, BRANI_JSON_PATH);
         System.out.println("Path allegati modificati con successo");
 
-        // aggiorna file json contenente i documenti
-        Type documentoType = new TypeToken<List<Documento>>() {}.getType();     // documenti letti dal json
+        // Aggiorna file json contenente i documenti
+        Type documentoType = new TypeToken<List<Documento>>() {}.getType();     // Documenti letti dal json
         List<Documento> listaDocumenti = JsonUtils.leggiDaJson(DOCUMENTI_JSON_PATH, documentoType);
         listaDocumenti.addAll(fileAllegati);
         JsonUtils.scriviSuJson(listaDocumenti, DOCUMENTI_JSON_PATH);
     }
 
     /**
-     * crea il brano e aggiorna i vari dizionari (autori, generi, titoli, strumentiMusicali)
-     * @param idBrano
+     * Crea il brano e aggiorna i vari dizionari (autori, generi, titoli, strumentiMusicali)
+     *
+     * @param idBrano Id alfanumerico generato per il brano
+     *
+     * @return true se il brano è stato creato correttamente
      */
     private boolean creaBrano(String idBrano){
+        // Legge i vari campi del form
         String titolo = campoTitolo.getText().trim();
         if(titolo.isEmpty()) {
             errore.setText("Campo titolo obbligatorio");
@@ -477,7 +478,7 @@ public class CaricaBranoController implements Controller {
         Type branoType = new TypeToken<List<Brano>>() {}.getType();
         List<Brano> listaBrani = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType); // brani letti dal json
 
-        // controllo che il brano non esista già (stesso titolo, autori, anno di composizione, esecutori, strumenti musicali)
+        // Controllo che il brano non esista già (stesso titolo, autori, anno di composizione, esecutori, strumenti musicali)
         for(Brano brano: listaBrani){
             if(brano.equals(nuovoBrano)) {
                 errore.setText("Il brano esiste già");
@@ -486,11 +487,11 @@ public class CaricaBranoController implements Controller {
             }
         }
 
-        // aggiorna file json contenente tutti i brani
+        // Aggiorna file json contenente tutti i brani
         listaBrani.add(nuovoBrano);
         JsonUtils.scriviSuJson(listaBrani, BRANI_JSON_PATH);
 
-        // aggiorna dizionari
+        // Aggiorna dizionari
         aggiornaDizionario(Collections.singletonList(titolo), "titoli");
         aggiornaDizionario(autori, "autori");
         aggiornaDizionario(generi, "generi");
@@ -499,6 +500,7 @@ public class CaricaBranoController implements Controller {
 
         System.out.println("Dizionari salvati con successo");
 
+        // Cambia pagina dopo aver caricato il brano
         mainController.goToBrano(caricaBottone, nuovoBrano, () -> {
             BranoController controller = mainController.getBranoController();
             if (controller != null) {
@@ -510,13 +512,13 @@ public class CaricaBranoController implements Controller {
     }
 
     /**
-     * permette all'utente di caricare documenti inerenti al brano(es. spartiti, testi...)
+     * Permette all'utente di caricare documenti inerenti al brano(es. spartiti, testi...)
      */
     @FXML
     private void onAllegaFileClick() {
         FileChooser fileChooser = new FileChooser();
 
-        // filtri file consentiti
+        // Filtri file consentiti
         FileChooser.ExtensionFilter filtroTutti = new FileChooser.ExtensionFilter(
                 "Tutti i file supportati",
                 "*.mp3", "*.mp4", "*.pdf", "*.jpg", "*.png", "*.midi"
@@ -533,10 +535,11 @@ public class CaricaBranoController implements Controller {
 
         File selectedFile = fileChooser.showOpenDialog(allegaFileBtn.getScene().getWindow());
 
+        // Crea l'oggetto Documento
         if(selectedFile != null && !fileAllegati.contains(selectedFile)){
             Documento documento = new Documento(SessionManager.getLoggedUser().getUsername(), selectedFile.getName(), selectedFile.getAbsolutePath());
 
-            // controllo per duplicati
+            // Controllo per duplicati
             boolean exist = fileAllegati.stream()
                     .anyMatch(doc -> doc.getPercorso().equals(documento.getPercorso()));
             if(!exist) {
@@ -547,8 +550,9 @@ public class CaricaBranoController implements Controller {
     }
 
     /**
-     * crea un bottone ogni volta che l'utente carica un allegato
-     * @param documento
+     * Crea un bottone ogni volta che l'utente carica un allegato
+     *
+     * @param documento Documento allegato
      */
     private void viewFile(Documento documento) {
         Button btn = new Button(documento.getNomeFile());
@@ -572,15 +576,16 @@ public class CaricaBranoController implements Controller {
     }
 
     /**
-     * funzione per eliminare un documento prima di caricare il brano
-     * @param btn
-     * @param documento
+     * Funzione per eliminare un documento prima di caricare il brano
+     *
+     * @param btn Bottone del documento da rimuovere
+     * @param documento Documento da rimuovere
      */
     public void onEliminaAllegatoClick (Button btn, Documento documento) {
-        // rimuove bottone
+        // Rimuove bottone
         allegatiPane.getChildren().remove(btn);
 
-        // rimuove allegato
+        // Rimuove allegato
         fileAllegati.remove(documento);
 
         System.out.println("Documento: " + documento.toString() + " rimosso con successo");
@@ -588,12 +593,12 @@ public class CaricaBranoController implements Controller {
 
 
     /**
-     * salva i documenti nella cartella /attachments se l'utente carica il brano
-     * @param idBrano
+     * Salva i documenti nella cartella /attachments se l'utente carica il brano
+     *
+     * @param idBrano Id del brano
      */
     private void salvaFileAllegati(String idBrano) {
-
-        // nella cartella attachment crea directory con l'id del brano
+        // Nella cartella attachment crea directory con l'id del brano
         Path attachmentsDirectory = Paths.get(
                 "src", "main", "resources",
                 "attachments", idBrano
@@ -603,11 +608,11 @@ public class CaricaBranoController implements Controller {
 
             for (Documento documento : fileAllegati) {
                 Path sourcePath = Path.of(documento.getPercorso());
-                Path destinationPath = attachmentsDirectory.resolve(documento.getNomeFile());   // ottieni path completa:
+                Path destinationPath = attachmentsDirectory.resolve(documento.getNomeFile());   // Ottieni path completa:
                                                                                                 // path cartella + nome file
                 Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
 
-                // aggiorna in percorso relativo
+                // Aggiorna in percorso relativo
                 documento.setPercorso(destinationPath.toString());
             }
         } catch (IOException e) {
@@ -616,12 +621,13 @@ public class CaricaBranoController implements Controller {
     }
 
     /**
-     * aggiorna i vari dizionari
-     * @param nuoviElementiDizionario
-     * @param tipoDizionario
+     * Aggiorna i vari dizionari
+     *
+     * @param nuoviElementiDizionario Elementi da aggiungere al dizionario
+     * @param tipoDizionario Dizionario che si intende aggiornare
      */
     public void aggiornaDizionario(List<String> nuoviElementiDizionario, String tipoDizionario) {
-        Path DIZIONARIO_JSON_PATH = Paths.get( // percorso verso il file JSON
+        Path DIZIONARIO_JSON_PATH = Paths.get( // Percorso verso il file JSON
                 "src", "main", "resources",
                 "com", "musicsheetsmanager", "data", tipoDizionario + ".json"
         );
@@ -630,7 +636,7 @@ public class CaricaBranoController implements Controller {
         List<String> listaDizionario = JsonUtils.leggiDaJson(DIZIONARIO_JSON_PATH, listType);
 
         for(String element: nuoviElementiDizionario) {
-            if(!listaDizionario.contains(element)){         // controllo per duplicati
+            if(!listaDizionario.contains(element)){         // Controllo per duplicati
                     listaDizionario.add(element);
             }
         }
@@ -699,7 +705,8 @@ public class CaricaBranoController implements Controller {
 
     /**
      * Scarica la foto profilo degli artisti grazie alla API di Spotify
-     * @param autori
+     *
+     * @param autori Lista degli autori dei brani
      */
     private void scaricaFotoArtisti(List<String> autori) {
         new Thread(() -> {
@@ -771,7 +778,8 @@ public class CaricaBranoController implements Controller {
 
     /**
      * Genera avatar per l'esecutore immesso nel form, se non già esistente
-     * @param esecutori
+     *
+     * @param esecutori Esecutori dei brani
      */
     private void generaAvatarEsecutori(List<String> esecutori) {
         new Thread(() -> {

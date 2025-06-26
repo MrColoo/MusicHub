@@ -2,7 +2,6 @@ package com.musicsheetsmanager.controller;
 
 import com.musicsheetsmanager.model.Brano;
 import com.musicsheetsmanager.model.Concerto;
-import com.musicsheetsmanager.model.Utente;
 import com.musicsheetsmanager.config.SessionManager;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -26,10 +25,6 @@ public class MainController {
     @FXML private NavBarController navBarController;
     @FXML private CronologiaController cronologiaController;
 
-
-
-    private Utente currentUser;
-
     public void initialize() {
         if (!SessionManager.isLoggedIn()) {
             show("Login");
@@ -39,7 +34,6 @@ public class MainController {
 
         topBarController.setMainController(this);
         topBarController.setEsploraController(esploraController);
-
 
         showNavBar();
     }
@@ -65,7 +59,9 @@ public class MainController {
         }
     }
 
-    // Funzione generale per caricare una pagina FXML
+    /**
+     * Funzione generale per caricare una pagina FXML
+     */
     private void loadContent(String nomePagina, StackPane pane) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/musicsheetsmanager/fxml/" + nomePagina + ".fxml"));
@@ -76,7 +72,7 @@ public class MainController {
                 ((Controller) controller).setMainController(this);
             }
 
-            // riferimenti controller specifici
+            // Riferimenti controller specifici
             if (controller instanceof EsploraController esplora) {
                 this.esploraController = esplora;
             } else if (controller instanceof EsploraConcertiController esploraConcerti) {
@@ -93,7 +89,7 @@ public class MainController {
                 this.cronologiaController = cronologiaController;
             }
 
-            // collegamenti controller
+            // Collegamenti controller
             if (topBarController != null) {
                 topBarController.setMainController(this);
                 if (esploraController != null) topBarController.setEsploraController(esploraController);
@@ -116,7 +112,7 @@ public class MainController {
 
             pane.getChildren().setAll(content);
 
-            // iniziallizza brani e concerti di esplora
+            // Iniziallizza brani e concerti di esplora
             if (nomePagina.equals("Esplora") && esploraController != null) {
                 esploraController.inizializzaBrani();
             }
@@ -130,7 +126,13 @@ public class MainController {
         }
     }
 
-    // vai alla pagina "Brano"
+    /**
+     * Vai alla pagina del brano
+     *
+     * @param node Nodo a cui si intende associare il brano
+     * @param brano Brano cliccato
+     * @param onPageReady Funzione da eseguire dopo il click
+     */
     public void goToBrano(Node node, Brano brano, Runnable onPageReady) {
         node.setUserData(brano);    // associa brano alla card
 
@@ -138,7 +140,13 @@ public class MainController {
         Platform.runLater(onPageReady);
     }
 
-    // vai alla pagina "Concerto"
+    /**
+     * Vai alla pagina del concerto
+     *
+     * @param node Nodo a cui si intende associare il concerto
+     * @param concerto Concerto cliccato
+     * @param onPageReady Funzione da eseguire dopo il click
+     */
     public void goToConcerto(Node node, Concerto concerto, Runnable onPageReady) {
         if(node != null) node.setUserData(concerto);
 
@@ -146,27 +154,37 @@ public class MainController {
         onPageReady.run();
     }
 
-    // Funzione per caricare pagine FXML nella sezione MAIN
+    /**
+     *  Funzione per caricare pagine FXML nella sezione MAIN
+     */
     public void show(String nomePagina){
         loadContent(nomePagina, mainContentPane);
     }
 
-    // Carica TopBar
+    /**
+     *  Carica TopBar
+     */
     private void showTopBar() {
         loadContent("TopBar", topBarContainer);
     }
 
-    // Carica NavBar
+    /**
+     *  Carica NavBar
+     */
     public void showNavBar() {
         loadContent("NavBar", navBarContainer);
     }
 
-    // Nasconde NavBar
+    /**
+     *  Nasconde NavBar
+     */
     public void hideNavBar() {
         navBarContainer.getChildren().clear();
     }
 
-    // Ricarica TopBar
+    /**
+     *  Ricarica TopBar
+     */
     public void reloadTopBar() {
         navBarContainer.getChildren().clear();
         loadContent("TopBar", topBarContainer);

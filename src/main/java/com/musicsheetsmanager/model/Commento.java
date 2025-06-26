@@ -60,12 +60,18 @@ public class Commento {
         return testo;
     }
 
-    // aggiunge l'id del commento al brano corrispondente
+    /**
+     *  Aggiunge l'id del commento al brano corrispondente
+     *
+     * @param idBrano Id del brano a cui si vuole aggiungere il commento
+     * @param idCommento Id del commento da aggiungere
+     * @param BRANI_JSON_PATH Path del file json dei brani
+     */
     public static void linkIdcommentoBrano (String idBrano, String idCommento, Path BRANI_JSON_PATH){
         Type branoType = new TypeToken<List<Brano>>() {}.getType();
         List<Brano> listaBrani = JsonUtils.leggiDaJson(BRANI_JSON_PATH, branoType);
 
-        // cerca il brano e aggiunge l'id del commento
+        // Cerca il brano e aggiunge l'id del commento
         for (Brano b: listaBrani) {
             if (b.getIdBrano().equals(idBrano)) {
                 b.aggiungiCommento(idCommento);
