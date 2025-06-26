@@ -57,12 +57,10 @@ public class RegisterController implements Controller {
      */
     @FXML
     private void initialize() {
-        // 1) Rende registerButton “predefinito”:
-        //    quando si preme Invio (ENTER) da uno dei TextField, viene fatto click su di esso.
+        // Rende registerButton “predefinito”: quando si preme Invio (ENTER) da uno dei TextField, viene fatto click su di esso.
         registerButton.setDefaultButton(true);
 
-        // 2) Listener sul TextField della password:
-        //    se si preme Invio mentre il focus è su registerPasswordField, simula il click sul bottone.
+        // Listener sul TextField della password: se si preme Invio mentre il focus è su registerPasswordField, simula il click sul bottone.
         registerPasswordField.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ENTER) {
                 registerButton.fire();
@@ -71,6 +69,10 @@ public class RegisterController implements Controller {
         });
     }
 
+    /**
+     * Metodo chiamato quando l'utente clicca sul pulsante "Registrati".
+     * Valida i dati inseriti, crea un nuovo utente e lo salva nel file JSON.
+     */
     @FXML
     private void onRegisterClicked() {
         // Prendi i valori dei campi, rimuove spazi iniziali e finali
@@ -98,7 +100,7 @@ public class RegisterController implements Controller {
             return;
         }
 
-        // Crea un nuovo utente con i dati inseriti
+        // Crea un nuovo utente con i dati inseriti (setta di default approved e admin a false)
         Utente newUser = new Utente(email, username, password, false, false);
 
         // Provo a salvare l'utente nel JSON
@@ -111,7 +113,13 @@ public class RegisterController implements Controller {
         feedbackText.setText("Registrazione avvenuta con successo!");
     }
 
-    // Funzione per salvare l'utente nel file JSON
+    /**
+     * Salva un nuovo utente nel file JSON, dopo aver controllato che
+     * email e username non siano già presenti.
+     *
+     * @param newUser l'oggetto Utente da aggiungere
+     * @return true se il salvataggio è andato a buon fine, false altrimenti
+     */
     private boolean salvaUtenteInJson(Utente newUser) {
         Type listType = new TypeToken<List<Utente>>() {}.getType();
         List<Utente> users = JsonUtils.leggiDaJson(USER_JSON_PATH, listType);
@@ -123,11 +131,11 @@ public class RegisterController implements Controller {
         }
 
         for (Utente user : users) {
-            if (user.getEmail().equalsIgnoreCase(newUser.getEmail())) {
+            if (user.getEmail().equalsIgnoreCase(newUser.getEmail())) { // controllo che l'email non sia gia' presente
                 feedbackText.setText("Questa email è già registrata!");
                 return false;
             }
-            if (user.getUsername().equalsIgnoreCase(newUser.getUsername())) {
+            if (user.getUsername().equalsIgnoreCase(newUser.getUsername())) { // controllo che l'username non sia gia' presente
                 feedbackText.setText("Questo username è già in uso!");
                 return false;
             }
@@ -139,12 +147,22 @@ public class RegisterController implements Controller {
         return true;
     }
 
+    /**
+     * Metodo collegato a un evento click (MouseEvent) per passare alla schermata di login.
+     *
+     * @param event l'evento generato dal click del mouse
+     */
     @FXML
     private void goToLogin(MouseEvent event) {
         mainController.show("Login");
     }
 
-    // Restituisce true se la stringa passata è nel formato di una mail valida.
+    /**
+     * Controlla se l'email ha un formato valido.
+     *
+     * @param email la stringa da validare
+     * @return true se è una email ben formata, false altrimenti
+     */
     private boolean isValidEmail(String email) {
         if (email == null) return false;
         return EMAIL_PATTERN.matcher(email).matches();
