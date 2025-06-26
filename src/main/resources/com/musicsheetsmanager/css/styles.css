@@ -311,6 +311,14 @@ previewBackground{
     -fx-background-color: none;
 }
 
+.concerto-scroll-pane{
+    -fx-background-color: none;
+}
+
+.concerto-scroll-pane > .viewport {
+    -fx-background-color: none;
+}
+
 /* COMMENTI */
 .delete-btn{
     -fx-background-color: none;

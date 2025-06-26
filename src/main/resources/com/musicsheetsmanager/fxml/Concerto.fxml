@@ -6,6 +6,7 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.GridPane?>
@@ -13,101 +14,103 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
-<?import javafx.scene.web.WebView?>
 
-<ScrollPane hbarPolicy="NEVER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="1070.0" styleClass="brano-scroll-pane" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.musicsheetsmanager.controller.ConcertoController">
-    <content>
-        <VBox prefWidth="1070.0">
-            <children>
-                <HBox alignment="CENTER_LEFT" prefWidth="1070.0" styleClass="brano-banner">
-                    <children>
-                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="315.0" prefWidth="560.0">
-                            <children>
-                                <WebView fx:id="webView" minHeight="-Infinity" minWidth="-Infinity" prefHeight="515.0" prefWidth="760.0" />
-                            </children>
-                        </VBox>
+<AnchorPane fx:id="backgroundConcerto" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="1070.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.musicsheetsmanager.controller.ConcertoController">
+   <children>
+      <ScrollPane hbarPolicy="NEVER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="1070.0" styleClass="concerto-scroll-pane">
+         <content>
+            <VBox prefWidth="1070.0">
+               <children>
+                  <HBox alignment="CENTER_LEFT" prefWidth="1070.0" styleClass="brano-banner">
+                     <children>
+                        <VBox fx:id="webViewContainer" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="315.0" prefWidth="560.0" />
                         <VBox alignment="BOTTOM_LEFT">
-                            <children>
-                                <Text fx:id="concertoTitolo" strokeType="OUTSIDE" strokeWidth="0.0" text="Titolo" wrappingWidth="350.0">
-                                    <styleClass>
-                                        <String fx:value="text-white" />
-                                        <String fx:value="font-black" />
-                                        <String fx:value="text-4xl" />
-                                    </styleClass>
-                                    <VBox.margin>
-                                        <Insets bottom="5.0" />
-                                    </VBox.margin>
-                                </Text>
-                            </children>
-                            <HBox.margin>
-                                <Insets left="65.0" />
-                            </HBox.margin>
+                           <children>
+                              <Text fx:id="concertoTitolo" strokeType="OUTSIDE" strokeWidth="0.0" text="Titolo" wrappingWidth="350.0">
+                                 <styleClass>
+                                    <String fx:value="text-white" />
+                                    <String fx:value="font-black" />
+                                    <String fx:value="text-4xl" />
+                                 </styleClass>
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" />
+                                 </VBox.margin>
+                              </Text>
+                           </children>
+                           <HBox.margin>
+                              <Insets left="65.0" />
+                           </HBox.margin>
                         </VBox>
-                    </children>
-                    <padding>
+                     </children>
+                     <padding>
                         <Insets bottom="40.0" left="55.0" top="50.0" />
-                    </padding>
-                </HBox>
-                <GridPane alignment="CENTER" hgap="10.0">
-                    <columnConstraints>
+                     </padding>
+                  </HBox>
+                  <GridPane alignment="CENTER" hgap="10.0">
+                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="100.0" />
                         <ColumnConstraints halignment="CENTER" hgrow="NEVER" />
                         <ColumnConstraints halignment="CENTER" hgrow="NEVER" />
                         <ColumnConstraints halignment="CENTER" hgrow="NEVER" />
                         <ColumnConstraints halignment="CENTER" hgrow="NEVER" />
-                    </columnConstraints>
-                    <rowConstraints>
+                     </columnConstraints>
+                     <rowConstraints>
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
-                    <children>
+                     </rowConstraints>
+                     <children>
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Brani presenti">
-                            <styleClass>
-                                <String fx:value="font-black" />
-                                <String fx:value="text-white" />
-                                <String fx:value="text-2xl" />
-                            </styleClass>
+                           <styleClass>
+                              <String fx:value="font-black" />
+                              <String fx:value="text-white" />
+                              <String fx:value="text-2xl" />
+                           </styleClass>
                         </Text>
                         <Button fx:id="aggiungiBranoCanzone" mnemonicParsing="false" onAction="#addConcertoClicked" prefHeight="30.0" text="Aggiungi" GridPane.columnIndex="4">
-                            <styleClass>
-                                <String fx:value="explore-btn" />
-                                <String fx:value="text-sm" />
-                                <String fx:value="font-medium" />
-                            </styleClass>
-                            <padding>
-                                <Insets left="10.0" right="10.0" />
-                            </padding>
+                           <styleClass>
+                              <String fx:value="explore-btn" />
+                              <String fx:value="text-sm" />
+                              <String fx:value="font-medium" />
+                           </styleClass>
+                           <padding>
+                              <Insets left="10.0" right="10.0" />
+                           </padding>
                         </Button>
                         <TextField fx:id="fineBranoConcerto" alignment="CENTER" prefHeight="30.0" prefWidth="70.0" promptText="Fine" GridPane.columnIndex="3">
-                            <styleClass>
-                                <String fx:value="form-text-field" />
-                                <String fx:value="font-book" />
-                            </styleClass>
+                           <styleClass>
+                              <String fx:value="form-text-field" />
+                              <String fx:value="font-book" />
+                           </styleClass>
                         </TextField>
                         <TextField fx:id="inizioBranoConcerto" alignment="CENTER" prefHeight="30.0" prefWidth="70.0" promptText="Inizio" GridPane.columnIndex="2">
-                            <styleClass>
-                                <String fx:value="form-text-field" />
-                                <String fx:value="font-book" />
-                            </styleClass>
+                           <styleClass>
+                              <String fx:value="form-text-field" />
+                              <String fx:value="font-book" />
+                           </styleClass>
                         </TextField>
                         <ComboBox fx:id="selezionaBrani" editable="true" prefHeight="30.0" promptText="Aggiungi brano" GridPane.columnIndex="1">
-                            <styleClass>
-                                <String fx:value="form-text-field" />
-                                <String fx:value="font-book" />
-                            </styleClass>
+                           <styleClass>
+                              <String fx:value="form-text-field" />
+                              <String fx:value="font-book" />
+                           </styleClass>
                         </ComboBox>
-                    </children>
-                    <VBox.margin>
+                     </children>
+                     <VBox.margin>
                         <Insets />
-                    </VBox.margin>
-                    <padding>
+                     </VBox.margin>
+                     <padding>
                         <Insets bottom="20.0" left="50.0" right="50.0" top="40.0" />
-                    </padding>
-                </GridPane>
-                <FlowPane fx:id="containerBrani" hgap="20.0" prefWidth="1070.0" vgap="20.0" />
-            </children>
-        </VBox>
-    </content>
-    <opaqueInsets>
-        <Insets />
-    </opaqueInsets>
-</ScrollPane>
+                     </padding>
+                  </GridPane>
+                  <FlowPane fx:id="containerBrani" hgap="20.0" prefWidth="1070.0" vgap="20.0">
+                     <padding>
+                        <Insets bottom="25.0" left="25.0" right="25.0" />
+                     </padding></FlowPane>
+               </children>
+            </VBox>
+         </content>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </ScrollPane>
+   </children>
+</AnchorPane>

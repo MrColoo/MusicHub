@@ -143,7 +143,7 @@ public class MainController {
         if(node != null) node.setUserData(concerto);
 
         show("Concerto");
-        Platform.runLater(onPageReady);
+        onPageReady.run();
     }
 
     // Funzione per caricare pagine FXML nella sezione MAIN

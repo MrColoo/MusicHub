@@ -9,6 +9,7 @@ import com.musicsheetsmanager.model.Brano;
 import com.musicsheetsmanager.model.BranoAssegnatoAlConcerto;
 import com.musicsheetsmanager.model.Concerto;
 import com.musicsheetsmanager.model.Utente;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
@@ -18,16 +19,24 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.web.WebView;
+
+import java.io.File;
+import javafx.scene.Node;
 
 import java.io.File;
 import java.lang.reflect.Type;
@@ -36,12 +45,14 @@ import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.List;
 
+import com.musicsheetsmanager.config.UiUtils;
 
 public class ConcertoController implements Controller{
 
     // Percorsi ai file JSON
     private static final Path PATH_BRANI_JSON = Paths.get("src/main/resources/com/musicsheetsmanager/data/brani.json");
     private static final Path PATH_BRANICONCERTO_JSON = Paths.get("src/main/resources/com/musicsheetsmanager/data/braniConcerto.json");
+    private static final Path PATH_CONCERTI_IMAGE = Paths.get("src/main/resources/com/musicsheetsmanager/ui/concerti/");
     private static final String DEFAULT_COVER = "src/main/resources/com/musicsheetsmanager/ui/Cover.jpg";
     private static final String COVER_PATH = "src/main/resources/com/musicsheetsmanager/ui/covers/";
 
@@ -63,6 +74,8 @@ public class ConcertoController implements Controller{
     @FXML private WebView webView;
     @FXML private Text concertoTitolo;
     @FXML private ComboBox<Brano> selezionaBrani;
+    @FXML private VBox webViewContainer;
+    @FXML private AnchorPane backgroundConcerto;
     @FXML private FlowPane containerBrani;
 
     // ID del concerto attualmente visualizzato
@@ -81,7 +94,6 @@ public class ConcertoController implements Controller{
      *
      * @param concerto oggetto Concerto contenente le informazioni da visualizzare
      */
-
     public void fetchConcertoData(Concerto concerto) {
         currentConcerto = concerto;
         idConcerto = concerto.getId();
@@ -95,15 +107,23 @@ public class ConcertoController implements Controller{
 
         // Carica il video YouTube, se presente
         String linkYoutube = concerto.getLink();
-        if (linkYoutube != null && !linkYoutube.isEmpty()) { // controllo se c'e' qualcosa sul link YT
-            System.out.println("Carico video da link: " + linkYoutube);
-            mostraVideo(linkYoutube);
-        } else {
-            System.out.println("Nessun link YouTube trovato per concerto con id: " + idConcerto);
-        }
+
+        // Thread separato crea Webview per evitare rallentamenti e mostra video
+        Platform.runLater(() -> {
+            webView = new WebView();
+            webView.setPrefHeight(515);
+            webView.setPrefWidth(760);
+            if (linkYoutube != null && !linkYoutube.isEmpty()) { // controllo se c'e' qualcosa sul link YT
+                System.out.println("Carico video da link: " + linkYoutube);
+                mostraVideo(linkYoutube);
+            } else {
+                System.out.println("Nessun link YouTube trovato per concerto con id: " + idConcerto);
+            }
+        });
 
         System.out.println("Caricato concerto: " + titolo);
 
+        changeBackgroundColor(idConcerto);
         mostraCardBraniConcerto(idConcerto);
     }
 
@@ -133,6 +153,7 @@ public class ConcertoController implements Controller{
             """, embedUrl);
 
             webView.getEngine().loadContent(html, "text/html");
+            webViewContainer.getChildren().setAll(webView);
         } else {
             System.out.println("Link YouTube non valido: " + linkYoutube);
         }
@@ -504,5 +525,26 @@ public class ConcertoController implements Controller{
         }));
 
         return card;
+    }
+
+    private void changeBackgroundColor(String idConcerto){
+        File imageFile = PATH_CONCERTI_IMAGE.resolve(idConcerto + ".jpg").toFile();
+        System.out.println(PATH_CONCERTI_IMAGE + idConcerto + ".jpg");
+        // Colore dominante come background
+        Image image = new Image(imageFile.toURI().toString());
+
+        // Ottieni il colore dominante
+        Color coloreDominante = UiUtils.estraiColoreDominante(image);
+
+        // Convertilo in formato CSS (hex)
+        String hexColor = UiUtils.toHexColor(coloreDominante);
+
+        // Applica lo stile con gradiente
+        String gradientStyle = String.format("""
+            -fx-background-color: linear-gradient(from 0%% 0%% to 0%% 30%%, %s, #000000);
+        """, hexColor);
+
+        // Applica lo stile al ScrollPane
+        backgroundConcerto.setStyle(gradientStyle);
     }
 }
