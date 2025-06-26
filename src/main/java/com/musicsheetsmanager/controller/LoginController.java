@@ -46,13 +46,9 @@ public class LoginController implements Controller {
      */
     @FXML
     private void initialize() {
-        // 1) Rende il loginButton “predefinito”:
-        //    quando si preme Invio (ENTER) da uno dei TextField, viene fatto click su di esso.
+        // Rende il loginButton “predefinito”: quando si preme Invio (ENTER) da uno dei TextField, viene fatto click su di esso.
         loginButton.setDefaultButton(true);
 
-        // 2) (Opzionale) Listener esplicito sul TextField della password:
-        //    se si vuole essere sicuri che Invio sulla password faccia partire il loginButton,
-        //    anche se non fosse “default” (ad es. focus su altro componente).
         loginPasswordField.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ENTER) {
                 // “Clicca” sul pulsante di login:
@@ -62,6 +58,13 @@ public class LoginController implements Controller {
         });
     }
 
+    /**
+     * Metodo collegato al bottone di login (tramite FXML).
+     * Valida le credenziali inserite, verifica l'approvazione dell'utente
+     * e gestisce il passaggio alla schermata successiva se il login ha successo.
+     *
+     * @param event evento generato dal clic sul bottone di login
+     */
     @FXML
     private void handleLogin(ActionEvent event) { // gestione del bottone per il login
         String username = loginUsernameField.getText().trim();
@@ -107,6 +110,9 @@ public class LoginController implements Controller {
         feedbackText.setText("Credenziali errate.");
     }
 
+    /**
+     * Funzione di passaggio alla schermata di register.
+     */
     @FXML
     private void goToRegister(javafx.scene.input.MouseEvent event) {
         // Naviga alla schermata di registrazione
