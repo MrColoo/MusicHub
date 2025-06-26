@@ -17,6 +17,7 @@ import javafx.scene.layout.HBox;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TopBarController implements Controller{
 
@@ -127,15 +128,30 @@ public class TopBarController implements Controller{
             }
             case "generi" -> {
                 List<String> dizionario = leggiDizionario(dizionarioPath);
-                List<String> risultati = Brano.cercaCatalogo(dizionario, chiave);
+                List<String> risultati = cercaCatalogo(dizionario, chiave);
                 esploraController.generaCatalogo(risultati, genere -> esploraController.creaCardGenere(listaBrani, genere));
             }
             default -> {
                 List<String> dizionario = leggiDizionario(dizionarioPath);
-                List<String> risultati = Brano.cercaCatalogo(dizionario, chiave);
+                List<String> risultati = cercaCatalogo(dizionario, chiave);
                 esploraController.generaCatalogo(risultati, esploraController::creaCardCatalogo);
             }
         }
+    }
+
+    /**
+     * Risultati ricerca degli elementi di un dizionario
+     *
+     * @param dizionario Dizionario di cui si vuole fare la ricerca
+     * @param chiave Chiave di ricerca inserita
+     */
+    private static List<String> cercaCatalogo (List<String> dizionario, String chiave){
+        if(chiave == null || chiave.isBlank()) return dizionario;
+
+        String key = chiave.toLowerCase();
+        return dizionario.stream()
+                .filter(b -> b.contains(key))
+                .collect(Collectors.toList());
     }
 
     /**

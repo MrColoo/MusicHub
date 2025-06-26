@@ -138,16 +138,6 @@ public class Brano {
         }).collect(Collectors.toList());
     }
 
-    public static List<String> cercaCatalogo (List<String> dizionario, String chiave){
-
-        if(chiave == null || chiave.isBlank()) return dizionario;
-
-        String key = chiave.toLowerCase();
-        return dizionario.stream()
-                .filter(b -> b.contains(key))
-                .collect(Collectors.toList());
-    }
-
     public void aggiungiCommento(String idCommento) {
         if (idCommenti == null) idCommenti = new ArrayList<>();
         idCommenti.add(idCommento);
