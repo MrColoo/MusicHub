@@ -24,7 +24,7 @@
                         <ImageView fx:id="branoCover" fitHeight="170.0" fitWidth="170.0" pickOnBounds="true" preserveRatio="true" />
                         <VBox alignment="BOTTOM_LEFT">
                             <children>
-                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Singolo">
+                                <Text fx:id="genereText" strokeType="OUTSIDE" strokeWidth="0.0">
                                     <styleClass>
                                         <String fx:value="text-white" />
                                         <String fx:value="font-medium" />
@@ -50,7 +50,17 @@
                                         <String fx:value="font-bold" />
                                         <String fx:value="text-base" />
                                     </styleClass>
+                           <VBox.margin>
+                              <Insets bottom="10.0" />
+                           </VBox.margin>
                                 </Text>
+                        <Text fx:id="strumentiMusicaliText" strokeType="OUTSIDE" strokeWidth="0.0">
+                           <styleClass>
+                              <String fx:value="text-white" />
+                              <String fx:value="font-base" />
+                              <String fx:value="text-sm" />
+                           </styleClass>
+                        </Text>
                             </children>
                             <HBox.margin>
                                 <Insets left="65.0" />
