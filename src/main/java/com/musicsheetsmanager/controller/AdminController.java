@@ -4,7 +4,6 @@ package com.musicsheetsmanager.controller;
 import com.google.gson.reflect.TypeToken;
 import com.musicsheetsmanager.config.JsonUtils;
 import com.musicsheetsmanager.model.Utente;
-
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.nio.file.Path;
@@ -12,7 +11,6 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
-
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -50,8 +48,11 @@ public class AdminController implements Controller, Initializable {
     private GridPane userListGridPane;
 
     /**
-     * Metodo chiamato automaticamente quando il controller viene inizializzato.
-     * Carica la lista degli utenti non approvati.
+     * Metodo chiamato automaticamente da JavaFX quando il controller viene inizializzato.
+     * In questo caso, serve per caricare gli utenti non approvati all'avvio della vista.
+     *
+     * @param location   il percorso al file FXML, può essere null
+     * @param resources  il ResourceBundle associato, se usato per l'internazionalizzazione (può essere null)
      */
     public void initialize(URL location, ResourceBundle resources) {
         aggiornaUtenti();
