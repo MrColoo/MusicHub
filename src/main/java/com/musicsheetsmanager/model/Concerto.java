@@ -15,9 +15,6 @@ public class Concerto {
         this.titolo = titolo;
         this.creatore = creatore;
     }
-    public void setCreatore(){this.creatore = creatore;}
-
-    public String getCreatore(){return creatore;}
 
     public void setTitolo(String titolo) {this.titolo = titolo; }
 
@@ -33,10 +30,6 @@ public class Concerto {
 
     public String getLink() {
         return link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
     }
 
     public static List<Concerto> cercaConcerti (List<Concerto> concerti, String chiave) {

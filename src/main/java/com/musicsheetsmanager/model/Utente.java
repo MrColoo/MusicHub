@@ -1,4 +1,3 @@
-// src/main/java/com/musicsheetsmanager/model/Utente.java
 package com.musicsheetsmanager.model;
 
 public class Utente {
@@ -26,10 +25,6 @@ public class Utente {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getUsername() {
         return username;
     }
@@ -40,10 +35,6 @@ public class Utente {
 
     public String getPassword() {
         return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public boolean isApproved(){
@@ -58,3 +49,5 @@ public class Utente {
 
     public void setAdmin(boolean admin) {  this.admin = admin; }
 }
+
+
