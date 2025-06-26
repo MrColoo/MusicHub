@@ -9,10 +9,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-<<<<<<< concerto/ottimizzazione
-=======
-
->>>>>>> main
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
