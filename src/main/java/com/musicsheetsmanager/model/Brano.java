@@ -42,7 +42,6 @@ public class Brano {
     // Getter e Setter
     public String getYoutubeLink() {return linkYoutube;}
 
-
     public String getTitolo() {
         return titolo;
     }
@@ -85,10 +84,6 @@ public class Brano {
 
     public List<String> getStrumentiMusicali() {
         return strumentiMusicali;
-    }
-
-    public String getLinkYoutube() {
-        return linkYoutube;
     }
 
     public String toString() {
@@ -135,7 +130,7 @@ public class Brano {
                     return b.getGeneri() != null && b.getGeneri().stream()
                             .anyMatch(g -> g.equalsIgnoreCase(key));
                 case "esecutori":
-                    return b.getEsecutori() != null && b.getAutori().stream()
+                    return b.getEsecutori() != null && b.getEsecutori().stream()
                             .anyMatch(a -> a.toLowerCase().contains(key));
                 default:
                     return false;
