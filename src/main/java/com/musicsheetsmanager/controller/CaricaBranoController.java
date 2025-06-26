@@ -105,6 +105,11 @@ public class CaricaBranoController implements Controller {
             "com", "musicsheetsmanager", "data", "documenti.json"
     );
 
+    /**
+     *  Crea id brano
+     *  inizializza realtimewriting()
+     *  inizializza lo sfondo della card di preview
+     */
     public void initialize(){
         // genero stringa alfanumerica casuale per ogni brano
         idBrano = UUID.randomUUID().toString();
@@ -115,6 +120,9 @@ public class CaricaBranoController implements Controller {
         errore.setVisible(false);
     }
 
+    /**
+     *  inizializza lo sfondo della card di preview
+     */
     private void initializePreviewBackground(){
         // 1. Rectangle che funge da sfondo
         previewBackground.widthProperty().bind(previewStackPane.widthProperty());
@@ -129,6 +137,10 @@ public class CaricaBranoController implements Controller {
 
     private PauseTransition debounceTimer = new PauseTransition(Duration.millis(500));
 
+
+    /**
+     *  Permette la visione in tempo reale dell'inserimento di titolo e autore
+     */
     private void realtimeWriting() {
         // Aggiorna dinamicamente i testi nelle card
         campoTitolo.textProperty().addListener((obs, oldValue, newValue) -> {
@@ -152,6 +164,9 @@ public class CaricaBranoController implements Controller {
         campoAutori.focusedProperty().addListener(focusListener);
     }
 
+    /**
+     *  Controlli sugli input utente dei campi titolo e autore
+     */
     private void checkAndDownloadCover() {
         String titoloCorrente = campoTitolo.getText().trim();
         String autoreCorrente = campoAutori.getText().trim();
@@ -163,6 +178,9 @@ public class CaricaBranoController implements Controller {
         }
     }
 
+    /**
+     * Funzione che determina quando è il momento di scaricare la copertina e i metadati dal brano
+     */
     private void whenDownloadCover() {
         String titolo = campoTitolo.getText().trim();
         String autore = campoAutori.getText().trim();
@@ -183,7 +201,13 @@ public class CaricaBranoController implements Controller {
                 && input.matches(".*[\\p{L}\\p{N}].*");
     }
 
-
+    /**
+     * Controlla se i campi titolo o autore hanno valori non validi
+     * Successivamente scarica i metadati del brano, compresa la copertina e li visualizza all'utente
+     * Titolo, autore, anno di composizione e copertina vengono scaricati da Spotify grazie alle API e una query
+     * Successivamente il genere viene preso da Itunes sfruttando la API
+     * Il tutto eseguito da Threads separati per evitare rallentamenti al sistema
+     */
     public void downloadCover() {
         String titolo = campoTitolo.getText().trim();
         String autore = campoAutori.getText().trim();
@@ -293,7 +317,12 @@ public class CaricaBranoController implements Controller {
         }).start();
     }
 
-
+    /**
+     *  Cambia l'immagine di sfondo della preview con una dissolvenza
+     *
+     * @param imageView la imageView da modificare
+     * @param nuovaImmagine Immagine da mettere come sfondo
+     */
     private void cambiaImmagineConFade(ImageView imageView, Image nuovaImmagine) {
         Image attuale = imageView.getImage();
 
@@ -320,6 +349,9 @@ public class CaricaBranoController implements Controller {
         fadeOut.play();
     }
 
+    /**
+     * Salva su disco la immagine scaricata da Spotify
+     */
     private void salvaCover() throws IOException {
         BufferedImage image = ImageIO.read(new URL(coverURL));
         // Percorso salvataggio
@@ -333,7 +365,9 @@ public class CaricaBranoController implements Controller {
 
     }
 
-    // form per l'aggiunta di un nuovo brano da parte dell'utente
+    /**
+     * form per l'aggiunta di un nuovo brano da parte dell'utente
+     */
     @FXML
     public void onAddBranoClick() throws IOException {
         if(!creaBrano(idBrano)) {
@@ -390,7 +424,10 @@ public class CaricaBranoController implements Controller {
         JsonUtils.scriviSuJson(listaDocumenti, DOCUMENTI_JSON_PATH);
     }
 
-    // crea il brano e aggiorna i vari dizionari (autori, generi, titoli, strumentiMusicali)
+    /**
+     * crea il brano e aggiorna i vari dizionari (autori, generi, titoli, strumentiMusicali)
+     * @param idBrano
+     */
     private boolean creaBrano(String idBrano){
         String titolo = campoTitolo.getText().trim();
         if(titolo.isEmpty()) {
@@ -472,7 +509,9 @@ public class CaricaBranoController implements Controller {
         return true;
     }
 
-    // permette all'utente di caricare documenti inerenti al brano(es. spartiti, testi...)
+    /**
+     * permette all'utente di caricare documenti inerenti al brano(es. spartiti, testi...)
+     */
     @FXML
     private void onAllegaFileClick() {
         FileChooser fileChooser = new FileChooser();
@@ -507,7 +546,10 @@ public class CaricaBranoController implements Controller {
         }
     }
 
-    // crea un bottone ogni volta che l'utente carica un allegato
+    /**
+     * crea un bottone ogni volta che l'utente carica un allegato
+     * @param documento
+     */
     private void viewFile(Documento documento) {
         Button btn = new Button(documento.getNomeFile());
         btn.setContentDisplay(ContentDisplay.RIGHT);
@@ -529,7 +571,11 @@ public class CaricaBranoController implements Controller {
         allegatiPane.getChildren().add(btn);
     }
 
-    // funzione per eliminare un documento prima di caricare il brano
+    /**
+     * funzione per eliminare un documento prima di caricare il brano
+     * @param btn
+     * @param documento
+     */
     public void onEliminaAllegatoClick (Button btn, Documento documento) {
         // rimuove bottone
         allegatiPane.getChildren().remove(btn);
@@ -540,7 +586,11 @@ public class CaricaBranoController implements Controller {
         System.out.println("Documento: " + documento.toString() + " rimosso con successo");
     }
 
-    // salva i documenti nella cartella /attachments se l'utente carica il brano
+
+    /**
+     * salva i documenti nella cartella /attachments se l'utente carica il brano
+     * @param idBrano
+     */
     private void salvaFileAllegati(String idBrano) {
 
         // nella cartella attachment crea directory con l'id del brano
@@ -565,7 +615,11 @@ public class CaricaBranoController implements Controller {
         }
     }
 
-    // aggiorna i vari dizionari
+    /**
+     * aggiorna i vari dizionari
+     * @param nuoviElementiDizionario
+     * @param tipoDizionario
+     */
     public void aggiornaDizionario(List<String> nuoviElementiDizionario, String tipoDizionario) {
         Path DIZIONARIO_JSON_PATH = Paths.get( // percorso verso il file JSON
                 "src", "main", "resources",
@@ -643,6 +697,10 @@ public class CaricaBranoController implements Controller {
         fade.play();
     }
 
+    /**
+     * Scarica la foto profilo degli artisti grazie alla API di Spotify
+     * @param autori
+     */
     private void scaricaFotoArtisti(List<String> autori) {
         new Thread(() -> {
             try {
@@ -711,7 +769,10 @@ public class CaricaBranoController implements Controller {
         }).start();
     }
 
-
+    /**
+     * Genera avatar per l'esecutore immesso nel form, se non già esistente
+     * @param esecutori
+     */
     private void generaAvatarEsecutori(List<String> esecutori) {
         new Thread(() -> {
             try {
