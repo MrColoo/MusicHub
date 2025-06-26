@@ -5,5 +5,33 @@
     "password": "admin",
     "approved": true,
     "admin": true
+  },
+  {
+    "email": "alfa@alfa.com",
+    "username": "alfa",
+    "password": "alfa",
+    "approved": true,
+    "admin": false
+  },
+  {
+    "email": "user@user.com",
+    "username": "user",
+    "password": "user",
+    "approved": true,
+    "admin": false
+  },
+  {
+    "email": "pippo@pippo.com",
+    "username": "pippo",
+    "password": "pippo",
+    "approved": false,
+    "admin": false
+  },
+  {
+    "email": "giuseppe@giuseppe.com",
+    "username": "giuseppe",
+    "password": "giuseppe",
+    "approved": false,
+    "admin": false
   }
 ]

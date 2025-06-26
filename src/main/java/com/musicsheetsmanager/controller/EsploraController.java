@@ -261,6 +261,7 @@ public class EsploraController implements Controller {
         // Titolo del genere
         Text titolo = new Text(StringUtils.capitalizzaTesto(genere));
         titolo.getStyleClass().addAll("text-white", "font-black", "text-2xl");
+        titolo.setWrappingWidth(150);
         GridPane.setMargin(titolo, new Insets(15));
         card.add(titolo, 0, 0);
 
