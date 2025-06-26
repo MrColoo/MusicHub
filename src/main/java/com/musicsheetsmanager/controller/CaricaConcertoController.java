@@ -66,7 +66,6 @@ public class CaricaConcertoController implements Controller{
      * Gestisce la logica per la visualizzazione dinamica di un video YouTube nella WebView,
      * mostrando o nascondendo messaggi di errore in base alla validità del link.
      */
-
     @FXML
     public void initialize() {
         errore.setVisible(false);
@@ -114,6 +113,10 @@ public class CaricaConcertoController implements Controller{
         });
     }
 
+    /**
+     * Converte un link youtube classico in un link youtube embedded
+     * @param url
+     */
     private String convertToEmbedUrl(String url) {
         // Supporta anche short URL
         try {
@@ -248,6 +251,10 @@ public class CaricaConcertoController implements Controller{
         }
     }
 
+    /**
+     * Ottiene link copertina youtube del video
+     * @param youtubeUrl
+     */
     private String getYoutubeThumbnail(String youtubeUrl) {
         try {
             String videoId = null;
@@ -272,6 +279,10 @@ public class CaricaConcertoController implements Controller{
         }
     }
 
+    /**
+     * Scarica la copertina del concerto partendo dal link youtube
+     * @param concerto
+     */
     private void scaricaCopertinaYoutube(Concerto concerto) {
 
         try {

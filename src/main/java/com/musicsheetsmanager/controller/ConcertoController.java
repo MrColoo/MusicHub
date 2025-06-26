@@ -236,7 +236,6 @@ public class ConcertoController implements Controller{
      *
      * @param listaBrani spieare cosa fa
      */
-
     private void abilitaRicercaComboBoxBrani(List<Brano> listaBrani) {
         selezionaBrani.setEditable(true); // rende la ComboBox editabile
 
