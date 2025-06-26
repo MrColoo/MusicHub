@@ -51,7 +51,7 @@ import javafx.stage.FileChooser;
 
 public class BranoController {
 
-    // ScrollPane che probabilmente contiene tutta la visualizzazione del brano (scrollabile)
+    // ScrollPane che contiene tutta la visualizzazione del brano (scrollabile)
     @FXML
     private ScrollPane branoScrollPane;
 
