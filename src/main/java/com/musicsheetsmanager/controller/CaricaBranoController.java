@@ -249,7 +249,7 @@ public class CaricaBranoController implements Controller {
                 Image fxImage = new Image(imageUrl);
                 Color[] gradientColors = estraiColoriDominanti(fxImage);
 
-                // 🔄 Scarica genere da iTunes in un altro thread
+                // Scarica genere da iTunes in un altro thread
                 new Thread(() -> {
                     String finalGenre = "N/A";
                     try {

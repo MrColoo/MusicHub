@@ -75,6 +75,14 @@ public class BranoController {
     @FXML
     Text branoTitolo;
 
+    // Testo che mostra il genere del brano
+    @FXML
+    Text genereText;
+
+    // Testo che mostra gli strumenti musicali del brano
+    @FXML
+    Text strumentiMusicaliText;
+
     // Testo che mostra gli autori del brano
     @FXML
     Text branoAutori;
@@ -186,6 +194,12 @@ public class BranoController {
         branoOwner = brano.getProprietario();  // Memorizza il proprietario e l'ID del brano
         idBrano = brano.getIdBrano();
         branoTitolo.setText(brano.getTitolo()); // Mostra il titolo del brano nell'interfaccia
+
+        String generi = String.join(", ", brano.getGeneri());// Mostra i generi del brano, separati da virgole
+        genereText.setText(generi); // Mostra il genere del brano nell'interfaccia
+
+        String strumenti = String.join(", ", brano.getStrumentiMusicali());// Mostra gli strumenti del brano, separati da virgole
+        strumentiMusicaliText.setText(strumenti);// Mostra gli strumenti usati nel brano nell'interfaccia
 
         // Mostra gli autori del brano, separati da virgole
         String autori = String.join(", ", brano.getAutori());
