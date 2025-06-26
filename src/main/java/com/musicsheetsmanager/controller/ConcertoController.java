@@ -133,7 +133,6 @@ public class ConcertoController implements Controller{
      *
      * @param linkYoutube link diretto al video YouTube fornito dall'oggetto Concerto
      */
-
     public void mostraVideo(String linkYoutube) {
         if (webView == null) { // controllo se la Web view e' inizializzata
             System.out.println("WebView non inizializzata");
@@ -166,7 +165,6 @@ public class ConcertoController implements Controller{
      * @param url l'URL originale del video YouTube
      * @return l'URL convertito in formato embed, oppure null se non riconosciuto o in caso di errore
      */
-
     private String convertToEmbedUrl(String url) {
         try {
             if (url.contains("youtube.com/watch?v=")) {
@@ -190,7 +188,6 @@ public class ConcertoController implements Controller{
     /**
      * Carica i brani dal file JSON e imposta il comportamento della ComboBox
      */
-
     private void caricaBrani() {
         List<Brano> brani = JsonUtils.leggiDaJson(PATH_BRANI_JSON, tipoListaBrani); // brani letti dal JSON
         if (brani != null) {
@@ -236,7 +233,6 @@ public class ConcertoController implements Controller{
      *
      * @param listaBrani spieare cosa fa
      */
-
     private void abilitaRicercaComboBoxBrani(List<Brano> listaBrani) {
         selezionaBrani.setEditable(true); // rende la ComboBox editabile
 
@@ -323,7 +319,6 @@ public class ConcertoController implements Controller{
     /**
      * Aggiunge un brano al concerto corrente dopo aver validato i dati inseriti
      */
-
     @FXML
     private void addConcertoClicked() {
         Brano branoSelezionato = selezionaBrani.getValue(); // il brano selezionata dalla ComboBox
@@ -415,12 +410,14 @@ public class ConcertoController implements Controller{
 
         System.out.println("Brano collegato al concerto da utente: " + nomeUtente);
 
+        // Clear dei campi
         inizioBranoConcerto.clear();
         fineBranoConcerto.clear();
         selezionaBrani.getSelectionModel().clearSelection();
         selezionaBrani.hide();
 
-        fetchConcertoData(currentConcerto);
+        // Refresh del flowpane contenente le card dei brani
+        mostraCardBraniConcerto(idConcerto);
     }
 
 
@@ -430,7 +427,6 @@ public class ConcertoController implements Controller{
      * @param time una stringa che rappresenta un orario, ad esempio "01:30:00" o "03:45"
      * @return il numero totale di secondi corrispondente all'orario
      */
-
     private int convertToSeconds(String time) {
         String[] parts = time.split(":");
         int seconds = 0;
@@ -447,7 +443,6 @@ public class ConcertoController implements Controller{
     /**
      * Verifica se una stringa rappresenta un tempo nel formato hh:mm:ss o mm:ss
      */
-
     private boolean isValidTimeFormat(String time) {
         return time.matches("^(\\d{1,2}:)?[0-5]?\\d:[0-5]\\d$");
     }
