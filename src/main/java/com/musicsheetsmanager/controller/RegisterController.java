@@ -10,6 +10,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 import java.lang.reflect.Type;
@@ -82,20 +83,24 @@ public class RegisterController implements Controller {
 
         // Controllo formato email (viene prima controllato il formato, poi se è vuoto)
         if (email.isEmpty()) {
+            feedbackText.setFill(Color.RED);
             feedbackText.setText("Inserisci la tua mail!");
             return;
         }
         if (!isValidEmail(email)) {
+            feedbackText.setFill(Color.RED);
             feedbackText.setText("Formato email non valido!");
             return;
         }
 
         // Controlli su username e password
         if (username.isEmpty()) {
+            feedbackText.setFill(Color.RED);
             feedbackText.setText("Inserisci il tuo username!");
             return;
         }
         if (password.isEmpty()) {
+            feedbackText.setFill(Color.RED);
             feedbackText.setText("Inserisci la tua password!");
             return;
         }
@@ -110,6 +115,7 @@ public class RegisterController implements Controller {
         }
 
         // Mostro la conferma di registrazione
+        feedbackText.setFill(Color.GREEN);
         feedbackText.setText("Registrazione avvenuta con successo!");
     }
 
@@ -126,16 +132,19 @@ public class RegisterController implements Controller {
 
         // Se per qualche motivo il file è vuoto o non leggibile, inizializzo lista pulita
         if (users == null) {
+            feedbackText.setFill(Color.RED);
             feedbackText.setText("Errore: impossibile leggere il file utenti.");
             return false;
         }
 
         for (Utente user : users) {
             if (user.getEmail().equalsIgnoreCase(newUser.getEmail())) { // controllo che l'email non sia gia' presente
+                feedbackText.setFill(Color.RED);
                 feedbackText.setText("Questa email è già registrata!");
                 return false;
             }
             if (user.getUsername().equalsIgnoreCase(newUser.getUsername())) { // controllo che l'username non sia gia' presente
+                feedbackText.setFill(Color.RED);
                 feedbackText.setText("Questo username è già in uso!");
                 return false;
             }
