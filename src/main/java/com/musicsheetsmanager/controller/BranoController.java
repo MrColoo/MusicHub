@@ -135,7 +135,6 @@ public class BranoController {
 
     @FXML
     public void initialize() {
-        // errore.setVisible(false);
         Platform.runLater(this::checkReplyFocus);
     }
 
@@ -240,7 +239,7 @@ public class BranoController {
 
         mostraNote(noteBrano);
 
-        caricaAllegatiBrano(brano, allegatiGridPane);
+        caricaAllegatiBrano(allegatiGridPane);
 
         caricaMediaBrano(brano, mediaGridPane);
 
@@ -661,7 +660,7 @@ public class BranoController {
      * @param brano             il brano da cui leggere gli allegati
      * @param allegatiGridPane  il GridPane in cui visualizzare gli allegati
      */
-    public void caricaAllegatiBrano(Brano brano, GridPane allegatiGridPane) {
+    public void caricaAllegatiBrano(GridPane allegatiGridPane) {
         // Costruisce il percorso della cartella degli allegati del brano
         File folder = new File("src/main/resources/attachments/" + idBrano);
 
@@ -692,6 +691,8 @@ public class BranoController {
      * @param mediaGridPane il contenitore GridPane in cui visualizzare i media
      */
     public void caricaMediaBrano(Brano brano, GridPane mediaGridPane) {
+        // Pulisce la griglia rimuovendo eventuali contenuti precedenti
+        mediaGridPane.getChildren().clear();
         // Costruisce il percorso della cartella degli allegati multimediali del brano
         File folder = new File("src/main/resources/attachments/" + idBrano);
 
@@ -748,8 +749,7 @@ public class BranoController {
      * @param gridPane il contenitore in cui verrà visualizzato il video
      */
     private void aggiungiLinkYoutubeSingolo(String link, GridPane gridPane) {
-        // Pulisce la gridpane
-        gridPane.getChildren().clear();
+
         // Calcola la prossima riga disponibile basandosi solo sui nodi che hanno un RowIndex esplicito
         int row = gridPane.getChildren().stream()
                 .map(GridPane::getRowIndex)
@@ -820,8 +820,6 @@ public class BranoController {
      * @param gridPane  contenitore GridPane in cui visualizzare i media
      */
     private void aggiungiMediaAllegati(List<File> files, GridPane gridPane) {
-        // Pulisce la griglia rimuovendo eventuali contenuti precedenti
-        gridPane.getChildren().clear();
         int row = 0; // Indice della riga corrente nella griglia
 
         // Itera su ciascun file multimediale da visualizzare
@@ -1032,7 +1030,7 @@ public class BranoController {
         currentBrano = reloadCurrentBrano();
 
         // Ricarica la UI per la sezione allegati
-        caricaAllegatiBrano(currentBrano, allegatiGridPane);
+        caricaAllegatiBrano(allegatiGridPane);
     }
 
     /**

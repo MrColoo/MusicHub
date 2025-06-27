@@ -70,7 +70,6 @@ public class CaricaBranoController implements Controller {
     @FXML private Button allegaFileBtn;
     @FXML private Text cardTitolo;
     @FXML private Text cardAutore;
-    @FXML private VBox previewContainer;
     @FXML private StackPane previewStackPane;
     @FXML private Rectangle previewBackground;
     @FXML private ImageView cover;

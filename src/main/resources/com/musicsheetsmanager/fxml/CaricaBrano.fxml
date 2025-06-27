@@ -185,7 +185,7 @@
             <StackPane fx:id="previewStackPane" maxHeight="-Infinity" maxWidth="-Infinity">
                <children>
                   <Rectangle fx:id="previewBackground" arcHeight="18.0" arcWidth="18.0" fill="TRANSPARENT" stroke="TRANSPARENT" strokeType="INSIDE" />
-                  <VBox fx:id="previewContainer" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefWidth="250.0" styleClass="preview-container">
+                  <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefWidth="250.0" styleClass="preview-container">
                      <children>
                         <VBox>
                            <VBox.margin>
