@@ -33,6 +33,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.Year;
 import java.util.*;
 
 import com.google.gson.reflect.TypeToken;
@@ -440,6 +441,16 @@ public class CaricaBranoController implements Controller {
         if(autoriText.isEmpty()) {
             errore.setText("Campo autori obbligatorio");
             errore.setVisible(true);
+            return false;
+        }
+
+        String annoText = campoAnnoDiComposizione.getText().trim().toLowerCase();
+        if(annoText.isEmpty()) {
+            return false;
+        }
+
+        String generiText = campoGeneri.getText().trim().toLowerCase();
+        if(generiText.isEmpty()) {
             return false;
         }
 
