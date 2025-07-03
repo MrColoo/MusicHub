@@ -2,14 +2,14 @@
 
 **MusicHub** è un'applicazione desktop per la gestione collaborativa di brani musicali e concerti. Il progetto è stato realizzato come lavoro finale del corso di **Ingegneria del Software 2025** presso l'Università degli Studi di Verona.
 
+![Interfaccia MusicHub](https://github.com/user-attachments/assets/2895ca27-cfb7-4d4b-8267-b0052de51c97)
+> *Interfaccia principale per l’esplorazione dei brani*
+
 ![Interfaccia MusicHub](https://github.com/user-attachments/assets/76fc99e5-efa9-4b3e-a2ab-93b6537dcf92)
-> *Interfaccia principale per l’esplorazione e gestione dei brani musicali.*
+> *Interfaccia di caricamento brani*
 
 ![Interfaccia MusicHub](https://github.com/user-attachments/assets/38bc03a1-72fc-433c-bcae-2cba8513ec89)
-> *Interfaccia principale per l’esplorazione e gestione dei brani musicali.*
-
-![Interfaccia MusicHub](https://github.com/user-attachments/assets/2895ca27-cfb7-4d4b-8267-b0052de51c97)
-> *Interfaccia principale per l’esplorazione e gestione dei brani musicali.*
+> *Interfaccia principale per l’esplorazione dei generi musicali.*
 
 ## 📽️ Demo
 
