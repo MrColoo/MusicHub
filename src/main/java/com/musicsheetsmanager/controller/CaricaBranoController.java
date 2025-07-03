@@ -219,8 +219,8 @@ public class CaricaBranoController implements Controller {
         new Thread(() -> {
             try {
                 // 1. Access Token Spotify
-                String clientId = "470bf5e94cd54ba5bc116ee4818cc68c";
-                String clientSecret = "b0382e67026742f7ac4f607acaf4070e";
+                String clientId = "";
+                String clientSecret = "";
                 String auth = Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes());
 
                 HttpURLConnection tokenConn = (HttpURLConnection) new URL("https://accounts.spotify.com/api/token").openConnection();
@@ -721,8 +721,8 @@ public class CaricaBranoController implements Controller {
     private void scaricaFotoArtisti(List<String> autori) {
         new Thread(() -> {
             try {
-                String clientId = "470bf5e94cd54ba5bc116ee4818cc68c";
-                String clientSecret = "b0382e67026742f7ac4f607acaf4070e";
+                String clientId = "";
+                String clientSecret = "";
 
                 String auth = Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes());
                 URL url = new URL("https://accounts.spotify.com/api/token");
