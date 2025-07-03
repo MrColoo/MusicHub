@@ -14,7 +14,7 @@
 ## 📽️ Demo
 
 Guarda il video dimostrativo dell'applicazione:  
-👉 https://github.com/user-attachments/assets/acce29eb-a1ae-48e4-88ba-52a09466dd46
+https://github.com/user-attachments/assets/acce29eb-a1ae-48e4-88ba-52a09466dd46
 
 ---
 
