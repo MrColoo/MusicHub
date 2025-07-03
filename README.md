@@ -51,11 +51,11 @@ Il progetto è sviluppato in **Java** utilizzando **JavaFX** per l'interfaccia g
 
 ## 📂 Struttura del Progetto
 
-/src
-├── controller
-├── model
-├── view
-└── utils
+/src <br>
+├── controller <br>
+├── model <br>
+├── view <br>
+└── utils <br>
 
 
 ---
