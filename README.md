@@ -14,7 +14,7 @@
 ## 📽️ Demo
 
 Guarda il video dimostrativo dell'applicazione:  
-https://github.com/user-attachments/assets/acce29eb-a1ae-48e4-88ba-52a09466dd46
+👉 [Video Demo](https://github.com/user-attachments/assets/acce29eb-a1ae-48e4-88ba-52a09466dd46)
 
 ---
 
@@ -51,3 +51,52 @@ Il progetto è sviluppato in **Java** utilizzando **JavaFX** per l'interfaccia g
 
 ## 📂 Struttura del Progetto
 
+/src
+├── controller
+├── model
+├── view
+└── utils
+
+
+---
+
+## ✅ Testing
+
+Il sistema è stato sottoposto a:
+- **Test funzionali** da parte degli sviluppatori.
+- **User Acceptance Testing (UAT)** con utenti non tecnici.
+
+---
+
+## 👨‍💻 Autori
+
+- Mattia Bortolaso – [VR500026]
+- Jiashuo Cheng – [VR501311]
+- Matteo Colombo – [VR500130]
+
+Docente referente: **Prof. Carlo Combi**  
+Università di Verona, CdL in Informatica
+
+---
+
+## 📄 Documentazione
+
+Tutta la documentazione tecnica, inclusi i diagrammi UML e i casi d'uso, è disponibile nel file [`Documentazione_Music_Hub.pdf`](./Documentazione_Music_Hub.pdf).
+
+---
+
+## 📌 Note finali
+
+Questo progetto è stato realizzato come esercizio accademico.
+
+## 📝 Licenza
+
+Questo progetto è rilasciato sotto la licenza **Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)**.
+
+Ciò significa che:
+
+- ✅ Puoi visualizzarlo e condividerlo con attribuzione.
+- 🚫 Non puoi modificarlo, copiarlo in parte o in toto per altri progetti accademici.
+- 🚫 Non può essere usato per scopi commerciali o pubblicato altrove come proprio.
+
+Per maggiori dettagli: [https://creativecommons.org/licenses/by-nc-nd/4.0/deed.it](https://creativecommons.org/licenses/by-nc-nd/4.0/deed.it)
